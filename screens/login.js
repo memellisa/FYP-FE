@@ -5,7 +5,7 @@ import { View, StyleSheet, Alert, ActivityIndicator, Modal } from 'react-native'
 import { Button, Input } from '@rneui/base';
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth } from '../config';
 
 function LoadingAnimation() {
   return (

@@ -1,10 +1,8 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet, Image } from 'react-native';
 import { Text, Card, Button, Icon } from '@rneui/themed';
-import Emoji from './Emoji';
-//  
+
 const CommunityCard = ({ imgURI, title, text, minWidth}) => {
-    console.log(imgURI)
     return (
     <>  
         <Card containerStyle={{ width: minWidth, marginBottom:10, borderRadius:10, alignItems:'center' }} >
