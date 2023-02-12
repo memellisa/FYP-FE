@@ -11,12 +11,8 @@ const DataCard = ({title, number, unit, note, minWidth}) => {
                 <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={styles.number}>{number}</Text>
                     <Text style={styles.unit}>{unit}</Text>
-                
                 </View>
-                
-                {note && (
-                        <Text style={styles.note}>{note}</Text>
-                    )}
+                {note && (<Text style={styles.note}>{note}</Text>)}
             </View>
 
             
@@ -39,13 +35,11 @@ const styles = StyleSheet.create({
     unit: {
         color: '#c4c4c4',
         fontSize: 18,
-        paddingEnd: 10,
         fontFamily: 'Poppins-Regular'
     },
     note: {
         fontSize: 16,
         color: '#808080',
-        paddingEnd: 10,
         fontFamily: 'Poppins-Regular'
     }
 });

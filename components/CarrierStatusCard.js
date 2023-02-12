@@ -5,7 +5,7 @@ import { Text, Card, Button, Icon } from '@rneui/themed';
 const CarrierStatusCard = ({disease, status=true}) => {
     return (
     <>
-        <Card containerStyle={{ width: 380, marginBottom:5, borderRadius:10, paddingVertical:15, paddingHorizontal:10 }} >
+        <Card containerStyle={styles.container} >
             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>  
                 <Text style={styles.disease}>{disease}</Text>
                 <Text style={{...styles.status, color: status ? 'red' : 'green'}}>{status ? 'Present' : 'Absent'}</Text>
@@ -19,17 +19,21 @@ const CarrierStatusCard = ({disease, status=true}) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        width: 350, 
+        marginBottom:5, 
+        borderRadius:10, 
+        paddingVertical:15, 
+        paddingHorizontal:10
     },
 
     disease: {
-        fontSize: 18,
+        fontSize: 17,
         paddingHorizontal: 10,
         fontFamily: 'Poppins-Bold'
 
     },
     status: {
-        fontSize: 20,
+        fontSize: 18,
         paddingHorizontal: 10,
         fontFamily: 'Poppins-Bold',
         alignSelf: 'flex-end'

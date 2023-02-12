@@ -3,20 +3,28 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import Login from './screens/login';
-import Signup from './screens/signup';
+import Login from './screens/Login';
+import Signup from './screens/Signup';
 import Main from './screens/Main';
 import Home from './screens/Home';
 import Risk from './screens/Risk';
-import User from './screens/User';
+import Profile from './screens/User/Profile';
 import Genetics from './screens/Genetics';
 import Community from './screens/Community';
-import UserDetails from './screens/user-pages/UserHealthDetails';
-import GeneticsData from './screens/user-pages/GeneticsData';
+import GeneticsData from './screens/User/user-pages/GeneticsData';
 // import BotNavbar from './components/BotNavbar';
 import { useFonts } from 'expo-font';
+import { Button, Text } from '@rneui/base';
+import PersonalDetails from './screens/User/user-pages/PersonalDetails';
+import DoneButton from './components/DoneButton';
+import HealthDetails from './screens/User/user-pages/HealthDetails';
 
- 
+const dummydata = {
+  first_name : "John",
+  last_name : "Doe",
+  dob: "1/1/2000",
+  username: "johndoe"
+}
 const Stack = createNativeStackNavigator();
  
 export default function App() {
@@ -39,13 +47,10 @@ export default function App() {
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
             <Stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
-            <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-            <Stack.Screen name="Risk" component={Risk} options={{ headerShown: false }} />
-            <Stack.Screen name="Genetics" component={Genetics} options={{ headerShown: false }} />
-            <Stack.Screen name="Community" component={Community} options={{ headerShown: false }} />
-            <Stack.Screen name="User" component={User} />
-            <Stack.Screen name="User & Health Details" component={UserDetails} />
-            <Stack.Screen name="Genetics Data" component={GeneticsData} />
+            <Stack.Screen name="Profile" component={Profile} options={{headerBackTitle: ''}} />
+            <Stack.Screen name="Personal Details" component={PersonalDetails} options={({ route, navigation }) => ({ headerBackTitle: '', headerRight: () => <DoneButton name="Profile" navigation={navigation} route={route}/> })}/>
+            <Stack.Screen name="Health Details" component={HealthDetails} options={({ route, navigation }) => ({ headerBackTitle: '', headerRight: () => <DoneButton name="Profile" navigation={navigation} route={route}/>})}/>
+            <Stack.Screen name="Genetics Data" component={GeneticsData} options={({ route, navigation }) => ({ headerBackTitle: '', headerRight: () => <DoneButton name="Profile" navigation={navigation} route={route}/>})}/>
           </Stack.Navigator>
           {/* <BotNavbar /> */}
         </NavigationContainer>

@@ -36,7 +36,7 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
               rounded
               // style={styles.avatar}
               source={{uri:"https://randomuser.me/api/portraits/men/36.jpg"}}
-              onPress={() => navigation.push("User")}
+              onPress={() => navigation.push("Profile")}
               containerStyle={{ backgroundColor: '#6733b9' }}
             />
           }/>
