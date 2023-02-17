@@ -97,8 +97,12 @@ export default function Profile({ navigation, route }) {
 
                 <DetailsCard title={"Genetics Data"} data={geneticsdata} route={route} navigation={navigation}/>
 
-                <Button radius={8} color="#fff" style={styles.button}>
-                        <Text style={styles.signOutText}>Sign Out</Text>
+                <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Manage Wearable")}>
+                        <Text style={styles.buttonText}>Manage Wearable</Text>
+                </Button>
+
+                <Button radius={8} color="#fff" style={{...styles.button, marginBottom: 30}}>
+                        <Text style={{...styles.buttonText, color: 'red'}}>Sign Out</Text>
                 </Button>
                 {/* <View style={styles.optionContainer}> */}
 
@@ -161,7 +165,8 @@ const styles = StyleSheet.create({
         // marginTop: -65,
         flex: 1,
         // backgroundColor: '#fff',
-        backgroundColor: '#f2f2f6'
+        backgroundColor: '#f2f2f6',
+
     },
 
     container: {
@@ -180,6 +185,7 @@ const styles = StyleSheet.create({
         borderColor: 'red',
         color: 'red',
         alignItems: 'center',
+        
         // marginTop: -65,
     },
 
@@ -212,8 +218,7 @@ const styles = StyleSheet.create({
     // },
 
     button: {
-        marginVertical: 10,
-        marginBottom: 30,
+        marginVertical: 5,
         width: 350,
         alignSelf: 'center',
         borderWidth: 0.4,
@@ -233,9 +238,9 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Regular'
     },
 
-    signOutText: {
+    buttonText: {
         fontSize: 16,
-        color: 'red',
+        // color: 'red',
         alignSelf: 'center',
         fontFamily: 'Poppins-SemiBold',
         paddingVertical: 5

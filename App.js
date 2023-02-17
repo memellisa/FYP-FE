@@ -18,6 +18,8 @@ import { Button, Text } from '@rneui/base';
 import PersonalDetails from './screens/User/user-pages/PersonalDetails';
 import DoneButton from './components/DoneButton';
 import HealthDetails from './screens/User/user-pages/HealthDetails';
+import ManageWearable from './screens/Wearable/ManageWearable';
+import ConfirmAuth from './screens/Wearable/ConfirmAuth';
 
 const dummydata = {
   first_name : "John",
@@ -51,6 +53,8 @@ export default function App() {
             <Stack.Screen name="Personal Details" component={PersonalDetails} options={({ route, navigation }) => ({ headerBackTitle: '', headerRight: () => <DoneButton name="Profile" navigation={navigation} route={route}/> })}/>
             <Stack.Screen name="Health Details" component={HealthDetails} options={({ route, navigation }) => ({ headerBackTitle: '', headerRight: () => <DoneButton name="Profile" navigation={navigation} route={route}/>})}/>
             <Stack.Screen name="Genetics Data" component={GeneticsData} options={({ route, navigation }) => ({ headerBackTitle: '', headerRight: () => <DoneButton name="Profile" navigation={navigation} route={route}/>})}/>
+            <Stack.Screen name="Manage Wearable" component={ManageWearable} options={{headerBackTitle: ''}} />
+            <Stack.Screen name="Confirm Auth" component={ConfirmAuth} options={{headerBackTitle: '', title: '' }} />
           </Stack.Navigator>
           {/* <BotNavbar /> */}
         </NavigationContainer>
