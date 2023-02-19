@@ -8,6 +8,7 @@ import BotNavbar from '../components/BotNavbar';
 import BarGraph from '../components/BarGraph';
 import DataCard from '../components/DataCard';
 import MotivationCard from '../components/MotivationCard';
+import { useGetHello } from '../utils/api/hello.api';
 
 // to be replaced by real data
 const dummydata = [
@@ -23,6 +24,10 @@ const dummydata = [
 
 
 const Home = ({headerTitle, headerSubtitle, navigation}) => {
+  // only for trial
+    const result = useGetHello()
+    console.log(result)
+    
     const leftComponent = <View style={{width:180}}>
     <Text style={{...styles.heading, fontSize: 25}}>{headerTitle}</Text>
     <Text style={styles.subheading}>{headerSubtitle}</Text>
