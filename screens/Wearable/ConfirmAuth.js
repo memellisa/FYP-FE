@@ -1,32 +1,53 @@
-// import { TouchableHighlight, Divider } from '@rneui/base'
-import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TextInput, TouchableHighlight } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
+import { Image, StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import { useState, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
 
 
 // TODO: detect whether there is already a wearable connected to the account or not
-export default function ConfirmAuth({ route }) {
-    // const data = route.params.data
+export default function ConfirmAuth({ route, navigation }) {
+    const [authCode, setAuthCode] = useState('')
+    const [pressed, setPressed] = useState(false)
+    
+    useEffect(() => {
+        if (authCode !== ''){
+            navigation.push("Success Splash")
+        }
 
-    // const [diet, setDiet] = useState(data.diet)
-    // const [smokingStatus, setSmokingStatus] = useState(data.smoking_status)
-    // const [alcoholConsumption, setAlcoholConsumption] = useState(data.alcohol_consumption.toString())
-    // const [bloodPressure, setBloodPressure] = useState(data.blood_pressure)
+    }, [authCode])
 
-    // useEffect(() => {
-    //     const newData = {diet: diet, smoking_status: smokingStatus, alcohol_consumption: alcoholConsumption, blood_pressure: bloodPressure}
-    //     route.params.data = newData
-    //     console.log(route.params.data)
-    // }, [diet, smokingStatus, alcoholConsumption, bloodPressure])
+    useEffect(() => {
+        const linkingEvent = Linking.addEventListener('url', handlePressButtonAsync);
+        Linking.getInitialURL().then(() => {
+           if (pressed) {
+             handlePressButtonAsync();
+           }
+        });
+        return () => {
+           setPressed(false)
+           linkingEvent.remove();
+        };
+     }, [pressed, handlePressButtonAsync]);
+     
+    
+    const handlePressButtonAsync = async () => {
+        let response = await WebBrowser.openAuthSessionAsync(
+                    "https://www.fitbit.com/oauth2/authorize?client_id=23959L&response_type=code&code_challenge=jdJbKAkrq4qYt5sy5DRKAnvIAt-Ntmwhbr2itg6Nb-8&code_challenge_method=S256&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight",
+                    Linking.createURL()
+                    )
+        
+        if (response && response.type == 'success'){
+            const url = response.url
+            setAuthCode(url.split('code=')[1])
+        }
+        
+        console.log('Resp',response)
 
-
-    const [result, setResult] = useState(null);
-    const _handlePressButtonAsync = async () => {
-        let result = await WebBrowser.openBrowserAsync('https://expo.dev');
-        setResult(result);
+        WebBrowser.dismissBrowser()
       };
+
+
       
     return (
         <SafeAreaProvider>
@@ -36,16 +57,17 @@ export default function ConfirmAuth({ route }) {
                 hasSafeArea={false}
             >
                 <View style={styles.promptView}>
-                    <Image source={require('../../assets/Fitbit_logo_RGB.png')} style={styles.logo} />
+                    <Image source={require('../../assets/Fitbit_logo_RGB.png')} style={styles.logo} transition={false}/>
                     <Text style={styles.subtitle}>
                         Connect your Fitbit account to track your physical activities. 
                         Activity recorded on Fitbit will count towards your Coronary Heart Disease risk calculation. 
                         Click Connect below to sign in to your Fitbit account and authorize access
                     </Text>
+                    {/* <Text>{authCode}</Text> */}
                 </View>
 
 
-                <TouchableHighlight underlayColor="#DDDDDD" style={styles.button} onPress={_handlePressButtonAsync}>
+                <TouchableHighlight underlayColor="#DDDDDD" style={styles.button} onPress={()=>setPressed(true)}>
                         <Text style={styles.text}>Connect</Text>
                 </TouchableHighlight>
 

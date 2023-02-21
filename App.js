@@ -20,6 +20,7 @@ import DoneButton from './components/DoneButton';
 import HealthDetails from './screens/User/user-pages/HealthDetails';
 import ManageWearable from './screens/Wearable/ManageWearable';
 import ConfirmAuth from './screens/Wearable/ConfirmAuth';
+import SuccessSplash from './screens/Wearable/SuccessSplash';
 
 const dummydata = {
   first_name : "John",
@@ -55,6 +56,7 @@ export default function App() {
             <Stack.Screen name="Genetics Data" component={GeneticsData} options={({ route, navigation }) => ({ headerBackTitle: '', headerRight: () => <DoneButton name="Profile" navigation={navigation} route={route}/>})}/>
             <Stack.Screen name="Manage Wearable" component={ManageWearable} options={{headerBackTitle: ''}} />
             <Stack.Screen name="Confirm Auth" component={ConfirmAuth} options={{headerBackTitle: '', title: '' }} />
+            <Stack.Screen name="Success Splash" component={SuccessSplash} options={{ headerShown: false }} />
           </Stack.Navigator>
           {/* <BotNavbar /> */}
         </NavigationContainer>

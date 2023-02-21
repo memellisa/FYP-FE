@@ -3990,7 +3990,7 @@
   "resolved" "https://registry.npmjs.org/expo-linear-gradient/-/expo-linear-gradient-11.4.0.tgz"
   "version" "11.4.0"
 
-"expo-linking@~3.2.0":
+"expo-linking@~3.2.0", "expo-linking@~3.2.4":
   "integrity" "sha512-yVH72hqridgxiknuqeVs5ZClxIaEft2xyDfC9+x8pSelGb1oMnaOYY4muE9ytph6VCXbmMI9VNf0etrfFoDLqQ=="
   "resolved" "https://registry.npmjs.org/expo-linking/-/expo-linking-3.2.4.tgz"
   "version" "3.2.4"
