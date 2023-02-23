@@ -71,7 +71,7 @@ export default function Login({navigation}) {
             Alert.alert('Something went wrong')
           }
         } else {
-          console.log(response.data)
+          console.log("LOGIN",response.data)
           setLoading(false)
           navigation.replace("Main");
           return JSON.stringify(response)

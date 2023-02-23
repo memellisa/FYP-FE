@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "fyphku2023",
     "name": "App",
     "slug": "App",
     "version": "1.0.0",

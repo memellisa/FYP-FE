@@ -3,7 +3,6 @@ import { View, ScrollView, StyleSheet, Image } from 'react-native';
 import { Text, Card, Button, Icon } from '@rneui/themed';
 
 const EditButton = ({navigation, name, route, data}) => {
-    // console.log(data)
     return (
         <Button
             onPress={() => navigation.navigate(name, { data: data })}

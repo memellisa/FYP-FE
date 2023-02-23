@@ -1,29 +1,48 @@
-import { Image, StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { Image, StyleSheet, Text, View, TouchableHighlight, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
+import { getAuthURL, postAccessToken } from '../../utils/api/fitbit.api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 // TODO: detect whether there is already a wearable connected to the account or not
 export default function ConfirmAuth({ route, navigation }) {
     const [authCode, setAuthCode] = useState('')
     const [pressed, setPressed] = useState(false)
+
+    // useEffect(() => {const res = getAuthURL() }, [])
+
+
     
-    useEffect(() => {
+    useEffect( () => {
         if (authCode !== ''){
-            navigation.push("Success Splash")
+            (async () => {
+                const result = await postAccessToken({ 'authCode': authCode })
+                console.log('Fitbit Connected')
+                console.log(result)
+                if (!result.error){
+                    try {
+                        const fitbitTokens = JSON.stringify({"accessToken": result.access_token, "refreshToken":result.refresh_token})
+                        await AsyncStorage.setItem('fitbitTokens', fitbitTokens)
+                    } catch (e) {
+                        Alert.alert('Something went wrong. Please try again')
+                    }
+                    navigation.push("Success Splash")
+                } else {
+                    Alert.alert('Something went wrong. Please try again')
+            }})()
         }
 
     }, [authCode])
 
     useEffect(() => {
         const linkingEvent = Linking.addEventListener('url', handlePressButtonAsync);
-        Linking.getInitialURL().then(() => {
-           if (pressed) {
-             handlePressButtonAsync();
-           }
-        });
+        if (pressed) {
+            Linking.getInitialURL()
+            .then(handlePressButtonAsync())
+        }
         return () => {
            setPressed(false)
            linkingEvent.remove();
@@ -32,19 +51,27 @@ export default function ConfirmAuth({ route, navigation }) {
      
     
     const handlePressButtonAsync = async () => {
-        let response = await WebBrowser.openAuthSessionAsync(
-                    "https://www.fitbit.com/oauth2/authorize?client_id=23959L&response_type=code&code_challenge=jdJbKAkrq4qYt5sy5DRKAnvIAt-Ntmwhbr2itg6Nb-8&code_challenge_method=S256&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight",
-                    Linking.createURL()
-                    )
+        const res = await getAuthURL()
+
+        console.log( res )
+        if (res.error) return
+        // let response = await WebBrowser.openAuthSessionAsync(
+        //             "https://www.fitbit.com/oauth2/authorize?client_id=23959L&response_type=code&code_challenge=jdJbKAkrq4qYt5sy5DRKAnvIAt-Ntmwhbr2itg6Nb-8&code_challenge_method=S256&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight",
+        //             Linking.createURL()
+        //             )
+        let response = await WebBrowser.openAuthSessionAsync(res.data, Linking.createURL())
         
         if (response && response.type == 'success'){
             const url = response.url
+            const token = url.split('code=')[1].replace('#_=_','')
+            console.log("ACCESS TOKEN::",token)
             setAuthCode(url.split('code=')[1])
         }
         
-        console.log('Resp',response)
-
         WebBrowser.dismissBrowser()
+
+        
+        
       };
 
 

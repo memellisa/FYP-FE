@@ -1,14 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Header from '../components/Header';;
 import { Avatar } from '@rneui/themed';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import BotNavbar from '../components/BotNavbar';
 import BarGraph from '../components/BarGraph';
 import DataCard from '../components/DataCard';
 import MotivationCard from '../components/MotivationCard';
 import { useGetHello } from '../utils/api/hello.api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getProfile } from '../utils/api/fitbit.api';
 
 // to be replaced by real data
 const dummydata = [
@@ -25,8 +27,31 @@ const dummydata = [
 
 const Home = ({headerTitle, headerSubtitle, navigation}) => {
   // only for trial
-    const result = useGetHello()
-    console.log(result)
+    // const result = useGetHello()
+
+    const getTokens = async () => {
+      try {
+        const tokens = await AsyncStorage.getItem('fitbitTokens')
+        console.log(tokens)
+        if (tokens){
+          (async() => {
+            const result = await getProfile(JSON.parse(tokens) )
+            console.log(result)
+            if (!result.error){
+                // do something
+            } else {
+                Alert.alert('Something went wrong. Please try again')
+          }})()
+        }
+        return tokens === null ? null : JSON.parse(tokens) ;
+      } catch(e) {
+        // error reading value
+      }
+    }
+
+    useEffect( () => { 
+      getTokens()
+    }, [])
     
     const leftComponent = <View style={{width:180}}>
     <Text style={{...styles.heading, fontSize: 25}}>{headerTitle}</Text>
