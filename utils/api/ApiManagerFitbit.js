@@ -1,7 +1,10 @@
 import axios from 'axios';
 
 const ApiManagerFitbit = axios.create({
-  baseURL: 'http://10.70.95.64:5000',
+  headers : {
+        'Content-Type': 'application/json'
+  },
+  baseURL: 'http://192.168.50.109:5000',
   responseType: 'json',
   withCredentials: true,
 });

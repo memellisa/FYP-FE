@@ -19,7 +19,7 @@ export default function ConfirmAuth({ route, navigation }) {
     useEffect( () => {
         if (authCode !== ''){
             (async () => {
-                const result = await postAccessToken({ 'authCode': authCode })
+                const result = await postAccessToken(JSON.stringify({ 'authCode': authCode }))
                 console.log('Fitbit Connected')
                 console.log(result)
                 if (!result.error){
@@ -63,9 +63,9 @@ export default function ConfirmAuth({ route, navigation }) {
         
         if (response && response.type == 'success'){
             const url = response.url
-            const token = url.split('code=')[1].replace('#_=_','')
-            console.log("ACCESS TOKEN::",token)
-            setAuthCode(url.split('code=')[1])
+            const aCode = url.split('code=')[1].replace('#_=_','')
+            console.log("AUTH CODE::",aCode)
+            setAuthCode(aCode.split('code=')[0])
         }
         
         WebBrowser.dismissBrowser()
