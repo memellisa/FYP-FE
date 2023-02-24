@@ -11,6 +11,7 @@ import MotivationCard from '../components/MotivationCard';
 import { useGetHello } from '../utils/api/hello.api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getProfile } from '../utils/api/fitbit.api';
+import { useFocusEffect } from '@react-navigation/native';
 
 // to be replaced by real data
 const dummydata = [
@@ -28,33 +29,56 @@ const dummydata = [
 const Home = ({headerTitle, headerSubtitle, navigation}) => {
   // only for trial
     // const result = useGetHello()
+    const [userData, setUserData] = useState(0);
+    const [tokens, setTokens] = useState(null)
+    const iconSize = 35;
+
 
     const getTokens = async () => {
-      try {
-        const tokens = await AsyncStorage.getItem('fitbitTokens')
-        console.log(tokens)
-        if (tokens){
-          (async() => {
-            const result = await getProfile(JSON.parse(tokens) )
-            console.log(result)
-            if (!result.error){
-                // do something
-            } else {
-                Alert.alert('Something went wrong. Please try again')
-          }})()
+        try {
+          const fetchedTokens = await AsyncStorage.getItem('fitbitTokens')
+          console.log("TOKENS", fetchedTokens)
+          if (fetchedTokens && fetchedTokens !== "{}"){
+            if (tokens !== fetchedTokens) {
+                setTokens(fetchedTokens)
+            }
+            
+          }
+          return tokens === null ? null : JSON.parse(tokens) ;
+        } catch(e) {
+          // error reading value
         }
-        return tokens === null ? null : JSON.parse(tokens) ;
-      } catch(e) {
-        // error reading value
       }
-    }
 
-    useEffect( () => { 
-      getTokens()
-    }, [])
+  
+      useFocusEffect( 
+        // getTokens()
+        React.useCallback(() => {
+            const fetchProfile = async() => {
+                const result = await getProfile(JSON.parse(tokens) )
+                console.log(result)
+                if (result.data != userData) {
+                  setUserData(result.data.user)
+                }
+                if (!result.error){
+                    // do something
+                } else {
+                    Alert.alert('Something went wrong. Please try again')
+              }}
+      
+            return () => fetchProfile();
+          }, [tokens])
+    
+      )
+
+      useFocusEffect( () => {
+        getTokens()
+      })
+
+    
     
     const leftComponent = <View style={{width:180}}>
-    <Text style={{...styles.heading, fontSize: 25}}>{headerTitle}</Text>
+    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.firstName}</Text>
     <Text style={styles.subheading}>{headerSubtitle}</Text>
     </View>
     return (
@@ -65,7 +89,7 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
               size={64}
               rounded
               // style={styles.avatar}
-              source={{uri:"https://randomuser.me/api/portraits/men/36.jpg"}}
+              source={{uri:userData ? userData.avatar640 : "https://randomuser.me/api/portraits/men/36.jpg"}}
               onPress={() => navigation.push("Profile")}
               containerStyle={{ backgroundColor: '#6733b9' }}
             />

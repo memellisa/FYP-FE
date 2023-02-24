@@ -3,7 +3,7 @@ import ApiManagerFitbit from "./ApiManagerFitbit";
 import axios from 'axios';
 const postAccessToken = async (payload) => {
     try {
-        const response = await axios.post('http://192.168.50.109:5000/fitbit/auth/token', payload, {
+        const response = await axios.post('http://10.68.9.184:5000/fitbit/auth/token', payload, {
             headers: {
             'Content-Type': 'application/json'
             }
@@ -33,14 +33,15 @@ const getAuthURL = async () => {
 const getProfile = async (payload) => {
     try {
         // const response = await axios.get('http://127.0.01:5000/fitbit/getAuthURL');
-        const response = await axios.get('http://192.168.50.109:5000/fitbit/user', payload, {
+        const response = await axios.post('http://10.68.9.184:5000/fitbit/user', payload, {
             headers: {
             'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP',response)
+        console.log('RESP',response)
         return { data: response.data, error: null }
     } catch (error) {
+        console.log('RESP',error.response)
         return { data: null, error }
     } 
 };
