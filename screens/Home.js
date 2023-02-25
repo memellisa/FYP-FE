@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Header from '../components/Header';;
 import { Avatar } from '@rneui/themed';
@@ -34,15 +34,18 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
     const iconSize = 35;
 
 
+    useFocusEffect( () => {
+      getTokens()
+    })
+
     const getTokens = async () => {
         try {
           const fetchedTokens = await AsyncStorage.getItem('fitbitTokens')
-          console.log("TOKENS", fetchedTokens)
+          // console.log("TOKENS", tokens)
           if (fetchedTokens && fetchedTokens !== "{}"){
             if (tokens !== fetchedTokens) {
                 setTokens(fetchedTokens)
             }
-            
           }
           return tokens === null ? null : JSON.parse(tokens) ;
         } catch(e) {
@@ -50,31 +53,27 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
         }
       }
 
+      
   
       useFocusEffect( 
-        // getTokens()
-        React.useCallback(() => {
-            const fetchProfile = async() => {
-                const result = await getProfile(JSON.parse(tokens) )
-                console.log(result)
+        useCallback(() => {
+          const fetchProfile = async() => {
+            if (tokens && tokens !== "{}"){
+              const result = await getProfile(JSON.parse(tokens) )
+              console.log("PROFILE:::",result)
+              if (!result.error){
                 if (result.data != userData) {
                   setUserData(result.data.user)
                 }
-                if (!result.error){
-                    // do something
-                } else {
-                    Alert.alert('Something went wrong. Please try again')
-              }}
-      
-            return () => fetchProfile();
-          }, [tokens])
-    
+              } else {
+                  Alert.alert('Something went wrong. Please try again')
+              }
+          }}
+          fetchProfile()
+        }, [tokens])
       )
 
-      useFocusEffect( () => {
-        getTokens()
-      })
-
+     
     
     
     const leftComponent = <View style={{width:180}}>

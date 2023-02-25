@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import ApiManagerFitbit from "./ApiManagerFitbit";
 import axios from 'axios';
+
+const flaskURL = 'http://10.70.95.64:5000'
+
 const postAccessToken = async (payload) => {
     try {
-        const response = await axios.post('http://10.68.9.184:5000/fitbit/auth/token', payload, {
+        const response = await axios.post(`${flaskURL}/fitbit/auth/token`, payload, {
             headers: {
             'Content-Type': 'application/json'
             }
@@ -20,8 +23,7 @@ const postAccessToken = async (payload) => {
 
 const getAuthURL = async () => {
     try {
-        // const response = await axios.get('http://127.0.01:5000/fitbit/getAuthURL');
-        const response = await ApiManagerFitbit('/fitbit/auth/url', { method: 'GET' });
+        const response = await axios.get(`${flaskURL}/fitbit/auth/url`);
         // console.log('RESP',response)
         return { data: response.data, error: null }
     } catch (error) {
@@ -32,8 +34,7 @@ const getAuthURL = async () => {
 
 const getProfile = async (payload) => {
     try {
-        // const response = await axios.get('http://127.0.01:5000/fitbit/getAuthURL');
-        const response = await axios.post('http://10.68.9.184:5000/fitbit/user', payload, {
+        const response = await axios.post(`${flaskURL}/fitbit/user`, payload, {
             headers: {
             'Content-Type': 'application/json'
             }
