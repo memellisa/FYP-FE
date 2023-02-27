@@ -39,7 +39,7 @@ const getProfile = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        console.log('RESP',response)
+        // console.log('RESP',response)
         return { data: response.data, error: null }
     } catch (error) {
         console.log('RESP',error.response)
@@ -47,5 +47,36 @@ const getProfile = async (payload) => {
     } 
 };
 
+const getActivities = async (payload) => {
+    try {
+        const response = await axios.post(`${flaskURL}/fitbit/activities`, payload, {
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        });
+        // console.log('RESP',response)
+        return { data: response.data, error: null }
+    } catch (error) {
+        console.log('RESP',error.response)
+        return { data: null, error }
+    } 
+};
 
-export { postAccessToken, getAuthURL, getProfile }
+const getWeeklySteps = async (payload) => {
+    try {
+        const response = await axios.post(`${flaskURL}/fitbit/weeklySteps`, payload, {
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        });
+        // console.log('RESP',response.data)
+        return { data: response.data.data, error: null }
+    } catch (error) {
+        console.log('RESP',error.response)
+        return { data: null, error }
+    } 
+};
+
+
+
+export { postAccessToken, getAuthURL, getProfile, getActivities, getWeeklySteps }

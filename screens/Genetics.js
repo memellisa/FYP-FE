@@ -27,12 +27,10 @@ export default function Genetics({headerTitle, headerSubtitle}) {
         
         <Text style={{...styles.heading,fontSize: 20, marginLeft: 20, marginTop: 10}}>Disease Risks</Text>
         <View style={{ flexDirection: "row", flexWrap: "wrap-reverse", alignItems: 'center', justifyContent: 'center'}}>
-            <DataCard title="Diabetes" number="32.6" unit="%" minWidth={160} note="Average: 30.1%"/>
-
-            <DataCard title="Cancer" number="2.2" unit="%" minWidth={160} note="Average: 1.1%"/>
-
-            <DataCard title="CHD" number="22.3" unit="%" minWidth={160} note="Average: 20.9%"/>
-            <DataCard title="Stroke" number="29.6" unit="%" minWidth={160} note="Average: 30.3%"/>
+            <DataCard title="Diabetes" numbers="32.6" units="%" minWidth={160} note="Average: 30.1%"/>
+            <DataCard title="Cancer" numbers="2.2" units="%" minWidth={160} note="Average: 1.1%"/>
+            <DataCard title="CHD" numbers="22.3" units="%" minWidth={160} note="Average: 20.9%"/>
+            <DataCard title="Stroke" numbers="29.6" units="%" minWidth={160} note="Average: 30.3%"/>
         </View>
         <StatusBar style="auto" />
       </ScrollView>
