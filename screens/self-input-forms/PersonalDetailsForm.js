@@ -1,8 +1,10 @@
 import { Button, Divider } from '@rneui/base'
 import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TextInput, TouchableHighlight } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import NavigationButton from '../../components/NavigationButton';
+
 
 
 
@@ -15,17 +17,41 @@ const socioEconomicData = [
 
 
 
-export default function PersonalDetails({ route }) {
-    const data = route.params.data
+export default function PersonalDetailsForm({ route, navigation }) {
+    // const [username, setUsername] = useState('')
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [dateOfBirth, setDateOfBirth] = useState('')
+    const [email, setEmail] = useState('') // probably get data from sign up somehow, and set to cannot be changed
+    const [phoneNumber, setPhoneNumber] = useState('')
+    const [formData, setFormData] = useState('')
 
-    const [username, setUsername] = useState(data.username)
-    // const [Password, setPassword] = useState('*********')
-    const [firstName, setFirstName] = useState(data.first_name)
-    const [lastName, setLastName] = useState(data.last_name)
-    const [dateOfBirth, setDateOfBirth] = useState(data.dob)
-    const [email, setEmail] = useState(data.email)
-    const [phoneNumber, setPhoneNumber] = useState(data.phone_number.toString())
-    const [socioEconomicStatus, setSocioEconomicStatus] = useState(data.socio_economic_status)
+    // const [socioEconomicStatus, setSocioEconomicStatus] = useState('')
+
+    const onPress = () => {
+        navigation.navigate("Health Form", { data: formData })
+    }
+
+    useEffect(() => {
+        setFormData( {
+            'personal-data':{
+                'first_name': firstName,
+                'last_name': lastName,
+                'dob':  dateOfBirth,
+                'email': email,
+                'phone_number': phoneNumber,
+        }})
+        console.log(formData)
+    }, [firstName,lastName, dateOfBirth, email, phoneNumber])
+    
+
+    useEffect(() => {
+        navigation.setOptions({ 
+            headerBackTitle: '', 
+            headerRight: () => <NavigationButton buttonName="Next" onPressHandler={onPress}/> 
+        });
+    }, [])
+
 
     const renderText = (text, value, onChangeText) => {
         return (
@@ -42,7 +68,6 @@ export default function PersonalDetails({ route }) {
                 scrollable={true}
                 hasSafeArea={false}
             >
-                    {renderText('Username', username, setUsername)}
 
                     {renderText('First Name', firstName, setFirstName)}
 
@@ -57,21 +82,6 @@ export default function PersonalDetails({ route }) {
                         <TextInput style={styles.valueText} value={phoneNumber}  onChangeText={setPhoneNumber} multiline={true} keyboardType='phone-pad'/>
                     </View>
                 
-                    <View style={styles.optionView}>
-                        <Text style={styles.optionText}>Socio-Economic Status</Text>
-                        <Dropdown 
-                            style={styles.dropdown}
-                            itemTextStyle={styles.itemStyle}
-                            data={socioEconomicData}
-                            maxHeight={300}
-                            labelField="label"
-                            valueField="value"
-                            value={socioEconomicStatus}
-                            onChange={item => {
-                                setSocioEconomicStatus(item.value);
-                            }}
-                        />
-                    </View>
                 
             </ScrollView>
         </SafeAreaProvider>
