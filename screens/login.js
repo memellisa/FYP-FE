@@ -6,6 +6,7 @@ import { Button, Input } from '@rneui/base';
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../config';
+import ApiManager from '../utils/api/ApiManager';
 
 function LoadingAnimation() {
   return (
@@ -22,32 +23,63 @@ export default function Login({navigation}) {
   const [password, setPassword] = React.useState('123456');
   const [loading, setLoading] = React.useState(false);
 
-  function onLogin() {
+  // function onLogin() {
+  //   setLoading(true)
+  //   if (email === '' || password === '') {
+  //     Alert.alert('Email or password is required')
+  //     setLoading(false);
+  //   } else {
+  //     signInWithEmailAndPassword(auth, email, password)
+  //       .then((userCredential) => {
+  //         const user = userCredential.user;
+  //         setLoading(false);
+  //         console.log("USER:::",user);
+  //         navigation.replace("Main");
+  //         // store in AsyncStorage to be implemented
+  //       })
+  //     .catch((error) => {
+  //         const errorCode = error.code;
+  //         const errorMessage = error.message;
+  //         console.log(errorCode, errorMessage)
+  //         if (errorCode === 'auth/user-not-found') {
+  //           Alert.alert('Email or password is incorrect')
+  //         } else {
+  //           Alert.alert('Something went wrong')
+  //         }
+  //     });
+  //   }
+  //   setLoading(false);
+  // }
+
+  const login = async () => {
     setLoading(true)
     if (email === '' || password === '') {
       Alert.alert('Email or password is required')
       setLoading(false);
     } else {
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          setLoading(false);
-          navigation.replace("Main");
-          console.log(user);
-          // store in AsyncStorage to be implemented
+      try {
+        const response = await ApiManager('/login', { 
+          method: 'GET', 
+          params: { 'email': email, 'password': password } 
         })
-      .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode, errorMessage)
-          if (errorCode === 'auth/user-not-found') {
+    
+        if (response.data.error){
+          setLoading(false)
+          if (response.data.error === 'INVALID_PASSWORD' || response.data.error === 'EMAIL_NOT_FOUND') {
             Alert.alert('Email or password is incorrect')
           } else {
             Alert.alert('Something went wrong')
           }
-      });
+        } else {
+          console.log("LOGIN",response.data)
+          setLoading(false)
+          navigation.replace("Main");
+          return JSON.stringify(response)
+        }
+      } catch (error) {
+        Alert.alert('Something went wrong')
+      }
     }
-    setLoading(false);
   }
 
   return (
@@ -59,7 +91,8 @@ export default function Login({navigation}) {
       
       <Button title="Login" buttonStyle={styles.button} 
         // onPress={() => navigation.replace("Main")}
-        onPress={() => {onLogin()}}
+        // onPress={() => {onLogin()}}
+        onPress={() => login()}
       />
       <Button 
         title="Don't have an account? Signup today!" 
