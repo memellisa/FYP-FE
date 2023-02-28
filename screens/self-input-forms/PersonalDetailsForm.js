@@ -29,6 +29,7 @@ export default function PersonalDetailsForm({ route, navigation }) {
     // const [socioEconomicStatus, setSocioEconomicStatus] = useState('')
 
     const onPress = () => {
+        // console.log(formData)
         navigation.navigate("Health Form", { data: formData })
     }
 
@@ -41,7 +42,7 @@ export default function PersonalDetailsForm({ route, navigation }) {
                 'email': email,
                 'phone_number': phoneNumber,
         }})
-        console.log(formData)
+        // console.log(formData)
     }, [firstName,lastName, dateOfBirth, email, phoneNumber])
     
 

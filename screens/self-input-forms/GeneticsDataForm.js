@@ -39,7 +39,7 @@ export default function GeneticsDataForm({ route, navigation }) {
     const onPress = () => {
         console.log('ALL DATA',{...otherData, ...formData})
         // send data to db
-        // navigation.navigate("Main")
+        navigation.navigate("Main")
     }
 
     useEffect(() => {
@@ -56,7 +56,7 @@ export default function GeneticsDataForm({ route, navigation }) {
     }, [sex,bloodType, age, weight, height, bmi])
 
     useEffect(() => {
-        console.log("DATA FROM PREV PAGE",otherData)
+        // console.log("DATA FROM PREV PAGE",otherData)
         navigation.setOptions({ 
             headerBackTitle: '', 
             headerRight: () => <NavigationButton buttonName="Done" onPressHandler={onPress}/> 

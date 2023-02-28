@@ -51,7 +51,7 @@ export default function HealthDetailsForm({ route, navigation }) {
         //         'blood-pressure': bloodPressure
         //     }
         // }
-        console.log(formData)
+        // console.log(otherData, formData)
         navigation.push("Genetics Form", { data: {...otherData, ...formData} })
     }
 
@@ -64,10 +64,11 @@ export default function HealthDetailsForm({ route, navigation }) {
                 'blood-pressure': bloodPressure
             }
         })
+        // console.log(formData)
     }, [diet,smokingStatus, alcoholConsumption, bloodPressure])
 
     useEffect(() => {
-        console.log("DATA FROM PREV PAGE",otherData)
+        // console.log("DATA FROM PREV PAGE",otherData)
         navigation.setOptions({ 
             headerBackTitle: '', 
             headerRight: () => <NavigationButton buttonName="Next" onPressHandler={onPress}/> 
