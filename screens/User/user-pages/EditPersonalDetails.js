@@ -1,8 +1,9 @@
 import { Button, Divider } from '@rneui/base'
 import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TextInput, TouchableHighlight } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import NavigationButton from '../../../components/NavigationButton';
 
 
 
@@ -15,10 +16,10 @@ const socioEconomicData = [
 
 
 
-export default function PersonalDetails({ route }) {
+export default function EditPersonalDetails({ route, navigation }) {
     const data = route.params.data
 
-    const [username, setUsername] = useState(data.username)
+    // const [username, setUsername] = useState(data.username)
     // const [Password, setPassword] = useState('*********')
     const [firstName, setFirstName] = useState(data.first_name)
     const [lastName, setLastName] = useState(data.last_name)
@@ -26,6 +27,19 @@ export default function PersonalDetails({ route }) {
     const [email, setEmail] = useState(data.email)
     const [phoneNumber, setPhoneNumber] = useState(data.phone_number.toString())
     const [socioEconomicStatus, setSocioEconomicStatus] = useState(data.socio_economic_status)
+
+    const onPress = () => {
+        navigation.navigate("Profile", { data: route.params.data })
+    }
+ 
+    useEffect(() => {
+        navigation.setOptions({ 
+            headerBackTitle: '', 
+            headerRight: () => <NavigationButton onPressHandler={onPress}/> 
+
+        });
+    }, [])
+
 
     const renderText = (text, value, onChangeText) => {
         return (
@@ -42,7 +56,7 @@ export default function PersonalDetails({ route }) {
                 scrollable={true}
                 hasSafeArea={false}
             >
-                    {renderText('Username', username, setUsername)}
+                    {/* {renderText('Username', username, setUsername)} */}
 
                     {renderText('First Name', firstName, setFirstName)}
 

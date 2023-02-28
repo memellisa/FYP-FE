@@ -91,11 +91,11 @@ export default function Profile({ navigation, route }) {
                         type="outline" /> */}
                 </View>
 
-                <DetailsCard title={"Personal Details"} data={personaldata} route={route} navigation={navigation}/>
+                <DetailsCard title={"Edit Personal Details"} data={personaldata} route={route} navigation={navigation}/>
                 
-                <DetailsCard title={"Health Details"} data={healthdata} route={route} navigation={navigation}/>
+                <DetailsCard title={"Edit Health Details"} data={healthdata} route={route} navigation={navigation}/>
 
-                <DetailsCard title={"Genetics Data"} data={geneticsdata} route={route} navigation={navigation}/>
+                <DetailsCard title={"Edit Genetics Data"} data={geneticsdata} route={route} navigation={navigation}/>
 
                 <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Manage Wearable")}>
                         <Text style={styles.buttonText}>Manage Wearable</Text>

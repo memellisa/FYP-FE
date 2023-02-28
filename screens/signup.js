@@ -4,7 +4,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button, Input } from '@rneui/base';
 
-export default function Login({navigation}) {
+export default function Signup({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.inputView} >
@@ -14,7 +14,7 @@ export default function Login({navigation}) {
       </View>
       
       <Button title="Signup" buttonStyle={styles.button} 
-        onPress={() => navigation.replace("Login")}
+        onPress={() => navigation.replace("Personal Form")}
       />
       <Button 
         title="Have an account? Login instead!" 

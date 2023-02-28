@@ -3,6 +3,7 @@ import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TextInput, 
 import { Dropdown } from 'react-native-element-dropdown';
 import { useState, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import NavigationButton from '../../../components/NavigationButton';
 
 
 const dietData = [
@@ -30,7 +31,7 @@ const bloodPressureData = [
     { label: 'HBP Stage 3', value: 'HBP Stage 3' },
 ];
 
-export default function HealthDetails({ route }) {
+export default function EditHealthDetails({ route, navigation }) {
     const data = route.params.data
 
     const [diet, setDiet] = useState(data.diet)
@@ -43,6 +44,19 @@ export default function HealthDetails({ route }) {
     //     route.params.data = newData
     //     console.log(route.params.data)
     // }, [diet, smokingStatus, alcoholConsumption, bloodPressure])
+    
+    const onPress = () => {
+        navigation.navigate("Profile", { data: route.params.data })
+    }
+
+    useEffect(() => {
+        navigation.setOptions({ 
+            headerBackTitle: '', 
+            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={onPress}/> 
+
+        });
+    }, [])
+
 
     const renderDropDown = (text, value, data, setOnChange) => {
         return(

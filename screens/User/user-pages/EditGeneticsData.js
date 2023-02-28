@@ -1,8 +1,9 @@
 import { Button } from '@rneui/base'
 import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TextInput, TouchableHighlight } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import NavigationButton from '../../../components/NavigationButton';
 
 const countBMI = (height, weight) => weight/(height*height)
 
@@ -22,7 +23,7 @@ const bloodData = [
     { label: 'O-', value: 'O-' },
 ]
 
-export default function GeneticsData({ route }) {
+export default function EditGeneticsData ({ route, navigation }){
     const data = route.params.data
 
     const [sex, setSex] = useState(data.sex)
@@ -31,6 +32,19 @@ export default function GeneticsData({ route }) {
     const [height, setHeight] = useState(data.height.toString())
     const [weight, setWeight] = useState(data.weight.toString())
     const [bmi, setBMI] = useState(data.bmi.toString())
+
+    const onPress = () => {
+        navigation.navigate("Profile", { data: route.params.data })
+    }
+
+    useEffect(() => {
+        navigation.setOptions({ 
+            headerBackTitle: '', 
+            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={onPress}/> 
+
+        });
+    }, [])
+
 
     const renderDropDown = (text, value, data, setOnChange) => {
         return(
@@ -95,6 +109,57 @@ export default function GeneticsData({ route }) {
                 
             </ScrollView>
         </SafeAreaProvider>
+      );
+}
+
+
+const styles = StyleSheet.create({
+    screenContainer: {
+        // alignItems: 'center',
+        // marginTop: -65,
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+
+    optionView: {
+        // position: 'relative',
+        flexDirection: 'row',
+        marginTop: 25,
+        marginHorizontal: 30,
+        // paddingHorizontal: 20,
+        alignItems: 'center'
+    },
+
+    optionText: {
+        fontSize: 16,
+        // paddingTop:5,
+        fontFamily: 'Poppins-SemiBold',
+        width: 140
+    },
+
+    dropdown: {
+        borderBottomColor: '#D3D3D3',
+        borderBottomWidth: 1,
+        paddingRight: 5,
+        flex:1
+    },
+
+    valueText: {
+        fontFamily: 'Poppins-Regular',
+        fontSize: 16,
+        width: 190,
+        flexWrap: 'wrap',
+        borderBottomColor: '#D3D3D3',
+        borderBottomWidth: 1
+    },
+
+    itemStyle: {
+        fontFamily: 'Poppins-Regular',
+        fontSize: 16,
+    },
+
+})
+
 
 
 
@@ -182,52 +247,3 @@ export default function GeneticsData({ route }) {
         //     </View>
         // </ScrollView>
     
-      );
-}
-
-const styles = StyleSheet.create({
-    screenContainer: {
-        // alignItems: 'center',
-        // marginTop: -65,
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-
-    optionView: {
-        // position: 'relative',
-        flexDirection: 'row',
-        marginTop: 25,
-        marginHorizontal: 30,
-        // paddingHorizontal: 20,
-        alignItems: 'center'
-    },
-
-    optionText: {
-        fontSize: 16,
-        // paddingTop:5,
-        fontFamily: 'Poppins-SemiBold',
-        width: 140
-    },
-
-    dropdown: {
-        borderBottomColor: '#D3D3D3',
-        borderBottomWidth: 1,
-        paddingRight: 5,
-        flex:1
-    },
-
-    valueText: {
-        fontFamily: 'Poppins-Regular',
-        fontSize: 16,
-        width: 190,
-        flexWrap: 'wrap',
-        borderBottomColor: '#D3D3D3',
-        borderBottomWidth: 1
-    },
-
-    itemStyle: {
-        fontFamily: 'Poppins-Regular',
-        fontSize: 16,
-    },
-
-})

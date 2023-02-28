@@ -2,14 +2,15 @@ import React from 'react';
 import { View, ScrollView, StyleSheet, Image } from 'react-native';
 import { Text, Card, Button, Icon } from '@rneui/themed';
 
-const DoneButton = ({navigation, name, route}) => {
+const NavigationButton = ({ buttonName, onPressHandler }) => {
     return (
         <Button
-            onPress={() => navigation.navigate(name, { data: route.params.data })}
+            // onPress={() => navigation.navigate(name, { data: route.params.data })}
+            onPress={onPressHandler}
             color="#fff"
             style={styles.button}
             >
-            <Text style={styles.text}>Done</Text>
+            <Text style={styles.text}>{buttonName}</Text>
         </Button>
     );
 };
@@ -33,4 +34,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default DoneButton;
+export default NavigationButton;
