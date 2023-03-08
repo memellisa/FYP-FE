@@ -28,7 +28,8 @@ const dummydata = {
 const Stack = createNativeStackNavigator();
  
 export default function RootNavigator() {
-    const loggedIn = false // implementation to be changed later
+    const loggedIn = false // implementation to be changed later 
+    //MAYBE ADD onAuthStateChange here and passed down loggedIn variable to all the screen ??
 
     const [fontsLoaded] = useFonts({
       'Lato': require('./assets/fonts/Lato/Lato-Black.ttf'),
