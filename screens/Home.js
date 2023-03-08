@@ -31,7 +31,7 @@ const emptyWeeklySteps = [
 
 const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
-const Home = ({headerTitle, headerSubtitle, navigation}) => {
+const Home = ({userData, headerSubtitle, navigation}) => {
   // only for trial
     // const result = useGetHello()
     const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
@@ -87,23 +87,23 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
       return summary
     }
 
-    const getTokens = async () => {
+    const getFitbitTokens = async () => {
       try {
-        const fetchedTokens = await AsyncStorage.getItem('fitbitTokens')
-        // console.log("TOKENS", tokens)
-        if (fetchedTokens && fetchedTokens !== "{}"){
-          if (tokens !== fetchedTokens) {
-              setTokens(fetchedTokens)
+        const fetchedFitbitTokens = await AsyncStorage.getItem('fitbitTokens')
+        // console.log("TOKENS", fitbitTokens)
+        if (fetchedFitbitTokens && fetchedFitbitTokens !== "{}"){
+          if (fitbitTokens !== fetchedFitbitTokens) {
+            setFitbitTokens(fetchedFitbitTokens)
           }
         }
-        return tokens === null ? null : JSON.parse(tokens) ;
+        // return fitbitTokens === null ? null : JSON.parse(fitbitTokens) ;
       } catch(e) {
         // error reading value
       }
     }
 
     useFocusEffect( () => {
-      getTokens()
+      getFitbitTokens()
     })
  
     useFocusEffect( 
@@ -123,8 +123,8 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
         }}
 
         const fetchActivities = async() => {
-          if (tokens && tokens !== "{}"){
-            const result = await getActivities(JSON.parse(tokens))
+          if (fitbitTokens && fitbitTokens !== "{}"){
+            const result = await getActivities(JSON.parse(fitbitTokens))
             // console.log("ACTIVITY:::",JSON.stringify(result))
             if (!result.error){
               let jsonResponse = JSON.parse(result.data)
@@ -138,8 +138,8 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
         }}
 
         const fetchWeeklySteps = async() => {
-          if (tokens && tokens !== "{}"){
-            const result = await getWeeklySteps(JSON.parse(tokens) )
+          if (fitbitTokens && fitbitTokens !== "{}"){
+            const result = await getWeeklySteps(JSON.parse(fitbitTokens) )
             // console.log("STEPS:::",JSON.stringify(result.data))
             if (!result.error){
               if (result.data != userData) {
@@ -177,7 +177,7 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
     )
     
     const leftComponent = <View style={{width:180}}>
-    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.firstName}</Text>
+    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.info.name[0]}</Text>
     <Text style={styles.subheading}>{headerSubtitle}</Text>
     </View>
     return (

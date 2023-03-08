@@ -23,7 +23,7 @@ const DetailsCard = ({title, data, navigation, route, key}) => {
         <Card containerStyle={styles.container} >
             <View style={styles.cardHeader}>
                 <Text style={styles.title}>{title}</Text>
-                <EditButton name={title} navigation={navigation} route={route} data={data} />
+                <EditButton name={`Edit ${title}`} navigation={navigation} route={route} data={data} />
             </View>
             
             {arrayData.map((obj, i) => 

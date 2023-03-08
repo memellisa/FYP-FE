@@ -63,10 +63,7 @@ const healthdata = {
     diet: "Keto",
     smoking_status: "Heavy",
     alcohol_consumption: 0.5,
-    blood_pressure: "Normal"
-}
-
-const geneticsdata = {
+    blood_pressure: "Normal",
     age: 22,
     sex: "Male",
     height: 1.80,
@@ -74,8 +71,19 @@ const geneticsdata = {
     blood_type: "O+"
 }
 
-export default function Profile({ navigation, route }) {
+// const geneticsdata = {
+//     age: 22,
+//     sex: "Male",
+//     height: 1.80,
+//     weight: 75,
+//     blood_type: "O+"
+// }
 
+export default function Profile({ navigation, route }) {
+    const data = route.params.data
+    console.log("DATA PROFILE::", data)
+
+    const [image, setImage] = useState(null);
     // const personaldata2 = jsonToArray(personaldata1)
     // const healthdata2 = jsonToArray(healthdata1)
     // const geneticsdata2 = jsonToArray(geneticsdata1)
@@ -183,11 +191,11 @@ export default function Profile({ navigation, route }) {
                     </Button>
                 </View>
 
-                <DetailsCard title={"Edit Personal Details"} data={personaldata} route={route} navigation={navigation}/>
+                <DetailsCard title={"Personal Details"} data={personaldata} route={route} navigation={navigation}/>
                 
-                <DetailsCard title={"Edit Health Details"} data={healthdata} route={route} navigation={navigation}/>
+                <DetailsCard title={"Health Details"} data={healthdata} route={route} navigation={navigation}/>
 
-                <DetailsCard title={"Edit Genetics Data"} data={geneticsdata} route={route} navigation={navigation}/>
+                {/* <DetailsCard title={"Genetics Data"} data={geneticsdata} route={route} navigation={navigation}/> */}
 
                 <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Manage Wearable")}>
                         <Text style={styles.buttonText}>Manage Wearable</Text>
@@ -292,7 +300,7 @@ const styles = StyleSheet.create({
         width: '100%',
         textAlign: 'center',
         fontSize: 25,
-        marginTop: 10,
+        // marginTop: 10,
         fontFamily: 'Poppins-SemiBold'
     },  
 
