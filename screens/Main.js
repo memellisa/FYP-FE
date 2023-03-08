@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tab as TabComponent, TabView } from '@rneui/themed';
 import Home from './Home';
 import Genetics from './Genetics';
@@ -8,18 +8,56 @@ import {  Alert, StyleSheet } from 'react-native';
 import { Icon } from '@rneui/base';
 import { getProfile } from '../utils/api/fitbit.api';
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 const Main = ({ navigation }) => {
-    const [index, setIndex] = React.useState(0);
+    const [index, setIndex] = useState(0);
+    const [userData, setUserData] = useState(null)
 
     const iconSize = 35;
+
+    const getUserData = async () => {
+        try {
+          const fetchedUserData = await AsyncStorage.getItem('userData')
+          if (fetchedUserData && fetchedUserData !== "{}"){
+            if (fetchedUserData !== userData){
+              setUserData(JSON.parse(fetchedUserData))
+            }
+          } else {
+            const fetchUser = async() => {
+              const result = await getUser()
+              
+              if (!result.error){
+                try {
+                  await AsyncStorage.setItem('userData', JSON.stringify(result.data))
+                } catch (e) {
+                  getUserData()
+                  // Alert.alert('Something went wrong. Please try again')
+                }
+              } else {
+                  Alert.alert('Something went wrong. Please try again')
+              }
+            }
+            fetchUser()
+          }
+          return userData === null ? null : JSON.parse(userData) ;
+        } catch(e) {
+          // error reading value
+        }
+      }
+  
+      useEffect(() => {
+        getUserData()
+      }, [])
+  
     
     return (
         <>
             <TabView value={index} onChange={setIndex} disableSwipe={true} disableTransition={true}>
                 <TabView.Item style={{width: '100%'}}>
-                    <Home headerTitle={"Hi, John"} headerSubtitle={"Your daily statistics"} navigation={navigation}/>
+                    <Home userData={userData} headerSubtitle={"Your daily statistics"} navigation={navigation}/>
                 </TabView.Item>
                 <TabView.Item style={{width: '100%'}}>
                     <Genetics headerTitle={"Genetic Report"} headerSubtitle={"From 23andMe"} navigation={navigation}/>
