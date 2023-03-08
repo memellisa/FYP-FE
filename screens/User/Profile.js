@@ -88,6 +88,7 @@ export default function Profile({ navigation, route }) {
 
     const auth = getAuth();
 
+    // STILL NEED TO BE FIXED, HOW TO USE AXIOS GET???
     useEffect(() => {
         const auth = getAuth();
         let payload = JSON.stringify({ 'img': auth.currentUser.uid })
