@@ -7,6 +7,8 @@ import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TouchableHi
 import BotNavbar from '../../components/BotNavbar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import DetailsCard from '../../components/DetailsCard';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { signOut } from 'firebase/auth';
 
 
 
@@ -75,6 +77,16 @@ export default function Profile({ navigation, route }) {
     const bmi = countBMI(geneticsdata.height, geneticsdata.weight)
     geneticsdata.bmi= bmi.toFixed(2)
 
+    const auth = getAuth();
+
+    const logout = () => {
+        signOut(auth)
+        .then(() => {
+            navigation.replace("Login");
+            console.log('User signed out!')
+        });
+    }
+
     return (
         <SafeAreaProvider>
             <ScrollView style={styles.screenContainer} /* hasSafeArea={false} */ >
@@ -101,7 +113,7 @@ export default function Profile({ navigation, route }) {
                         <Text style={styles.buttonText}>Manage Wearable</Text>
                 </Button>
 
-                <Button radius={8} color="#fff" style={{...styles.button, marginBottom: 30}}>
+                <Button radius={8} color="#fff" style={{...styles.button, marginBottom: 30}} onPress={logout} >
                         <Text style={{...styles.buttonText, color: 'red'}}>Sign Out</Text>
                 </Button>
                 {/* <View style={styles.optionContainer}> */}
