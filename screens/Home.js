@@ -113,8 +113,9 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
             const result = await getProfile(JSON.parse(tokens) )
             // console.log("PROFILE:::",JSON.stringify(result))
             if (!result.error){
-              if (result.data != userData) {
-                setUserData(result.data.user)
+              let jsonResponse = JSON.parse(result.data)
+              if (jsonResponse != userData) {
+                setUserData(jsonResponse.user)
               }
             } else {
                 Alert.alert('Something went wrong. Please try again')
@@ -126,9 +127,10 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
             const result = await getActivities(JSON.parse(tokens))
             // console.log("ACTIVITY:::",JSON.stringify(result))
             if (!result.error){
-              if (result.data != userActivity) {
-                setUserActivity(result.data)
-                setSummaryActivity(processSummaryActivity(result.data.summary))
+              let jsonResponse = JSON.parse(result.data)
+              if (jsonResponse != userActivity) {
+                setUserActivity(jsonResponse)
+                setSummaryActivity(processSummaryActivity(jsonResponse.summary))
               }
             } else {
                 Alert.alert('Something went wrong. Please try again')

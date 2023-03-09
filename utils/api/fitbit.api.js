@@ -6,7 +6,7 @@ import Constants from 'expo-constants';
 
 const { manifest } = Constants;
 
-const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':5000'
+const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
 
 
@@ -18,7 +18,7 @@ const postAccessToken = async (payload) => {
             }
         });
         // ApiManagerFitbit('/fitbit/auth/token', { method: 'GET' }, payload);
-        console.log('RESP',response)
+        console.log('RESP ACC TOKEN', response.data)
         return { data: response.data, error: null }
     } catch (error) {
         // console.log(payload)
@@ -45,10 +45,10 @@ const getProfile = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP',response)
+        console.log('RESP PROFILE', response)
         return { data: response.data, error: null }
     } catch (error) {
-        console.log('RESP',error.response)
+        console.log('RESP PROFILE ERROR',error.response)
         return { data: null, error }
     } 
 };
@@ -60,10 +60,10 @@ const getActivities = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP',response)
-        return { data: response.data, error: null }
+        console.log('RESP ACTIVITIES', response.data)
+        return { data: response, error: null }
     } catch (error) {
-        console.log('RESP',error.response)
+        console.log('RESP ACTIVITIES ERROR',error.response)
         return { data: null, error }
     } 
 };
@@ -75,10 +75,11 @@ const getWeeklySteps = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP',response.data)
-        return { data: response.data.data, error: null }
+        console.log('RESP WEEKKLY',response.data)
+        let jsonResponse = JSON.parse(response.data)
+        return { data: jsonResponse.data, error: null }
     } catch (error) {
-        console.log('RESP',error.response)
+        console.log('RESP WEEEKLY ERROR',error.response)
         return { data: null, error }
     } 
 };
