@@ -12,6 +12,11 @@ import { useGetHello } from '../utils/api/hello.api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getActivities, getProfile, getWeeklySteps } from '../utils/api/fitbit.api';
 import { useFocusEffect } from '@react-navigation/native';
+import Constants from 'expo-constants';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import axios from 'axios';
+
+const { manifest } = Constants;
 
 // to be replaced by real data
 const emptyWeeklySteps = [
@@ -24,11 +29,12 @@ const emptyWeeklySteps = [
   { day: "SAT", steps: 0 },
 ];
 
-
+const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
 const Home = ({headerTitle, headerSubtitle, navigation}) => {
   // only for trial
     // const result = useGetHello()
+    const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
     const [userData, setUserData] = useState(null);
     const [tokens, setTokens] = useState(null)
     const [userActivity, setUserActivity] = useState(null);
@@ -36,6 +42,7 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
     const [weeklySteps, setWeeklySteps] = useState(null)
 
     const iconSize = 35;
+    const auth = getAuth();
 
 
     const processSummaryActivity = (data) => {
@@ -98,7 +105,6 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
     useFocusEffect( () => {
       getTokens()
     })
-
  
     useFocusEffect( 
       useCallback(() => {
@@ -142,9 +148,29 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
             }
         }}
 
+        const fetchProfilePicture  = async() => {
+          let payload = JSON.stringify({ 'user': auth.currentUser.uid })
+          let user = auth.currentUser.uid
+          try {
+              console.log(payload)
+              const response = await axios.get(`${flaskURL}/image/${user}`, {
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+              });
+
+              console.log("Image URI: " + response.data)
+              setProfile(response.data)
+          } catch (error) {
+              console.log('ERROR',error)
+              setProfile('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
+          } 
+        }
+
         fetchProfile()
         fetchActivities()
         fetchWeeklySteps()
+        fetchProfilePicture()
       }, [tokens])
     )
     
@@ -160,7 +186,7 @@ const Home = ({headerTitle, headerSubtitle, navigation}) => {
               size={64}
               rounded
               // style={styles.avatar}
-              source={{uri:userData ? userData.avatar640 : "https://randomuser.me/api/portraits/men/36.jpg"}}
+              source={{uri: profile}}
               onPress={() => navigation.push("Profile")}
               containerStyle={{ backgroundColor: '#6733b9' }}
             />

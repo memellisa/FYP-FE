@@ -90,22 +90,28 @@ export default function Profile({ navigation, route }) {
 
     // STILL NEED TO BE FIXED, HOW TO USE AXIOS GET???
     useEffect(() => {
+        getProfilePicture()
+    }, [])
+
+    async function getProfilePicture() {
         const auth = getAuth();
         let payload = JSON.stringify({ 'img': auth.currentUser.uid })
+        let user = auth.currentUser.uid
         try {
-            const response = axios.get(`${flaskURL}/image`, payload, {
+            console.log(payload)
+            const response = await axios.get(`${flaskURL}/image/${user}`, {
                 headers: {
-                'Content-Type': 'application/json'
+                    'Content-Type': 'application/json'
                 }
             });
 
-            console.log("Image URI: " + json.stringify(response))
+            console.log("Image URI: " + response.data)
             setProfile(response.data)
         } catch (error) {
             console.log('ERROR',error.response)
             setProfile('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
         } 
-    }, [])
+    }
 
     const logout = () => {
         signOut(auth)
