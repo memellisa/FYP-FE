@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { registerRootComponent } from 'expo';
 
 import Main from './screens/Main';
 import Profile from './screens/User/Profile';
@@ -18,6 +19,7 @@ import { View } from 'react-native';
 import PersonalDetailsForm from './screens/self-input-forms/PersonalDetailsForm';
 import HealthDetailsForm from './screens/self-input-forms/HealthDetailsForm';
 import GeneticsDataForm from './screens/self-input-forms/GeneticsDataForm';
+import SelfInputForm from './screens/SelfInputForm';
 
 const dummydata = {
   first_name : "John",
@@ -27,7 +29,7 @@ const dummydata = {
 }
 const Stack = createNativeStackNavigator();
  
-export default function RootNavigator() {
+export default RootNavigator = () => {
     const loggedIn = false // implementation to be changed later 
     //MAYBE ADD onAuthStateChange here and passed down loggedIn variable to all the screen ??
 
@@ -65,10 +67,11 @@ export default function RootNavigator() {
             <Stack.Screen name="Confirm Auth" component={ConfirmAuth} options={{headerBackTitle: '', title: '' }} />
             <Stack.Screen name="Success Splash" component={SuccessSplash} options={{ headerShown: false }} />
 
-            <Stack.Screen name="Personal Form" component={PersonalDetailsForm} options={{ headerTitle: 'Personal Data' }} />
+            {/* <Stack.Screen name="Personal Form" component={PersonalDetailsForm} options={{ headerTitle: 'Personal Data' }} />
             <Stack.Screen name="Health Form" component={HealthDetailsForm} options={{ headerTitle: 'Health Data' }} />
-            <Stack.Screen name="Genetics Form" component={GeneticsDataForm} options={{ headerShown: 'Genetics Data' }} />
-            
+            <Stack.Screen name="Genetics Form" component={GeneticsDataForm} options={{ headerTitle: 'Genetics Data' }} /> */}
+            <Stack.Screen name="Self Input Form" component={SelfInputForm} options={{ headerTitle: '' }} />
+
           </Stack.Navigator>
           {/* <BotNavbar /> */}
         </NavigationContainer>

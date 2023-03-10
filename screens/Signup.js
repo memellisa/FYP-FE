@@ -14,7 +14,8 @@ export default function Signup({navigation}) {
             validateOnMount={true}
             validationSchema={signupValidationSchema}
             initialValues={{ email: '', password: '', confirmPassword: '' }}
-            onSubmit={values => navigation.navigate("Personal Form", {data: values})}
+            // onSubmit={values => navigation.navigate("Personal Form", {data: values})}
+            onSubmit={values => navigation.navigate("Self Input Form", {data: values})}
           >
             {({ handleChange,
               handleBlur,
