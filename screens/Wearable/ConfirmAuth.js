@@ -21,10 +21,12 @@ export default function ConfirmAuth({ route, navigation }) {
             (async () => {
                 const result = await postAccessToken(JSON.stringify({ 'authCode': authCode }))
                 console.log('Fitbit Connected')
-                console.log(result)
+                // console.log(result.data.access_token)
+                let jsonResult = JSON.parse(result.data)
+                console.log(jsonResult.access_token)
                 if (!result.error){
                     try {
-                        const fitbitTokens = JSON.stringify({"accessToken": result.data.access_token, "refreshToken":result.data.refresh_token})
+                        const fitbitTokens = JSON.stringify({"accessToken": jsonResult.access_token, "refreshToken": jsonResult.refresh_token})
                         await AsyncStorage.setItem('fitbitTokens', fitbitTokens)
                     } catch (e) {
                         Alert.alert('Something went wrong. Please try again')
