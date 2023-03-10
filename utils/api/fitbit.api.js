@@ -61,7 +61,7 @@ const getActivities = async (payload) => {
             }
         });
         console.log('RESP ACTIVITIES', response.data)
-        return { data: response, error: null }
+        return { data: response.data, error: null }
     } catch (error) {
         console.log('RESP ACTIVITIES ERROR',error.response)
         return { data: null, error }
@@ -75,9 +75,8 @@ const getWeeklySteps = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        console.log('RESP WEEKKLY',response.data)
-        let jsonResponse = JSON.parse(response.data)
-        return { data: jsonResponse.data, error: null }
+        console.log('RESP WEEKKLY', response.data)
+        return { data: response.data.data, error: null }
     } catch (error) {
         console.log('RESP WEEEKLY ERROR',error.response)
         return { data: null, error }
