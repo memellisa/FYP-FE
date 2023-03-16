@@ -4,19 +4,19 @@ import { Text, Card, Button, Icon } from '@rneui/themed';
 import EditButton from './EditButton';
 import labels from '../utils/labels';
 
-const DetailsCard = ({title, data, navigation, route, key}) => {
+const DetailsCard = ({title, data, navigation, route, dataToShow}) => {
 
-    const jsonToArray = (data) => {
+    const jsonToArray = (dataToShow) => {
         const arr = []; 
-        for(let i in data) {
-            arr.push([labels[i], data[i]]); 
+        for(let i in dataToShow) {
+            arr.push([labels[i], dataToShow[i] ? dataToShow[i] : '-']); 
         }
         
         return arr
     }
     
      
-    const arrayData = jsonToArray(data)
+    const arrayData = jsonToArray(dataToShow)
 
     return (
     <>

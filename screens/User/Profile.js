@@ -14,6 +14,7 @@ import axios from 'axios';
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from 'expo-file-system';
 import Constants from 'expo-constants';
+import { getUserInfo } from '../../utils/api/user.api';
 
 const { manifest } = Constants;
 
@@ -49,15 +50,15 @@ const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
     
 // ]
 
-const personaldata = {
-    first_name: "John",
-    last_name: "Doe",
-    dob: "1/1/2000",
-    username: "johndoe",
-    socio_economic_status: "Rich",
-    phone_number: 98237191,
-    email: "johndoe@mail.com"
-}
+// const personaldata = {
+//     first_name: "John",
+//     last_name: "Doe",
+//     dob: "1/1/2000",
+//     username: "johndoe",
+//     socio_economic_status: "Rich",
+//     phone_number: 98237191,
+//     email: "johndoe@mail.com"
+// }
 
 const healthdata = {
     diet: "Keto",
@@ -80,31 +81,40 @@ const healthdata = {
 // }
 
 export default function Profile({ navigation, route }) {
-    const data = route.params.data
-    console.log("DATA PROFILE::", data)
+    // const data = route.params.data
+    // console.log("DATA PROFILE::", data)
 
     const [image, setImage] = useState(null);
+    const [personalData, setPersonalData] = useState(null)
     // const personaldata2 = jsonToArray(personaldata1)
     // const healthdata2 = jsonToArray(healthdata1)
     // const geneticsdata2 = jsonToArray(geneticsdata1)
+    
 
     const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
     const [uploading, setUploading] = useState(false)
 
-    const bmi = countBMI(geneticsdata.height, geneticsdata.weight)
-    geneticsdata.bmi= bmi.toFixed(2)
+    const bmi = countBMI(healthdata.height, healthdata.weight)
+    healthdata.bmi= bmi.toFixed(2)
 
     const auth = getAuth();
 
     // STILL NEED TO BE FIXED, HOW TO USE AXIOS GET???
     useEffect(() => {
         getProfilePicture()
+        getUserPersonalData()
     }, [])
+
+    const getUserPersonalData = async () => {
+        const resultInfo = await getUserInfo()
+        console.log("RESULT INFO BEFORE EDIT", JSON.stringify(resultInfo))
+        setPersonalData(resultInfo)
+    }
 
     async function getProfilePicture() {
         const auth = getAuth();
-        let payload = JSON.stringify({ 'img': auth.currentUser.uid })
-        let user = auth.currentUser.uid
+        let payload = JSON.stringify({ 'img': auth.currentUser?.uid })
+        let user = auth.currentUser?.uid
         try {
             console.log(payload)
             const response = await axios.get(`${flaskURL}/image/${user}`, {
@@ -159,7 +169,7 @@ export default function Profile({ navigation, route }) {
     async function uploadImageAsync(uri) {
         const data = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
 
-        let payload = JSON.stringify({ 'img': data, 'uid': auth.currentUser.uid })
+        let payload = JSON.stringify({ 'img': data, 'uid': auth.currentUser?.uid })
 
         try {
             const response = await axios.post(`${flaskURL}/image`, payload, {
@@ -183,19 +193,26 @@ export default function Profile({ navigation, route }) {
                         size={100}
                         rounded
                         source={{uri: profile}}/>
-                    <Text style={styles.avatarName}>
-                        John Doe
-                    </Text>
                     <Button radius={8} color="#f2f2f6" onPress={pickImage}>
                         <Text style={{color:'#0095FE'}}>Edit image</Text>
                     </Button>
                 </View>
 
-                <DetailsCard title={"Personal Details"} data={personaldata} route={route} navigation={navigation}/>
+                <DetailsCard 
+                    title={"Personal Details"} 
+                    data={personalData} 
+                    route={route} 
+                    navigation={navigation} 
+                    dataToShow={{
+                        "firstName": personalData?.firstName,
+                        "lastName": personalData?.lastName,
+                        "dob": personalData?.dateOfBirth}}/>
                 
-                <DetailsCard title={"Health Details"} data={healthdata} route={route} navigation={navigation}/>
-
-                {/* <DetailsCard title={"Genetics Data"} data={geneticsdata} route={route} navigation={navigation}/> */}
+                <DetailsCard 
+                    title={"Health Details"} 
+                    data={healthdata} 
+                    route={route} 
+                    navigation={navigation}/>
 
                 <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Manage Wearable")}>
                         <Text style={styles.buttonText}>Manage Wearable</Text>
@@ -204,48 +221,6 @@ export default function Profile({ navigation, route }) {
                 <Button radius={8} color="#fff" style={{...styles.button, marginBottom: 30}} onPress={logout} >
                         <Text style={{...styles.buttonText, color: 'red'}}>Sign Out</Text>
                 </Button>
-                {/* <View style={styles.optionContainer}> */}
-
-                    {/* <TouchableHighlight style={styles.touchable} onPress={() => navigation.push("Personal Details",{ data: personaldata })} underlayColor={'#ffff'} >
-                        <View style={styles.view}>
-                            <Text style={styles.optionText}>Personal Details</Text>
-                            <Icon name='navigate-next' size={25}/>
-                        </View>
-                    </TouchableHighlight>
-
-                    <TouchableHighlight style={styles.touchable} onPress={() => navigation.push("Health Details",{ data: healthdata })} underlayColor={'#ffff'}>
-                        <View style={styles.view}>
-                            <Text style={styles.optionText}>Health Details</Text>
-                            <Icon name='navigate-next' size={25}/>
-                        </View>
-                    </TouchableHighlight> */}
-
-                    {/* <TouchableHighlight style={styles.touchable} onPress={() => navigation.push("Genetics Data")} underlayColor={'#ffff'}>
-                        <View style={styles.view}>
-                            <Text style={styles.optionText}>Genetics Data</Text>
-                            <Icon name='navigate-next' size={25}/>
-                        </View>
-                    </TouchableHighlight> */}
-
-
-                    {/* <TouchableHighlight style={styles.touchable}>
-                        <View style={styles.view}>
-                            <Text style={styles.optionText}>Manage Fitbit</Text>
-                            <Icon name='navigate-next' size={25}/>
-                        </View>
-                    </TouchableHighlight>
-
-
-                    <TouchableHighlight style={styles.touchable}>
-                        <View style={styles.view}>
-                            <Text style={styles.optionText}>Medical ID</Text>
-                            <Icon name='navigate-next' size={25}/>
-                        </View>
-                    </TouchableHighlight> */}
-                    
-                    
-
-                {/* </View> */}
         </ScrollView>
 
         </SafeAreaProvider>

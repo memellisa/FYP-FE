@@ -15,6 +15,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import Constants from 'expo-constants';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import axios from 'axios';
+import { getUserInfo, getUser } from '../utils/api/user.api';
 
 const { manifest } = Constants;
 
@@ -31,12 +32,16 @@ const emptyWeeklySteps = [
 
 const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
-const Home = ({userData, headerSubtitle, navigation}) => {
+const Home = ({ headerSubtitle, navigation}) => {
   // only for trial
     // const result = useGetHello()
+
+    // const results = getUserInfo()
+    // console.log("INFO",results)
+
     const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
     const [userData, setUserData] = useState(null);
-    const [tokens, setTokens] = useState(null)
+    const [fitbitTokens, setFitbitTokens] = useState(null)
     const [userActivity, setUserActivity] = useState(null);
     const [summaryActivity, setSummaryActivity] = useState(null);
     const [weeklySteps, setWeeklySteps] = useState(null)
@@ -102,25 +107,64 @@ const Home = ({userData, headerSubtitle, navigation}) => {
       }
     }
 
+    const getUserData = async () => {
+      try {
+        const fetchedUserData = await AsyncStorage.getItem('userData')
+        console.log('FETCHEDUSERR', (fetchedUserData))
+        if (fetchedUserData && fetchedUserData !== "{}"){
+          if (fetchedUserData !== userData){
+            setUserData(JSON.parse(fetchedUserData))
+          }
+        } else {
+          const fetchUser = async() => {
+            const result = await getUser()
+            
+            if (!result.error){
+              try {
+                await AsyncStorage.setItem('userData', JSON.stringify(result.data))
+                console.log('USERR', JSON.stringify(result.data))
+              } catch (e) {
+                getUserData()
+                // Alert.alert('Something went wrong. Please try again')
+              }
+            } else {
+                Alert.alert('Something went wrong. Please try again')
+            }
+          }
+          fetchUser()
+        }
+        // return userData === null ? null : JSON.parse(userData) ;
+      } catch(e) {
+        console.log("HERE BRO")
+        // error reading value
+      }
+    }
+
+    
+
+    useEffect(async() => {
+      getUserData()
+    }, [])
+
     useFocusEffect( () => {
       getFitbitTokens()
     })
  
     useFocusEffect( 
       useCallback(() => {
-        const fetchProfile = async() => {
-          if (tokens && tokens !== "{}"){
-            const result = await getProfile(JSON.parse(tokens) )
-            // console.log("PROFILE:::",JSON.stringify(result))
-            if (!result.error){
-              let jsonResponse = JSON.parse(result.data)
-              if (jsonResponse != userData) {
-                setUserData(jsonResponse.user)
-              }
-            } else {
-                Alert.alert('Something went wrong. Please try again')
-            }
-        }}
+        // const fetchProfile = async() => {
+        //   if (tokens && tokens !== "{}"){
+        //     const result = await getProfile(JSON.parse(tokens) )
+        //     // console.log("PROFILE:::",JSON.stringify(result))
+        //     if (!result.error){
+        //       let jsonResponse = JSON.parse(result.data)
+        //       if (jsonResponse != userData) {
+        //         setUserData(jsonResponse.user)
+        //       }
+        //     } else {
+        //         Alert.alert('Something went wrong. Please try again')
+        //     }
+        // }}
 
         const fetchActivities = async() => {
           if (fitbitTokens && fitbitTokens !== "{}"){
@@ -151,8 +195,8 @@ const Home = ({userData, headerSubtitle, navigation}) => {
         }}
 
         const fetchProfilePicture  = async() => {
-          let payload = JSON.stringify({ 'user': auth.currentUser.uid })
-          let user = auth.currentUser.uid
+          let payload = JSON.stringify({ 'user': auth.currentUser?.uid })
+          let user = auth.currentUser?.uid
           try {
               console.log(payload)
               const response = await axios.get(`${flaskURL}/image/${user}`, {
@@ -169,15 +213,15 @@ const Home = ({userData, headerSubtitle, navigation}) => {
           } 
         }
 
-        fetchProfile()
+        // fetchProfile()
         fetchActivities()
         fetchWeeklySteps()
         fetchProfilePicture()
-      }, [tokens])
+      }, [fitbitTokens])
     )
     
     const leftComponent = <View style={{width:180}}>
-    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.info.name[0]}</Text>
+    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.info.firstName}</Text>
     <Text style={styles.subheading}>{headerSubtitle}</Text>
     </View>
     return (

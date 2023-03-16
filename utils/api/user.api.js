@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import ApiManagerFitbit from "./ApiManagerFitbit";
 import axios from 'axios';
+import Constants from 'expo-constants';
 
-const flaskURL = 'http://10.70.95.64:8080'
+const { manifest } = Constants;
+
+const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
 // const postAccessToken = async (payload) => {
 //     try {
@@ -31,61 +34,45 @@ const getUser = async () => {
     } 
 };
 
-const editUser = async () => {
+// const editUser = async () => {
+//     try {
+//         const response = await axios.put(`${flaskURL}/user`);
+//         // console.log('RESP USER::',JSON.stringify(response))
+//         return { data: response.data, error: null }
+//     } catch (error) {
+//         return { data: null, error }
+//     } 
+// };
+
+const getUserInfo = async () => {
     try {
-        const response = await axios.put(`${flaskURL}/user`);
-        // console.log('RESP USER::',JSON.stringify(response))
+        const response = await axios.get(`${flaskURL}/user/info`);
+        console.log('RESP USER INFO::',JSON.stringify(response.data))
+        return response.data
+    } catch (error) {
+        return { data: null, error }
+    } 
+};
+
+const putUserInfo = async (data) => {
+    try {
+        const response = await axios.put(`${flaskURL}/user/info`, data);
+        // console.log('EDITTED USER INFO::',JSON.stringify(response))
         return { data: response.data, error: null }
     } catch (error) {
         return { data: null, error }
     } 
 };
 
-// const getProfile = async (payload) => {
-//     try {
-//         const response = await axios.post(`${flaskURL}/fitbit/user`, payload, {
-//             headers: {
-//             'Content-Type': 'application/json'
-//             }
-//         });
-//         // console.log('RESP',response)
-//         return { data: response.data, error: null }
-//     } catch (error) {
-//         console.log('RESP',error.response)
-//         return { data: null, error }
-//     } 
-// };
-
-// const getActivities = async (payload) => {
-//     try {
-//         const response = await axios.post(`${flaskURL}/fitbit/activities`, payload, {
-//             headers: {
-//             'Content-Type': 'application/json'
-//             }
-//         });
-//         // console.log('RESP',response)
-//         return { data: response.data, error: null }
-//     } catch (error) {
-//         console.log('RESP',error.response)
-//         return { data: null, error }
-//     } 
-// };
-
-// const getWeeklySteps = async (payload) => {
-//     try {
-//         const response = await axios.post(`${flaskURL}/fitbit/weeklySteps`, payload, {
-//             headers: {
-//             'Content-Type': 'application/json'
-//             }
-//         });
-//         // console.log('RESP',response.data)
-//         return { data: response.data.data, error: null }
-//     } catch (error) {
-//         console.log('RESP',error.response)
-//         return { data: null, error }
-//     } 
-// };
+const getUserHealth = async () => {
+    try {
+        const response = await axios.get(`${flaskURL}/user/health`);
+        // console.log('RESP USER HEALTH::',JSON.stringify(response))
+        return { data: response.data, error: null }
+    } catch (error) {
+        return { data: null, error }
+    } 
+};
 
 
-
-export { getUser }
+export { getUser, getUserHealth, getUserInfo, putUserInfo }

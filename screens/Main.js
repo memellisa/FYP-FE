@@ -14,50 +14,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Main = ({ navigation }) => {
     const [index, setIndex] = useState(0);
-    const [userData, setUserData] = useState(null)
+
 
     const iconSize = 35;
 
-    const getUserData = async () => {
-        try {
-          const fetchedUserData = await AsyncStorage.getItem('userData')
-          if (fetchedUserData && fetchedUserData !== "{}"){
-            if (fetchedUserData !== userData){
-              setUserData(JSON.parse(fetchedUserData))
-            }
-          } else {
-            const fetchUser = async() => {
-              const result = await getUser()
-              
-              if (!result.error){
-                try {
-                  await AsyncStorage.setItem('userData', JSON.stringify(result.data))
-                } catch (e) {
-                  getUserData()
-                  // Alert.alert('Something went wrong. Please try again')
-                }
-              } else {
-                  Alert.alert('Something went wrong. Please try again')
-              }
-            }
-            fetchUser()
-          }
-          return userData === null ? null : JSON.parse(userData) ;
-        } catch(e) {
-          // error reading value
-        }
-      }
-  
-      useEffect(() => {
-        getUserData()
-      }, [])
+    
   
     
     return (
         <>
             <TabView value={index} onChange={setIndex} disableSwipe={true} disableTransition={true}>
                 <TabView.Item style={{width: '100%'}}>
-                    <Home userData={userData} headerSubtitle={"Your daily statistics"} navigation={navigation}/>
+                    <Home headerSubtitle={"Your daily statistics"} navigation={navigation}/>
                 </TabView.Item>
                 <TabView.Item style={{width: '100%'}}>
                     <Genetics headerTitle={"Genetic Report"} headerSubtitle={"From 23andMe"} navigation={navigation}/>
