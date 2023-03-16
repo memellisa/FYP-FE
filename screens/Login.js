@@ -3,22 +3,26 @@ import React from 'react';
 import { useEffect } from 'react';
 
 import { View, StyleSheet, Alert, ActivityIndicator, Modal } from 'react-native';
-import { Button, Input } from '@rneui/base';
+import { Button, Input, Text } from '@rneui/base';
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from '../config';
 import ApiManager from '../utils/api/ApiManager';
 
-function LoadingAnimation() {
-  return (
-    <Modal transparent={true}>
-      <View style={styles.indicatorWrapper}>
-        <ActivityIndicator size="large"/>
-      </View>
-    </Modal>
-  );
-}
+import { Formik } from 'formik'
+import { loginValidationSchema } from '../utils/validation';
+
+
+// function LoadingAnimation() {
+//   return (
+//     <Modal transparent={true}>
+//       <View style={styles.indicatorWrapper}>
+//         <ActivityIndicator size="large"/>
+//       </View>
+//     </Modal>
+//   );
+// }
 
 export default function Login({navigation}) {
     const [email, setEmail] = React.useState('fyp@hku.hk');
@@ -107,13 +111,13 @@ export default function Login({navigation}) {
     }, []);
     
 
-    const login = () => {
+    const login = (values) => {
         setLoading(true)
-        if (email === '' || password === '') {
+        if (values.email === '' || values.password === '') {
             Alert.alert('Email or password is required')
         }
         else {
-            signInWithEmailAndPassword(auth, email, password)
+            signInWithEmailAndPassword(auth, values.email, values.password)
             .then((userCredential) => {
                 // Signed in and will trigger onAuthStateChanged
                 
@@ -136,25 +140,64 @@ export default function Login({navigation}) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.inputView} >
-                <Input value={email} onChangeText={setEmail} placeholder='Username' style={styles.input} inputContainerStyle={{borderBottomWidth: 0}}/>
-                <Input value={password} onChangeText={setPassword} placeholder='Password' style={styles.input} secureTextEntry={true} inputContainerStyle={{borderBottomWidth: 0}}/>
-            </View>
-        
-            <Button title="Login" buttonStyle={styles.button} 
-                // onPress={() => navigation.replace("Main")}
-                // onPress={() => {onLogin()}}
-                onPress={() => login()}
-            />
-            <Button 
-                title="Don't have an account? Signup today!" 
-                buttonStyle={styles.button} 
-                onPress={() => navigation.navigate('Signup')}
-            />
+          <Formik
+            validateOnMount={true}
+            validationSchema={loginValidationSchema}
+            initialValues={{ email: '', password: '' }}
+            onSubmit={values => login(values)}
+          >
+            {({ handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+              isValid, }) => (
+              <>
+                <View style={styles.inputView} >
 
-            <StatusBar style="auto" />
+                    <Input 
+                      value={values.email} 
+                      onChangeText={handleChange('email')}  
+                      onBlur={handleBlur('email')} 
+                      keyboardType="email-address" 
+                      placeholder='Email' 
+                      style={styles.input} 
+                      inputContainerStyle={{borderBottomWidth: 0}}
+                      errorMessage={(errors.email && touched.email) ? errors.email : ''}
+                    />
+                    <Input 
+                      onChangeText={handleChange('password')}
+                      onBlur={handleBlur('password')}
+                      value={values.password} 
+                      placeholder='Password' 
+                      style={styles.input} 
+                      secureTextEntry={true} 
+                      inputContainerStyle={{borderBottomWidth: 0}}
+                      errorMessage={(errors.password && touched.password) ? errors.password : ''}
+                    />
+                    
+                </View>
             
-            { loading && <LoadingAnimation/> }
+                <Button title="Login" buttonStyle={styles.button} 
+                    // onPress={() => navigation.replace("Main")}
+                    // onPress={() => {onLogin()}}
+                    // onPress={() => login()}
+                    onPress={handleSubmit}
+                    disabled={!isValid || values.email === ''}
+                />
+                <Button 
+                    title="Don't have an account? Signup today!" 
+                    buttonStyle={styles.button} 
+                    onPress={() => navigation.navigate('Signup')}
+                />
+
+                
+              </>
+            )}
+          </Formik>
+          <StatusBar style="auto" />
+          {/* { loading && <LoadingAnimation/> } */}
         </View>
     )
 }
@@ -170,14 +213,16 @@ const styles = StyleSheet.create({
 
   inputView: {
     width: 320,
-    justifyContent: 'center',
+    // padding: 0,
+    // margin: 0
+    // justifyContent: 'center',
   },
 
   input: {
     borderWidth: 0.2,
     borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     paddingLeft: 20,
+    marginTop: 5
   },
 
   button: {
@@ -194,6 +239,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
-  }
+  },
+
+  errorText: {
+    fontSize: 12,
+    color: 'red',
+  },
 });
 
