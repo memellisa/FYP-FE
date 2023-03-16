@@ -1,11 +1,10 @@
-import { Button, Divider } from '@rneui/base'
-import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TextInput, TouchableHighlight, KeyboardAvoidingView, Dimensions } from 'react-native';
+import { Modal, StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import NavigationButton from '../components/NavigationButton';
-import DateTimePicker from '@react-native-community/datetimepicker';
-
+import DatePicker from 'react-native-modern-datepicker'
+import { getFormatedDate } from 'react-native-modern-datepicker'
 
 
 const countBMI = (height, weight) => weight/(height*height)
@@ -56,29 +55,32 @@ export default function SelfInputForm({ route, navigation }) {
     // const otherData = route.params.data
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
-    const [dateOfBirth, setDateOfBirth] = useState(new Date())
-    const [email, setEmail] = useState('') // probably get data from sign up somehow, and set to cannot be changed
-    const [phoneNumber, setPhoneNumber] = useState('')
     const [diet, setDiet] = useState('')
     const [smokingStatus, setSmokingStatus] = useState('')
     const [alcoholConsumption, setAlcoholConsumption] = useState('')
     const [bloodPressure, setBloodPressure] = useState('')
     const [sex, setSex] = useState('')
     const [bloodType, setBloodType] = useState('')
-    const [age, setAge] = useState('')
+    const [age, setAge] = useState(null)
     const [height, setHeight] = useState('')
     const [weight, setWeight] = useState('')
     const [bmi, setBMI] = useState('')
     const [formData, setFormData] = useState('')
-    
-    const sourceDate = sourceMoment.local().toDate();
-  const [date, setDate] = useState(sourceDate);
+
+    const today = new Date()
+    const endDate = getFormatedDate(today.setDate(today.getDate()), 'YYYY/MM/DD')
+    const [dateOfBirth, setDateOfBirth] = useState(endDate)
+    const [openModal, setOpenModal] = useState(false)
 
     const onPress = () => {
         console.log('ALL DATA',formData)
         // send data to db
         navigation.navigate("Main")
     }
+
+    useEffect(() => {
+        setBMI(countBMI(height, weight).toFixed(2))
+    }, [height, weight])
 
     useEffect(() => {
         setFormData( {
@@ -100,10 +102,9 @@ export default function SelfInputForm({ route, navigation }) {
                 'bmi': bmi
             }
         })
-    }, [sex,bloodType, age, weight, height, bmi])
+    }, [firstName,lastName, dateOfBirth, diet, smokingStatus, alcoholConsumption, bloodPressure, sex,bloodType, age, weight, height, bmi])
 
     useEffect(() => {
-        // console.log("DATA FROM PREV PAGE",otherData)
         navigation.setOptions({ 
             headerBackTitle: '', 
             headerRight: () => <NavigationButton buttonName="Done" onPressHandler={onPress}/> 
@@ -138,54 +139,62 @@ export default function SelfInputForm({ route, navigation }) {
         </View>
     )}
 
-    const onChange = (event, selectedDate) => {
-        if (Platform.OS === 'android') {
-          setShow(false);
-        }
-        if (event.type === 'dismissed') {
-          Alert.alert(
-            'picker was dismissed',
-            undefined,
-            [
-              {
-                text: 'great',
-              },
-            ],
-            {cancelable: true},
-          );
-          return;
-        }
+    const handleOnPress = () => {
+        setOpenModal(!openModal)
+        calculateAge()
+    }
+
+    const handleChangeDOB = (propDate) => {
+        setDateOfBirth(propDate)
+    }
     
-        if (event.type === 'neutralButtonPressed') {
-          setDate(new Date(0));
-        } else {
-          setDate(selectedDate);
-        }
-      };
-    
-    const renderDatePicker = (text, value, onChangeText) => {
+    const renderDatePicker = (text) => {
         return (
         <View style={styles.optionView}>
             <Text style={styles.optionText}>{text}</Text>
-            <DateTimePicker
-                  testID="dateTimePicker"
-                //   timeZoneOffsetInMinutes={tzOffsetInMinutes}
-                //   minuteInterval={interval}
-                //   maximumDate={maximumDate}
-                //   minimumDate={minimumDate}
-                  value={date}
-                  mode={mode}
-                //   is24Hour
-                //   display={display}
-                  onChange={onChange}
-                //   textColor={textColor || undefined}
-                //   accentColor={accentColor || undefined}
-                //   neutralButton={{label: neutralButtonLabel}}
-                //   negativeButton={{label: 'Cancel', textColor: 'red'}}
-                //   disabled={disabled}
-                />
+            <TouchableOpacity onPress={handleOnPress}>
+                <Text style={styles.valueText}>{dateOfBirth} </Text>
+            </TouchableOpacity>
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={openModal}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                    <DatePicker
+                        mode='calendar'
+                        selected={dateOfBirth}
+                        onDateChange={handleChangeDOB}
+                        maximumDate={endDate}
+                        options={{
+                            textHeaderColor: '#0F52BA',
+                            textDefaultColor: '#0F52BA',
+                            selectedTextColor: '#fff',
+                            mainColor: '#0F52BA',
+                            textSecondaryColor: '#0F52BA',
+                          }}>
+                    </DatePicker>
+                    <TouchableOpacity onPress={handleOnPress}>
+                        <Text style={styles.closeModalText}>{'Done'}</Text>
+                    </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
+        
     )}
+
+    const calculateAge = () => {
+        const birthDate = new Date(dateOfBirth);
+        console.log("DATES",today, birthDate)
+        var tempAge = today.getFullYear() - birthDate.getFullYear()
+        var m = today.getMonth() - birthDate.getMonth()
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            tempAge--
+        }
+        setAge(tempAge)
+    }
 
     return (
         <SafeAreaProvider>
@@ -208,16 +217,10 @@ export default function SelfInputForm({ route, navigation }) {
                 {renderDatePicker('Date of Birth', dateOfBirth, setDateOfBirth)}
 
                 <View style={styles.optionView}>
-                    <Text style={styles.optionText}>Age</Text>
-                    <TextInput style={styles.valueText} onChangeText={setAge} value={age} keyboardType='number-pad'/>
+                    <Text style={styles.optionText}>Age*</Text>
+                    <Text style={styles.valueText}>{age != null ? age : '-'}</Text>
                 </View>
 
-                {/* {renderText('E-mail', email, setEmail)} */}
-
-                {/* <View style={styles.optionView}>
-                    <Text style={styles.optionText}>Phone Number</Text>
-                    <TextInput style={styles.valueText} value={phoneNumber}  onChangeText={setPhoneNumber} multiline={true} keyboardType='phone-pad'/>
-                </View> */}
                 {renderDropDown("Diet", diet, dietData, setDiet)}
 
                 {renderDropDown("Smoking Status", smokingStatus, smokingData, setSmokingStatus)}
@@ -231,26 +234,33 @@ export default function SelfInputForm({ route, navigation }) {
                 
 
                 {renderDropDown("Sex", sex, sexData, setSex)}
-
-                {renderText('Height (m)', height, (val) => {
-                    setHeight(val)
-                    setBMI(countBMI(val, weight).toFixed(2))}
-                )}
-
-                {renderText('Weight (kg)', weight, (val) => {
-                    setWeight(val)
-                    setBMI(countBMI(height, val).toFixed(2))}
-                )}
-
                 {renderDropDown("Blood Type", bloodType, bloodData, setBloodType)}
+
+                <View style={styles.optionView}>
+                    <Text style={styles.optionText}>Height (m)</Text>
+                    <TextInput style={styles.valueText} onChangeText={setHeight} value={height} keyboardType='decimal-pad'/>
+                </View>
+
+                <View style={styles.optionView}>
+                    <Text style={styles.optionText}>Weight (kg)</Text>
+                    <TextInput style={styles.valueText} onChangeText={setWeight} value={weight} keyboardType='decimal-pad'/>
+                </View>
+                
             
                 <View style={styles.optionView}>
-                    <Text style={styles.optionText}>BMI</Text>
-                    <Text style={styles.valueText}>{bmi}</Text>
+                    <Text style={styles.optionText}>BMI**</Text>
+                    <Text style={styles.valueText}>{(height && weight && isFinite(bmi)) ? bmi : '-'}</Text>
                 </View>
-                <Text style={styles.infoText}> 
-                    BMI is calculated from the inputted height and weight above, make sure that the data inputted above is correct so that your BMI measurement is also accurate
-                </Text>
+
+                <View style={{marginBottom: 40, marginTop: 20}}>
+                    <Text style={styles.infoText}> 
+                        *Age is calculated from the inputted date of birth
+                    </Text>
+                    <Text style={styles.infoText}> 
+                        **BMI is calculated from the inputted height and weight
+                    </Text>
+                </View>
+                
             </ScrollView>
         </SafeAreaProvider>
       );
@@ -297,6 +307,11 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1
     },
 
+    closeModalText: {
+        fontFamily: 'Poppins-Regular',
+        fontSize: 16,
+    },
+
     itemStyle: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
@@ -306,7 +321,6 @@ const styles = StyleSheet.create({
         color: 'grey', 
         marginHorizontal: 28, 
         marginTop: 10, 
-        marginBottom: 60, 
         textAlign: 'justify'
     },
     title: {
@@ -321,5 +335,31 @@ const styles = StyleSheet.create({
     datePickerStyle: {
         width: 200,
         marginTop: 20,
-      },
+    },
+
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        width: '90%',
+        padding: 25,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    }
+
+
 })
