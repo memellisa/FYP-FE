@@ -1,14 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { View, StyleSheet, Alert, ActivityIndicator, Modal } from 'react-native';
 import { Button, Input, Text } from '@rneui/base';
 
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { signInWithEmailAndPassword, getAuth, onAuthStateChanged  } from 'firebase/auth';
 import { auth } from '../config';
 import ApiManager from '../utils/api/ApiManager';
+
 
 import { Formik } from 'formik'
 import { loginValidationSchema } from '../utils/validation';
@@ -25,9 +24,9 @@ import { loginValidationSchema } from '../utils/validation';
 // }
 
 export default function Login({navigation}) {
-    const [email, setEmail] = React.useState('fyp@hku.hk');
-    const [password, setPassword] = React.useState('123456');
-    const [loading, setLoading] = React.useState(false);
+  const [email, setEmail] = React.useState('fyp@hku.hk');
+  const [password, setPassword] = React.useState('123456');
+  const [loading, setLoading] = React.useState(false);
 
   // function onLogin() {
   //   setLoading(true)
@@ -64,7 +63,7 @@ export default function Login({navigation}) {
   //     setLoading(false);
   //   } else {
   //     try {
-  //       const response = await ApiManager('/login', { 
+  //       const response = await ApiManager('/auth/login', { 
   //         method: 'GET', 
   //         params: { 'email': email, 'password': password } 
   //       })
@@ -88,7 +87,7 @@ export default function Login({navigation}) {
   //   }
   // }
   
-    const auth = getAuth();
+    // const auth = getAuth();
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -137,6 +136,7 @@ export default function Login({navigation}) {
             setLoading(false);
         }
     }
+  
 
     return (
         <View style={styles.container}>

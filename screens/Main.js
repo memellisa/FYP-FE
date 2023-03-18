@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tab as TabComponent, TabView } from '@rneui/themed';
 import Home from './Home';
 import Genetics from './Genetics';
@@ -8,18 +8,24 @@ import {  Alert, StyleSheet } from 'react-native';
 import { Icon } from '@rneui/base';
 import { getProfile } from '../utils/api/fitbit.api';
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 const Main = ({ navigation }) => {
-    const [index, setIndex] = React.useState(0);
+    const [index, setIndex] = useState(0);
+
 
     const iconSize = 35;
+
+    
+  
     
     return (
         <>
             <TabView value={index} onChange={setIndex} disableSwipe={true} disableTransition={true}>
                 <TabView.Item style={{width: '100%'}}>
-                    <Home headerTitle={"Hi, John"} headerSubtitle={"Your daily statistics"} navigation={navigation}/>
+                    <Home headerSubtitle={"Your daily statistics"} navigation={navigation}/>
                 </TabView.Item>
                 <TabView.Item style={{width: '100%'}}>
                     <Genetics headerTitle={"Genetic Report"} headerSubtitle={"From 23andMe"} navigation={navigation}/>

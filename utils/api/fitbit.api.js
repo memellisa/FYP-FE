@@ -45,7 +45,7 @@ const getProfile = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        console.log('RESP PROFILE', response)
+        // console.log('RESP PROFILE', response)
         return { data: response.data, error: null }
     } catch (error) {
         console.log('RESP PROFILE ERROR',error.response)
@@ -60,7 +60,7 @@ const getActivities = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        console.log('RESP ACTIVITIES', response.data)
+        // console.log('RESP ACTIVITIES', response.data)
         return { data: response.data, error: null }
     } catch (error) {
         console.log('RESP ACTIVITIES ERROR',error.response)
@@ -75,7 +75,7 @@ const getWeeklySteps = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        console.log('RESP WEEKKLY', response.data)
+        // console.log('RESP WEEKKLY', response.data)
         return { data: response.data.data, error: null }
     } catch (error) {
         console.log('RESP WEEEKLY ERROR',error.response)

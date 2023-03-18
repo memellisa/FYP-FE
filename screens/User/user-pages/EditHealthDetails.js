@@ -31,13 +31,45 @@ const bloodPressureData = [
     { label: 'HBP Stage 3', value: 'HBP Stage 3' },
 ];
 
+const booleanData = [
+    { label: 'True', value: 'True' },
+    { label: 'False', value: 'False' },
+];
+
+const countBMI = (height, weight) => weight/(height*height)
+
+const sexData = [
+    { label: 'Male', value: 'Male' },
+    { label: 'Female', value: 'Female' },
+];
+
+const bloodData = [
+    { label: 'A+', value: 'A+' },
+    { label: 'A-', value: 'A-' },
+    { label: 'B+', value: 'B+' },
+    { label: 'B-', value: 'B-' },
+    { label: 'AB+', value: 'AB+' },
+    { label: 'AB-', value: 'AB-' },
+    { label: 'O+', value: 'O+' },
+    { label: 'O-', value: 'O-' },
+]
+
 export default function EditHealthDetails({ route, navigation }) {
     const data = route.params.data
 
+    const [insulin, setInsulin] = useState(data.insulin)
+    const [cholesterol, setCholesterol] = useState(data.cholesterol)
+    const [sex, setSex] = useState(data.sex)
+    const [height, setHeight] = useState(data.height)
+    const [weight, setWeight] = useState(data.weight)
+    const [bmi, setBMI] = useState(data.bmi.toString())
+    const [bloodType, setBloodType] = useState(data.bloodType)
     const [diet, setDiet] = useState(data.diet)
-    const [smokingStatus, setSmokingStatus] = useState(data.smoking_status)
-    const [alcoholConsumption, setAlcoholConsumption] = useState(data.alcohol_consumption.toString())
-    const [bloodPressure, setBloodPressure] = useState(data.blood_pressure)
+    const [smokingStatus, setSmokingStatus] = useState(data.smokingStatus)
+    const [alcoholConsumption, setAlcoholConsumption] = useState(data.alcoholConsumption.toString())
+    const [bloodPressure, setBloodPressure] = useState(data.bloodPressure)
+    const [medications, setMedications] = useState(data.medications)
+    
 
     // useEffect(() => {
     //     const newData = {diet: diet, smoking_status: smokingStatus, alcohol_consumption: alcoholConsumption, blood_pressure: bloodPressure}
@@ -84,6 +116,8 @@ export default function EditHealthDetails({ route, navigation }) {
                 scrollable={true}
                 hasSafeArea={false}
             >
+                {renderDropDown("Insulin", diet, booleanData, setDiet)}
+
                 {renderDropDown("Diet", diet, dietData, setDiet)}
 
                 {renderDropDown("Smoking Status", smokingStatus, smokingData, setSmokingStatus)}
@@ -94,81 +128,31 @@ export default function EditHealthDetails({ route, navigation }) {
                 </View>
             
                 {renderDropDown("Blood Pressure", bloodPressure, bloodPressureData, setBloodPressure)}
+
+                {renderDropDown("Sex", sex, sexData, setSex)}
+
+                {renderText('Height (m)', height, (val) => {
+                    setHeight(val)
+                    setBMI(countBMI(val, weight).toFixed(2))}
+                )}
+
+                {renderText('Weight (kg)', weight, (val) => {
+                    setWeight(val)
+                    setBMI(countBMI(height, val).toFixed(2))}
+                )}
+
+                {renderDropDown("Blood Type", bloodType, bloodData, setBloodType)}
+            
+                <View style={styles.optionView}>
+                    <Text style={styles.optionText}>BMI</Text>
+                    <Text style={styles.valueText}>{bmi}</Text>
+                </View>
+                <Text style={{color: 'grey', marginHorizontal: 28, marginTop: 10, marginBottom: 0, textAlign: 'justify'}}> 
+                    BMI is calculated from the inputted height and weight above, make sure that the data inputted above is correct so that your BMI measurement is also accurate
+                </Text>
                 
             </ScrollView>
         </SafeAreaProvider>
-            // <Text style={{color: 'black', marginLeft: 35, marginRight: 35, marginTop: 20, marginBottom: 0, textAlign: 'justify', fontSize: 15}}> 
-            //     Health Details
-            // </Text>
-            // <View style={styles.container} >
-            //     {/* ----- Diet Option ------ */}
-            //     <TouchableHighlight style={styles.touchableFirst} >
-            //         <View style={styles.optionView}>
-            //             <Text style={styles.optionText}> Diet </Text>
-            //             <Text style={styles.valueTextWithDropdown}> {diet} </Text>
-            //             <Dropdown 
-            //                 style={styles.dropdown} 
-            //                 selectedTextStyle={styles.selectedTextStyle}
-            //                 placeholder=""
-            //                 data={dietData}
-            //                 labelField="label"
-            //                 valueField="value"
-            //                 onChange={item => {
-            //                     console.log(item.value)
-            //                     setDiet(item.value)
-            //                 }}
-            //             />
-            //         </View>
-            //     </TouchableHighlight>
-            //     {/* ----- Smoking Option ------ */}
-            //     <TouchableHighlight style={styles.touchable} >
-            //         <View style={styles.optionView}>
-            //             <Text style={styles.optionText}> Smoking </Text>
-            //             <Text style={styles.valueTextWithDropdown}> {smoking} </Text>
-            //             <Dropdown 
-            //                 style={styles.dropdown} 
-            //                 selectedTextStyle={styles.selectedTextStyle}
-            //                 placeholder=""
-            //                 data={smokingData}
-            //                 labelField="label"
-            //                 valueField="value"
-            //                 onChange={item => {
-            //                     console.log(item.value)
-            //                     setSmoking(item.value)
-            //                 }}
-            //             />
-            //         </View>
-            //     </TouchableHighlight>
-            //     {/* ----- Alcohol Consumption Option ------ */}
-            //     <TouchableHighlight style={styles.touchable} >
-            //         <View style={styles.optionView}>
-            //             <Text style={styles.optionText}> Alcohol Consumption/L </Text>
-            //             <TextInput style={styles.valueText} onChangeText={setAlcohol} value={alcohol} />
-            //             {/* <Text style={styles.valueText}> 180 </Text> */}
-            //         </View>
-            //     </TouchableHighlight>
-            //     {/* ----- Blood Pressure Option ------ */}
-            //     <TouchableHighlight style={styles.touchable} >
-            //         <View style={styles.optionView}>
-            //             <Text style={styles.optionText}> Blood Pressure </Text>
-            //             <Text style={styles.valueTextWithDropdown}> {bloodPressure} </Text>
-            //             <Dropdown 
-            //                 style={styles.dropdown} 
-            //                 selectedTextStyle={styles.selectedTextStyle}
-            //                 placeholder=""
-            //                 data={bloodPressureData}
-            //                 labelField="label"
-            //                 valueField="value"
-            //                 onChange={item => {
-            //                     console.log(item.value)
-            //                     setBloodPressure(item.value)
-            //                 }}
-            //             />
-            //         </View>
-            //     </TouchableHighlight>
-            // </View>
-        // </ScrollView>
-    
       );
 }
 
