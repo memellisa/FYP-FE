@@ -7,6 +7,12 @@ import { Button, Input } from '@rneui/base';
 import { Formik } from 'formik'
 import { signupValidationSchema } from '../utils/validation';
 
+import Constants from 'expo-constants';
+import axios from 'axios';
+
+const { manifest } = Constants;
+const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
+
 export default function Signup({navigation}) {
   return (
     <View style={styles.container}>
@@ -57,7 +63,30 @@ export default function Signup({navigation}) {
                 
                 <Button title="Signup" buttonStyle={styles.button} 
                   // onPress={() => navigation.replace("Personal Form")}
-                  onPress={handleSubmit}
+                  // onPress={handleSubmit}
+                  onPress={async () => {
+                    let payload = JSON.stringify({ 'email': values.email, 'password': values.password })
+                    try {
+                        console.log(payload)
+                        const response = await axios.post(`${flaskURL}/auth/signup`, payload,{
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        console.log("Image URI: " + response.data)
+                        if (response.data == "Account successfully created") {
+                          alert("Account successfully created, you wil be redirected to the login screen now")
+                          navigation.navigate('Login')
+                        }
+                        else {
+                          // console.log(response)
+                          alert("Error creating account \n Reason: " + response.data)
+                        }
+                    } catch (error) {
+                      alert("Error creating account \n Reason: " + error)
+                    } 
+                  }}
                   disabled={!isValid || values.email === ''}
                 />
                 <Button 
