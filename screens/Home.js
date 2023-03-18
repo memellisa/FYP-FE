@@ -14,6 +14,7 @@ import { getActivities, getProfile, getWeeklySteps } from '../utils/api/fitbit.a
 import { useFocusEffect } from '@react-navigation/native';
 import Constants from 'expo-constants';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../config"
 import axios from 'axios';
 import { getUserInfo, getUser } from '../utils/api/user.api';
 
@@ -47,7 +48,7 @@ const Home = ({ headerSubtitle, navigation}) => {
     const [weeklySteps, setWeeklySteps] = useState(null)
 
     const iconSize = 35;
-    const auth = getAuth();
+    // const auth = getAuth();
 
 
     const processSummaryActivity = (data) => {

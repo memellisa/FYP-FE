@@ -8,6 +8,7 @@ import BotNavbar from '../../components/BotNavbar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import DetailsCard from '../../components/DetailsCard';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../config"
 import { signOut } from 'firebase/auth';
 import axios from 'axios';
 
@@ -97,7 +98,7 @@ export default function Profile({ navigation, route }) {
     const bmi = countBMI(healthdata.height, healthdata.weight)
     healthdata.bmi= bmi.toFixed(2)
 
-    const auth = getAuth();
+    // const auth = getAuth();
 
     // STILL NEED TO BE FIXED, HOW TO USE AXIOS GET???
     useEffect(() => {
@@ -112,7 +113,7 @@ export default function Profile({ navigation, route }) {
     }
 
     async function getProfilePicture() {
-        const auth = getAuth();
+        // const auth = getAuth();
         let payload = JSON.stringify({ 'img': auth.currentUser?.uid })
         let user = auth.currentUser?.uid
         try {

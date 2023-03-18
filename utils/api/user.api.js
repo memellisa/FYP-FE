@@ -3,6 +3,7 @@ import ApiManagerFitbit from "./ApiManagerFitbit";
 import axios from 'axios';
 import Constants from 'expo-constants';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../config"
 
 const { manifest } = Constants;
 
@@ -25,7 +26,7 @@ const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 //     } 
 // };
 
-const auth = getAuth();
+// const auth = getAuth();
 
 const getUser = async () => {
     try {

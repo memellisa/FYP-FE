@@ -87,7 +87,7 @@ export default function Login({navigation}) {
   //   }
   // }
   
-    const auth = getAuth();
+    // const auth = getAuth();
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
