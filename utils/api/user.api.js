@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ApiManagerFitbit from "./ApiManagerFitbit";
 import axios from 'axios';
 import Constants from 'expo-constants';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const { manifest } = Constants;
 
@@ -24,6 +25,8 @@ const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 //     } 
 // };
 
+const auth = getAuth();
+
 const getUser = async () => {
     try {
         const response = await axios.get(`${flaskURL}/user`);
@@ -45,11 +48,18 @@ const getUser = async () => {
 // };
 
 const getUserInfo = async () => {
+    let user = auth.currentUser?.uid
     try {
-        const response = await axios.get(`${flaskURL}/user/info`);
+        console.log(`${flaskURL}/user/info/${user}`)
+        const response = await axios.get(`${flaskURL}/user/info/${user}`,{
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        })
         console.log('RESP USER INFO::',JSON.stringify(response.data))
         return response.data
     } catch (error) {
+        console.log("ERRORRR", error)
         return { data: null, error }
     } 
 };

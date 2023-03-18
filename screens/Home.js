@@ -142,7 +142,7 @@ const Home = ({ headerSubtitle, navigation}) => {
 
     
 
-    useEffect(async() => {
+    useEffect(() => {
       getUserData()
     }, [])
 

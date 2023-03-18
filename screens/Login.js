@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { View, StyleSheet, Alert, ActivityIndicator, Modal } from 'react-native';
 import { Button, Input, Text } from '@rneui/base';
 
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, getAuth, onAuthStateChanged  } from 'firebase/auth';
 import { auth } from '../config';
 import ApiManager from '../utils/api/ApiManager';
+
 
 import { Formik } from 'formik'
 import { loginValidationSchema } from '../utils/validation';
