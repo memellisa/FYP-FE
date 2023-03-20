@@ -86,27 +86,30 @@ export default function Login({navigation}) {
   //     }
   //   }
   // }
-  
-    // const auth = getAuth();
+
+  let unsubscribe;
 
     useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
+        unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
-                const uid = user.uid;
-                console.log(user)
+                // const uid = user.uid;
+                // console.log(user)
                 console.log("LOGGED IN")
-                navigation.replace("Main");
+                setTimeout(() => {
+                  // should show the Connected Manage Wearable page instead later
+                  // navigation.navigate("Profile");
+                  navigation.navigate("Main");
+                }, 2000);
                 // ...
             } else {
                 // User is signed out
                 // ...
                 console.log("LOGGED OUT")
+                navigation.navigate("Login")
             }
         });
-        // const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-        // return subscriber; // unsubscribe on unmount
     }, []);
     
 
@@ -189,7 +192,10 @@ export default function Login({navigation}) {
                 <Button 
                     title="Don't have an account? Signup today!" 
                     buttonStyle={styles.button} 
-                    onPress={() => navigation.navigate('Signup')}
+                    onPress={() => {
+                      // unsubscribe()
+                      navigation.navigate('Signup')
+                    }}
                 />
 
                 
