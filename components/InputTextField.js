@@ -2,20 +2,19 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
 const InputTextField = (text, value, onChangeText) => {
+    const isNumber = text === 'Height (cm)' || text === 'Weight (kg)'
     return (
     <View style={styles.optionView}>
         <Text style={styles.optionText}>{text}</Text>
-        <TextInput style={styles.valueText} value={value} onChangeText={onChangeText} multiline={true}/>
+        <TextInput style={styles.valueText} value={value.toString()} onChangeText={onChangeText} multiline={isNumber ? false : true} keyboardType={isNumber ? 'decimal-pad' : 'default'}/>
     </View>
 )}
 
 const styles = StyleSheet.create({
     optionView: {
-        // position: 'relative',
         flexDirection: 'row',
         marginTop: 25,
         marginHorizontal: 30,
-        // paddingHorizontal: 20,
         alignItems: 'center'
     },
 

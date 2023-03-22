@@ -21,7 +21,7 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 const { manifest } = Constants;
 
-const countBMI = (height, weight) => weight/(height*height)
+const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
 
 const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
@@ -47,7 +47,7 @@ const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 // const geneticsdata = [
 //     {label: "Age", value : 22},
 //     {label: "Sex", value : "Male"},
-//     {label: "Height (m)", value: 1.80},
+//     {label: "Height (cm)", value: 1.80},
 //     {label: "Weight (kg)", value: 75},
 //     {label: "Blood Type", value: "O+"},
     
@@ -63,17 +63,17 @@ const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 //     email: "johndoe@mail.com"
 // }
 
-const healthdata = {
-    diet: "Keto",
-    smoking_status: "Heavy",
-    alcohol_consumption: 0.5,
-    blood_pressure: "Normal",
-    age: 22,
-    sex: "Male",
-    height: 1.80,
-    weight: 75,
-    blood_type: "O+"
-}
+// const healthdata = {
+//     diet: "Keto",
+//     smoking_status: "Heavy",
+//     alcohol_consumption: 0.5,
+//     blood_pressure: "Normal",
+//     age: 22,
+//     sex: "Male",
+//     height: 1.80,
+//     weight: 75,
+//     blood_type: "O+"
+// }
 
 // const geneticsdata = {
 //     age: 22,
@@ -93,14 +93,11 @@ export default function Profile({ navigation, route }) {
     // const healthdata2 = jsonToArray(healthdata1)
     // const geneticsdata2 = jsonToArray(geneticsdata1)
     const [userData, setUserData] = useState(null);
+
     const isFocused = useIsFocused()
 
     const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
     const [uploading, setUploading] = useState(false)
-
-    const bmi = countBMI(healthdata.height, healthdata.weight)
-    healthdata.bmi= bmi.toFixed(2)
-
     // const auth = getAuth();
 
     // STILL NEED TO BE FIXED, HOW TO USE AXIOS GET???
@@ -150,11 +147,11 @@ export default function Profile({ navigation, route }) {
         }
       }
 
-    const getUserPersonalData = async () => {
-        const resultInfo = await getUserInfo()
-        console.log("RESULT INFO BEFORE EDIT", JSON.stringify(resultInfo))
-        setPersonalData(resultInfo)
-    }
+    // const getUserPersonalData = async () => {
+    //     const resultInfo = await getUserInfo()
+    //     console.log("RESULT INFO BEFORE EDIT", JSON.stringify(resultInfo))
+    //     setPersonalData(resultInfo)
+    // }
 
     async function getProfilePicture() {
         // const auth = getAuth();
@@ -251,13 +248,26 @@ export default function Profile({ navigation, route }) {
                     dataToShow={{
                         "firstName": userData?.info.firstName,
                         "lastName": userData?.info.lastName,
-                        "dob": userData?.info.dateOfBirth}}/>
+                        "dob": userData?.info.dob}}/>
                 
                 <DetailsCard 
                     title={"Health Details"} 
-                    data={healthdata} 
+                    data={userData?.health} 
                     route={route} 
-                    navigation={navigation}/>
+                    navigation={navigation}
+                    dataToShow={{
+                        "insulin": userData?.health.insulin,
+                        "cholesterol": userData?.health.cholesterol,
+                        "diet": userData?.health.diet,
+                        "smokingStatus": userData?.health.smokingStatus,
+                        "alcoholConsumption": userData?.health.alcoholConsumption,
+                        "bloodPressure": userData?.health.bloodPressure,
+                        "sex": userData?.health.sex,
+                        "bloodType": userData?.health.bloodType,
+                        "height": userData?.health.height,
+                        "weight": userData?.health.weight,
+                        "bmi": countBMI(userData?.health.height, userData?.health.weight)
+                    }}/>
 
                 <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Manage Wearable")}>
                         <Text style={styles.buttonText}>Manage Wearable</Text>

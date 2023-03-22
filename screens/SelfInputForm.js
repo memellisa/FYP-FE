@@ -10,7 +10,7 @@ import DropDownField from '../components/DropdownField';
 import InputTextField from '../components/InputTextField';
 
 
-const countBMI = (height, weight) => weight/(height*height)
+const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
 
 const dietData = [
     { label: 'No Restrictions', value: 'No Restrictions' },
@@ -177,7 +177,7 @@ export default function SelfInputForm({ route, navigation }) {
                 {DropDownField("Blood Type", bloodType, bloodData, setBloodType)}
 
                 <View style={styles.optionView}>
-                    <Text style={styles.optionText}>Height (m)</Text>
+                    <Text style={styles.optionText}>Height (cm)</Text>
                     <TextInput style={styles.valueText} onChangeText={setHeight} value={height} keyboardType='decimal-pad'/>
                 </View>
 

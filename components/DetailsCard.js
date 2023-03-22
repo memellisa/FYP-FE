@@ -6,12 +6,32 @@ import labels from '../utils/labels';
 
 const DetailsCard = ({title, data, navigation, route, dataToShow}) => {
 
+    const renderBool = (val) => {
+        return val ? 'Yes' : 'No'
+    }
+
+    const renderValue = (val) => {
+        switch(val){
+            case 0:
+                return 'Never'
+            case 1:
+                return 'Previous'
+            case 2:
+                return 'Occasionally'
+            case 3:
+                return 'Frequent'
+        } 
+    }
+
     const jsonToArray = (dataToShow) => {
         const arr = []; 
         for(let i in dataToShow) {
-            arr.push([labels[i], dataToShow[i] ? dataToShow[i] : '-']); 
+            if (i === "alcoholConsumption" || i === "smokingStatus") 
+                arr.push([labels[i], renderValue(dataToShow[i])])
+            else 
+                arr.push([labels[i], typeof dataToShow[i] == "boolean" ? renderBool(dataToShow[i]) :
+                                    dataToShow[i] ? dataToShow[i] : '-' ])
         }
-        
         return arr
     }
     
@@ -47,10 +67,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18, 
         fontFamily: "Poppins-Bold", 
-        // alignSelf: 'flex-start', 
         color: '#0F52BA'
-        // color: '#0047AB'
-        // color: '#4169E1'
     },
 
     container: {
@@ -66,7 +83,6 @@ const styles = StyleSheet.create({
         borderTopWidth: 0,
         paddingTop: 12,
         paddingBottom: 12,
-        // marginTop: 32,
         borderColor: '#bdbdbd'
     },
 
@@ -77,13 +93,9 @@ const styles = StyleSheet.create({
     },
 
     optionView: {
-        // position: 'relative',
         flexDirection: 'row',
-        // marginTop: 10,
-        // marginLeft: 10,
         paddingVertical: 10,
         paddingHorizontal: 10,
-        // justifyContent:'space-between',
         alignItems: 'flex-start'
     },
 
@@ -99,8 +111,6 @@ const styles = StyleSheet.create({
         right: 0,
         height: 0,
         width: '100%'
-        // bottom: -7,
-        // transform: [{ rotate: "-90deg" }]
     },
 
     valueTextWithDropdown: {
@@ -114,11 +124,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         flex: 1,
         flexWrap: 'wrap',
-
-        // position: 'absolute',
-        // top: -4,
-        // right: 0,
-        // color: '#263cff'
     },
 
     selectedTextStyle: {

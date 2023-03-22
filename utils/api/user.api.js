@@ -8,7 +8,7 @@ import { auth } from "../../config"
 const { manifest } = Constants;
 
 const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
-const user = auth.currentUser.uid
+const user = auth.currentUser?.uid
 
 // const postAccessToken = async (payload) => {
 //     try {
@@ -53,7 +53,7 @@ const getUser = async () => {
 const getUserInfo = async () => {
     
     try {
-        console.log(`${flaskURL}/user/info/${user}`)
+        // console.log(`${flaskURL}/user/info/${user}`)
         const response = await axios.get(`${flaskURL}/user/info/${user}`,{
             headers: {
             'Content-Type': 'application/json'
@@ -78,11 +78,18 @@ const putUserInfo = async (data) => {
 };
 
 const getUserHealth = async () => {
+    
     try {
-        const response = await axios.get(`${flaskURL}/user/health`);
-        // console.log('RESP USER HEALTH::',JSON.stringify(response))
-        return { data: response.data, error: null }
+        // console.log(`${flaskURL}/user/health/${user}`)
+        const response = await axios.get(`${flaskURL}/user/health/${user}`,{
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        })
+        console.log('RESP USER health::',JSON.stringify(response.data))
+        return response.data
     } catch (error) {
+        console.log("ERROR getting health data", error)
         return { data: null, error }
     } 
 };
@@ -90,7 +97,7 @@ const getUserHealth = async () => {
 const putUserHealth = async (data) => {
     try {
         const response = await axios.put(`${flaskURL}/user/health/${user}`, data);
-        // console.log('EDITTED USER INFO::',JSON.stringify(response))
+        // console.log('EDITTED USER HEALTH::',JSON.stringify(response))
         return { data: response.data, error: null }
     } catch (error) {
         return { data: null, error }
