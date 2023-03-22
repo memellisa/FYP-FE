@@ -9,10 +9,13 @@ const labels = {
     bloodPressure: "Blood Pressure",
     age: "Age",
     sex: "Sex",
-    height: "Height (m)",
+    height: "Height (cm)",
     weight: "Weight (kg)",
     bloodType: "Blood Type",
-    bmi: "BMI"
+    bmi: "BMI",
+    insulin: "Insulin",
+    cholesterol: "Cholesterol",
+
 }
 
 export default labels

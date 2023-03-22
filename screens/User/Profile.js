@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 // import { Icon } from 'react-native-elements'
 import { Avatar, Button, Divider } from '@rneui/base'
 import { Icon } from '@rneui/themed'
-import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TouchableHighlight } from 'react-native';
+import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TouchableHighlight, Alert } from 'react-native';
 import BotNavbar from '../../components/BotNavbar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import DetailsCard from '../../components/DetailsCard';
@@ -15,11 +15,13 @@ import axios from 'axios';
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from 'expo-file-system';
 import Constants from 'expo-constants';
-import { getUserInfo } from '../../utils/api/user.api';
+import { getUser, getUserInfo } from '../../utils/api/user.api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 const { manifest } = Constants;
 
-const countBMI = (height, weight) => weight/(height*height)
+const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
 
 const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
@@ -45,7 +47,7 @@ const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 // const geneticsdata = [
 //     {label: "Age", value : 22},
 //     {label: "Sex", value : "Male"},
-//     {label: "Height (m)", value: 1.80},
+//     {label: "Height (cm)", value: 1.80},
 //     {label: "Weight (kg)", value: 75},
 //     {label: "Blood Type", value: "O+"},
     
@@ -61,17 +63,17 @@ const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 //     email: "johndoe@mail.com"
 // }
 
-const healthdata = {
-    diet: "Keto",
-    smoking_status: "Heavy",
-    alcohol_consumption: 0.5,
-    blood_pressure: "Normal",
-    age: 22,
-    sex: "Male",
-    height: 1.80,
-    weight: 75,
-    blood_type: "O+"
-}
+// const healthdata = {
+//     diet: "Keto",
+//     smoking_status: "Heavy",
+//     alcohol_consumption: 0.5,
+//     blood_pressure: "Normal",
+//     age: 22,
+//     sex: "Male",
+//     height: 1.80,
+//     weight: 75,
+//     blood_type: "O+"
+// }
 
 // const geneticsdata = {
 //     age: 22,
@@ -83,34 +85,73 @@ const healthdata = {
 
 export default function Profile({ navigation, route }) {
     // const data = route.params.data
-    // console.log("DATA PROFILE::", data)
+    console.log("DATA PARAMS::", route.params)
 
     const [image, setImage] = useState(null);
     const [personalData, setPersonalData] = useState(null)
     // const personaldata2 = jsonToArray(personaldata1)
     // const healthdata2 = jsonToArray(healthdata1)
     // const geneticsdata2 = jsonToArray(geneticsdata1)
-    
+    const [userData, setUserData] = useState(null);
+
+    const isFocused = useIsFocused()
 
     const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
     const [uploading, setUploading] = useState(false)
-
-    const bmi = countBMI(healthdata.height, healthdata.weight)
-    healthdata.bmi= bmi.toFixed(2)
-
     // const auth = getAuth();
 
     // STILL NEED TO BE FIXED, HOW TO USE AXIOS GET???
     useEffect(() => {
         getProfilePicture()
-        getUserPersonalData()
-    }, [])
+        // getUserPersonalData()
+        getUserData()
+    }, [isFocused])
 
-    const getUserPersonalData = async () => {
-        const resultInfo = await getUserInfo()
-        console.log("RESULT INFO BEFORE EDIT", JSON.stringify(resultInfo))
-        setPersonalData(resultInfo)
-    }
+    const getUserData = async () => {
+        const fetchUser = async() => {
+            const result = await getUser()
+            
+            if (!result.error){
+              try {
+                await AsyncStorage.setItem('userData', JSON.stringify(result.data))
+                setUserData(result.data)
+                console.log('USERR', JSON.stringify(result.data))
+              } catch (e) {
+                fetchUser()
+                // Alert.alert('Something went wrong. Please try again')
+              }
+            } else {
+                Alert.alert('1Something went wrong. Please try again')
+            }
+        }
+
+        if (route.params && route.params.update) {
+            console.log("UPDATE")
+            fetchUser()
+        } else {
+            try {
+                const fetchedUserData = await AsyncStorage.getItem('userData')
+                console.log('FETCHEDUSERR', (fetchedUserData))
+                if (fetchedUserData && fetchedUserData !== "{}"){
+                  if (fetchedUserData !== userData){
+                    setUserData(JSON.parse(fetchedUserData))
+                  }
+                } else {
+                  fetchUser()
+                }
+              } catch(e) {
+                  fetchUser()
+                  console.log("HERE BRO")
+                // error reading value
+              }
+        }
+      }
+
+    // const getUserPersonalData = async () => {
+    //     const resultInfo = await getUserInfo()
+    //     console.log("RESULT INFO BEFORE EDIT", JSON.stringify(resultInfo))
+    //     setPersonalData(resultInfo)
+    // }
 
     async function getProfilePicture() {
         // const auth = getAuth();
@@ -201,19 +242,32 @@ export default function Profile({ navigation, route }) {
 
                 <DetailsCard 
                     title={"Personal Details"} 
-                    data={personalData} 
+                    data={userData?.info} 
                     route={route} 
                     navigation={navigation} 
                     dataToShow={{
-                        "firstName": personalData?.firstName,
-                        "lastName": personalData?.lastName,
-                        "dob": personalData?.dateOfBirth}}/>
+                        "firstName": userData?.info.firstName,
+                        "lastName": userData?.info.lastName,
+                        "dob": userData?.info.dob}}/>
                 
                 <DetailsCard 
                     title={"Health Details"} 
-                    data={healthdata} 
+                    data={userData?.health} 
                     route={route} 
-                    navigation={navigation}/>
+                    navigation={navigation}
+                    dataToShow={{
+                        "insulin": userData?.health.insulin,
+                        "cholesterol": userData?.health.cholesterol,
+                        "diet": userData?.health.diet,
+                        "smokingStatus": userData?.health.smokingStatus,
+                        "alcoholConsumption": userData?.health.alcoholConsumption,
+                        "bloodPressure": userData?.health.bloodPressure,
+                        "sex": userData?.health.sex,
+                        "bloodType": userData?.health.bloodType,
+                        "height": userData?.health.height,
+                        "weight": userData?.health.weight,
+                        "bmi": countBMI(userData?.health.height, userData?.health.weight)
+                    }}/>
 
                 <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Manage Wearable")}>
                         <Text style={styles.buttonText}>Manage Wearable</Text>

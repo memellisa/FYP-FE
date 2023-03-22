@@ -5,9 +5,12 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import NavigationButton from '../components/NavigationButton';
 import DatePicker from 'react-native-modern-datepicker'
 import { getFormatedDate } from 'react-native-modern-datepicker'
+import DatePickerField from '../components/DatePickerField';
+import DropDownField from '../components/DropdownField';
+import InputTextField from '../components/InputTextField';
 
 
-const countBMI = (height, weight) => weight/(height*height)
+const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
 
 const dietData = [
     { label: 'No Restrictions', value: 'No Restrictions' },
@@ -111,33 +114,7 @@ export default function SelfInputForm({ route, navigation }) {
         });
     }, [])
 
-    const renderDropDown = (text, value, data, setOnChange) => {
-        return(
-        <View style={styles.optionView}>
-            <Text style={styles.optionText}>{text}</Text>
-            <Dropdown 
-                style={styles.dropdown}
-                itemTextStyle={styles.itemStyle}
-                data={data}
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                value={value}
-                onChange={item => {
-                    setOnChange(item.value);
-                }}
-            />
-        </View>)
-    }
-
-
-    const renderText = (text, value, onChangeText) => {
-        return (
-        <View style={styles.optionView}>
-            <Text style={styles.optionText}>{text}</Text>
-            <TextInput style={styles.valueText} value={value} onChangeText={onChangeText} multiline={true}/>
-        </View>
-    )}
+    
 
     const handleOnPress = () => {
         setOpenModal(!openModal)
@@ -147,43 +124,6 @@ export default function SelfInputForm({ route, navigation }) {
     const handleChangeDOB = (propDate) => {
         setDateOfBirth(propDate)
     }
-    
-    const renderDatePicker = (text) => {
-        return (
-        <View style={styles.optionView}>
-            <Text style={styles.optionText}>{text}</Text>
-            <TouchableOpacity onPress={handleOnPress}>
-                <Text style={styles.valueText}>{dateOfBirth} </Text>
-            </TouchableOpacity>
-            <Modal
-                animationType='slide'
-                transparent={true}
-                visible={openModal}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                    <DatePicker
-                        mode='calendar'
-                        selected={dateOfBirth}
-                        onDateChange={handleChangeDOB}
-                        maximumDate={endDate}
-                        options={{
-                            textHeaderColor: '#0F52BA',
-                            textDefaultColor: '#0F52BA',
-                            selectedTextColor: '#fff',
-                            mainColor: '#0F52BA',
-                            textSecondaryColor: '#0F52BA',
-                          }}>
-                    </DatePicker>
-                    <TouchableOpacity onPress={handleOnPress}>
-                        <Text style={styles.closeModalText}>{'Done'}</Text>
-                    </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
-        </View>
-        
-    )}
 
     const calculateAge = () => {
         const birthDate = new Date(dateOfBirth);
@@ -210,34 +150,34 @@ export default function SelfInputForm({ route, navigation }) {
                 </Text>
                 
 
-                {renderText('First Name', firstName, setFirstName)}
+                {InputTextField('First Name', firstName, setFirstName)}
 
-                {renderText('Last Name', lastName, setLastName)}
+                {InputTextField('Last Name', lastName, setLastName)}
 
-                {renderDatePicker('Date of Birth', dateOfBirth, setDateOfBirth)}
+                {DatePickerField('Date of Birth', openModal, handleOnPress, dateOfBirth, handleChangeDOB)}
 
                 <View style={styles.optionView}>
                     <Text style={styles.optionText}>Age*</Text>
                     <Text style={styles.valueText}>{age != null ? age : '-'}</Text>
                 </View>
 
-                {renderDropDown("Diet", diet, dietData, setDiet)}
+                {DropDownField("Diet", diet, dietData, setDiet)}
 
-                {renderDropDown("Smoking Status", smokingStatus, smokingData, setSmokingStatus)}
+                {DropDownField("Smoking Status", smokingStatus, smokingData, setSmokingStatus)}
 
                 <View style={styles.optionView}>
                     <Text style={styles.optionText}>Alcohol Consumption/L</Text>
                     <TextInput style={styles.valueText} onChangeText={setAlcoholConsumption} value={alcoholConsumption} keyboardType='decimal-pad'/>
                 </View>
 
-                {renderDropDown("Blood Pressure", bloodPressure, bloodPressureData, setBloodPressure)}
+                {DropDownField("Blood Pressure", bloodPressure, bloodPressureData, setBloodPressure)}
                 
 
-                {renderDropDown("Sex", sex, sexData, setSex)}
-                {renderDropDown("Blood Type", bloodType, bloodData, setBloodType)}
+                {DropDownField("Sex", sex, sexData, setSex)}
+                {DropDownField("Blood Type", bloodType, bloodData, setBloodType)}
 
                 <View style={styles.optionView}>
-                    <Text style={styles.optionText}>Height (m)</Text>
+                    <Text style={styles.optionText}>Height (cm)</Text>
                     <TextInput style={styles.valueText} onChangeText={setHeight} value={height} keyboardType='decimal-pad'/>
                 </View>
 

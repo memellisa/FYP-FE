@@ -5,59 +5,89 @@ import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import NavigationButton from '../../../components/NavigationButton';
 import { putUserInfo } from '../../../utils/api/user.api';
-
+import DatePickerField from '../../../components/DatePickerField';
+import InputTextField from '../../../components/InputTextField';
 
 
 export default function EditPersonalDetails({ route, navigation }) {
     const data = route.params.data
-    console.log("DATA BEFORE", data)
 
-    const [firstName, setFirstName] = useState(data.firstName)
-    const [lastName, setLastName] = useState(data.lastName)
-    const [dateOfBirth, setDateOfBirth] = useState(data.dob)
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [dateOfBirth, setDateOfBirth] = useState('')
+    const [openModal, setOpenModal] = useState(false)
     const [age, setAge] = useState(null)
+    const [done, setDone] = useState(null)
 
+    const calculateAge = () => {
+        const today = new Date()
+        const birthDate = new Date(dateOfBirth);
+        console.log("DATES",today, birthDate)
+        var tempAge = today.getFullYear() - birthDate.getFullYear()
+        var m = today.getMonth() - birthDate.getMonth()
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            tempAge--
+        }
+        setAge(tempAge)
+    }
+                            
 
-    const onPress = async () => {
-        const newData = {
-            "firstName": firstName,
-            "lastName": lastName,
-            "dob": dateOfBirth,
-            "email": data.email,
-            "img": data.img
-          }
-          
-        console.log(newData)
+    const handleOnPress = () => {
+        setOpenModal(!openModal)
+        calculateAge()
+    }
+
+    const handleChangeDOB = (propDate) => {
+        setDateOfBirth(propDate)
+    }
+    
+    const onPress = async (newData) => {
+        // const tempppp = {
+        //     "firstName": "Jane",
+        //     "lastName":"Doe",
+        //     "dob": "2001/03/04",
+        //     "email": "fyp@hku.hk",
+        //     "img": "test"
+        // }
+        // console.log("NEW DATA:::",newData)
         const result = await putUserInfo(newData)
+        console.log(result)
         if (!result.error){
             try {
-              console.log('EDItted USERR info', JSON.stringify(result.data))
+                // console.log('EDItted USERR', JSON.stringify(result.data))
+                navigation.navigate("Profile", { update: true })
             } catch (e) {
-              Alert.alert('Something went wrong. Please try again')
+                Alert.alert('Something went wrong. Please try again')
             }
-          } else {
-            console.log(result.error)
-              Alert.alert('Something went wrong. Please try again')
-          }
-        navigation.navigate("Profile", { data: route.params.data })
+        } else {
+            // console.log(result.error)
+            Alert.alert('Something went wrong. Please try again')
+        }
     }
  
     useEffect(() => {
         navigation.setOptions({ 
             headerBackTitle: '', 
-            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={onPress}/> 
+            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={() => setDone(true)}/> 
 
         });
+        setFirstName(data.firstName)
+        setLastName(data.lastName)
+        setDateOfBirth(data.dob)
     }, [])
 
+    useEffect(() => {
+        if (done) {
+            onPress({
+                "firstName": firstName,
+                "lastName": lastName,
+                "dob": dateOfBirth,
+                "email": data.email,
+                "img": data.img
+            })
+        }
+    }, [done])
 
-    const renderText = (text, value, onChangeText) => {
-        return (
-        <View style={styles.optionView}>
-            <Text style={styles.optionText}>{text}</Text>
-            <TextInput style={styles.valueText} value={value} onChangeText={onChangeText} multiline={true}/>
-        </View>
-    )}
 
     return (
         <SafeAreaProvider>
@@ -66,11 +96,16 @@ export default function EditPersonalDetails({ route, navigation }) {
                 scrollable={true}
                 hasSafeArea={false}
             >
-                {renderText('First Name', firstName, setFirstName)}
+                {InputTextField('First Name', firstName, setFirstName)}
 
-                {renderText('Last Name', lastName, setLastName)}
+                {InputTextField('Last Name', lastName, setLastName)}
 
-                {renderText('Date of Birth', dateOfBirth, setDateOfBirth)}
+                {DatePickerField('Date of Birth', openModal, handleOnPress, dateOfBirth, handleChangeDOB)}
+
+                <View style={styles.optionView}>
+                    <Text style={styles.optionText}>Age*</Text>
+                    <Text style={styles.valueText}>{age != null ? age : '-'}</Text>
+                </View>
                 
             </ScrollView>
         </SafeAreaProvider>
@@ -81,24 +116,19 @@ export default function EditPersonalDetails({ route, navigation }) {
 
 const styles = StyleSheet.create({
     screenContainer: {
-        // alignItems: 'center',
-        // marginTop: -65,
         flex: 1,
         backgroundColor: '#fff',
     },
 
     optionView: {
-        // position: 'relative',
         flexDirection: 'row',
         marginTop: 25,
         marginHorizontal: 30,
-        // paddingHorizontal: 20,
         alignItems: 'center'
     },
 
     optionText: {
         fontSize: 16,
-        // paddingTop:5,
         fontFamily: 'Poppins-SemiBold',
         width: 140
     },

@@ -4,10 +4,13 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useState, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import NavigationButton from '../../../components/NavigationButton';
+import { putUserHealth } from '../../../utils/api/user.api';
+import InputTextField from '../../../components/InputTextField';
+import DropDownField from '../../../components/DropdownField';
 
 
 const dietData = [
-    { label: 'No Restrictions', value: 'No Restrictions' },
+    { label: 'No Restrictions', value: 'Normal' },
     { label: 'Keto', value: 'Keto' },
     { label: 'Paleo', value: 'Paleo' },
     { label: 'Vegetarian', value: 'Vegetarian' },
@@ -31,16 +34,11 @@ const bloodPressureData = [
     { label: 'HBP Stage 3', value: 'HBP Stage 3' },
 ];
 
-const booleanData = [
-    { label: 'True', value: 'True' },
-    { label: 'False', value: 'False' },
-];
-
-const countBMI = (height, weight) => weight/(height*height)
+const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
 
 const sexData = [
-    { label: 'Male', value: 'Male' },
-    { label: 'Female', value: 'Female' },
+    { label: 'Male', value: 'M' },
+    { label: 'Female', value: 'F' },
 ];
 
 const bloodData = [
@@ -54,60 +52,107 @@ const bloodData = [
     { label: 'O-', value: 'O-' },
 ]
 
+const frequencyData = [
+    { label: 'Never', value: 0 },
+    { label: 'Previous', value: 1 },
+    { label: 'Seldom', value: 2 },
+    { label: 'Frequent', value: 3 },
+];
+
+
+const booleanData = [
+    { label: 'Yes', value: true },
+    { label: 'No', value: false },
+];
+
 export default function EditHealthDetails({ route, navigation }) {
     const data = route.params.data
+    console.log("DATA PARAMS HEALTH::",data)
 
-    const [insulin, setInsulin] = useState(data.insulin)
-    const [cholesterol, setCholesterol] = useState(data.cholesterol)
-    const [sex, setSex] = useState(data.sex)
-    const [height, setHeight] = useState(data.height)
-    const [weight, setWeight] = useState(data.weight)
-    const [bmi, setBMI] = useState(data.bmi.toString())
-    const [bloodType, setBloodType] = useState(data.bloodType)
-    const [diet, setDiet] = useState(data.diet)
-    const [smokingStatus, setSmokingStatus] = useState(data.smokingStatus)
-    const [alcoholConsumption, setAlcoholConsumption] = useState(data.alcoholConsumption.toString())
-    const [bloodPressure, setBloodPressure] = useState(data.bloodPressure)
-    const [medications, setMedications] = useState(data.medications)
+    const [insulin, setInsulin] = useState('')
+    const [cholesterol, setCholesterol] = useState('')
+    const [sex, setSex] = useState('')
+    const [height, setHeight] = useState('')
+    const [weight, setWeight] = useState('')
+    const [bmi, setBMI] = useState('')
+    const [bloodType, setBloodType] = useState('')
+    const [diet, setDiet] = useState('')
+    const [smokingStatus, setSmokingStatus] = useState('')
+    const [alcoholConsumption, setAlcoholConsumption] = useState('')
+    const [bloodPressure, setBloodPressure] = useState('')
+    // const [medications, setMedications] = useState(null)
+    const [done, setDone] = useState(null)
+
     
-
-    // useEffect(() => {
-    //     const newData = {diet: diet, smoking_status: smokingStatus, alcohol_consumption: alcoholConsumption, blood_pressure: bloodPressure}
-    //     route.params.data = newData
-    //     console.log(route.params.data)
-    // }, [diet, smokingStatus, alcoholConsumption, bloodPressure])
-    
-    const onPress = () => {
-        navigation.navigate("Profile", { data: route.params.data })
-    }
-
     useEffect(() => {
         navigation.setOptions({ 
             headerBackTitle: '', 
-            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={onPress}/> 
+            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={() => setDone(true)}/> 
 
         });
+        setInsulin(data.insulin)
+        setCholesterol(data.cholesterol)
+        setSex(data.sex)
+        setHeight(data.height)
+        setWeight(data.weight)
+        setBMI(countBMI(data.height, data.weight).toString())
+        setBloodType(data.bloodType)
+        setDiet(data.diet)
+        setSmokingStatus(data.smokingStatus)
+        setAlcoholConsumption(data.alcoholConsumption)
+        setBloodPressure(data.bloodPressure)
     }, [])
 
-
-    const renderDropDown = (text, value, data, setOnChange) => {
-        return(
-        <View style={styles.optionView}>
-            <Text style={styles.optionText}>{text}</Text>
-            <Dropdown 
-                style={styles.dropdown}
-                itemTextStyle={styles.itemStyle}
-                data={data}
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                value={value}
-                onChange={item => {
-                    setOnChange(item.value);
-                }}
-            />
-        </View>)
+    
+    const onPress = async (newData) => {
+        // const tempppp = {
+        //     "insulin": insulin,
+        //     "cholesterol": cholesterol,
+        //     "diet": diet,
+        //     "smokingStatus": smokingStatus,
+        //     "alcoholConsumption": alcoholConsumption,
+        //     "bloodPressure": bloodPressure,
+        //     "sex": sex,
+        //     "height": 190,
+        //     "weight": 86,
+        //     "bloodType": bloodType
+        // }
+        // console.log("NEW DATA:::",newData)
+        const result = await putUserHealth(newData)
+        // console.log("EDIT HEALTH:::",result)
+        if (!result.error){
+            try {
+                // console.log('EDItted USERR', JSON.stringify(result.data))
+                navigation.navigate("Profile", { update: true })
+            } catch (e) {
+                Alert.alert('Something went wrong. Please try again')
+            }
+        } else {
+            // console.log(result.error)
+            Alert.alert('Something went wrong. Please try again')
+        }
     }
+
+    useEffect(() => {
+        setBMI(countBMI(height, weight))
+    }, [height, weight])
+
+    useEffect(() => {
+        if (done) {
+            onPress({
+                "insulin": insulin,
+                "cholesterol": cholesterol,
+                "diet": diet,
+                "smokingStatus": smokingStatus,
+                "alcoholConsumption": alcoholConsumption,
+                "bloodPressure": bloodPressure,
+                "sex": sex,
+                "height": parseInt(height),
+                "weight": parseInt(weight),
+                "bloodType": bloodType
+            })
+        }
+    }, [done])
 
     return (
         <SafeAreaProvider>
@@ -116,39 +161,36 @@ export default function EditHealthDetails({ route, navigation }) {
                 scrollable={true}
                 hasSafeArea={false}
             >
-                {renderDropDown("Insulin", diet, booleanData, setDiet)}
 
-                {renderDropDown("Diet", diet, dietData, setDiet)}
+                {DropDownField("Insulin", insulin, booleanData, setInsulin)}
+                {DropDownField("Cholesterol", cholesterol, booleanData, setCholesterol)}
 
-                {renderDropDown("Smoking Status", smokingStatus, smokingData, setSmokingStatus)}
+                {/* <Text style={styles.infoText}> 
+                    Are you using Insulin for medical purposes?
+                </Text> */}
 
-                <View style={styles.optionView}>
-                    <Text style={styles.optionText}>Alcohol Consumption/L</Text>
-                    <TextInput style={styles.valueText} onChangeText={setAlcoholConsumption} value={alcoholConsumption} keyboardType='decimal-pad'/>
-                </View>
-            
-                {renderDropDown("Blood Pressure", bloodPressure, bloodPressureData, setBloodPressure)}
+                {DropDownField("Diet", diet, dietData, setDiet)}
 
-                {renderDropDown("Sex", sex, sexData, setSex)}
+                {DropDownField("Smoking Status", smokingStatus, frequencyData, setSmokingStatus)}
 
-                {renderText('Height (m)', height, (val) => {
-                    setHeight(val)
-                    setBMI(countBMI(val, weight).toFixed(2))}
-                )}
+                {DropDownField("Alcohol Consumption", alcoholConsumption, frequencyData, setAlcoholConsumption)}
 
-                {renderText('Weight (kg)', weight, (val) => {
-                    setWeight(val)
-                    setBMI(countBMI(height, val).toFixed(2))}
-                )}
+                {DropDownField("Blood Pressure", bloodPressure, booleanData, setBloodPressure)}
 
-                {renderDropDown("Blood Type", bloodType, bloodData, setBloodType)}
-            
+                {DropDownField("Sex", sex, sexData, setSex)}
+                {DropDownField("Blood Type", bloodType, bloodData, setBloodType)}
+
+                {InputTextField('Height (cm)', height, setHeight)}
+
+                {InputTextField('Weight (kg)', weight, setWeight)}
+
                 <View style={styles.optionView}>
                     <Text style={styles.optionText}>BMI</Text>
-                    <Text style={styles.valueText}>{bmi}</Text>
+                    <Text style={styles.valueText}>{(height && weight && isFinite(bmi)) ? bmi : '-'}</Text>
                 </View>
-                <Text style={{color: 'grey', marginHorizontal: 28, marginTop: 10, marginBottom: 0, textAlign: 'justify'}}> 
-                    BMI is calculated from the inputted height and weight above, make sure that the data inputted above is correct so that your BMI measurement is also accurate
+
+                <Text style={styles.infoText}> 
+                    BMI is calculated from the inputted height and weight
                 </Text>
                 
             </ScrollView>
@@ -185,6 +227,12 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         paddingRight: 5,
         flex:1
+    },
+    infoText: {
+        color: 'grey', 
+        marginHorizontal: 28, 
+        marginTop: 10, 
+        textAlign: 'justify'
     },
 
     valueText: {
