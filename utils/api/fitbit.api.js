@@ -2,13 +2,7 @@ import { useEffect, useState } from "react";
 import ApiManagerFitbit from "./ApiManagerFitbit";
 import axios from 'axios';
 import * as Network from 'expo-network';
-import Constants from 'expo-constants';
-
-const { manifest } = Constants;
-
-const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
-
-
+import { flaskURL } from "../constants";
 
 const postAccessToken = async (payload) => {
     try {

@@ -12,13 +12,12 @@ import { useGetHello } from '../utils/api/hello.api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getActivities, getProfile, getWeeklySteps } from '../utils/api/fitbit.api';
 import { useFocusEffect } from '@react-navigation/native';
-import Constants from 'expo-constants';
+import { flaskURL }  from '../utils/constants'
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../config"
 import axios from 'axios';
 import { getUserInfo, getUser } from '../utils/api/user.api';
 
-const { manifest } = Constants;
 
 // to be replaced by real data
 const emptyWeeklySteps = [
@@ -31,7 +30,6 @@ const emptyWeeklySteps = [
   { day: "SAT", steps: 0 },
 ];
 
-const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
 const Home = ({ headerSubtitle, navigation}) => {
   // only for trial
@@ -222,7 +220,7 @@ const Home = ({ headerSubtitle, navigation}) => {
     )
     
     const leftComponent = <View style={{width:180}}>
-    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.info.firstName}</Text>
+    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData ? userData.info.firstName :"LOADING"}</Text>
     <Text style={styles.subheading}>{headerSubtitle}</Text>
     </View>
     return (
