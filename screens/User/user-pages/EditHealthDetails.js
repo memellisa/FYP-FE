@@ -4,6 +4,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useState, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import NavigationButton from '../../../components/NavigationButton';
+import { putUserHealth } from '../../../utils/api/user.api';
 
 
 const dietData = [
@@ -71,15 +72,38 @@ export default function EditHealthDetails({ route, navigation }) {
     const [medications, setMedications] = useState(data.medications)
     
 
-    // useEffect(() => {
-    //     const newData = {diet: diet, smoking_status: smokingStatus, alcohol_consumption: alcoholConsumption, blood_pressure: bloodPressure}
-    //     route.params.data = newData
-    //     console.log(route.params.data)
-    // }, [diet, smokingStatus, alcoholConsumption, bloodPressure])
     
-    const onPress = () => {
-        navigation.navigate("Profile", { data: route.params.data })
+    const onPress = async (newData) => {
+        // const tempppp = {
+        //     "firstName": "Jane",
+        //     "lastName":"Doe",
+        //     "dob": "2001/03/04",
+        //     "email": "fyp@hku.hk",
+        //     "img": "test"
+        // }
+        // console.log("NEW DATA:::",newData)
+        const result = await putUserHealth(newData)
+        console.log(result)
+        if (!result.error){
+            try {
+                // console.log('EDItted USERR', JSON.stringify(result.data))
+                navigation.navigate("Profile", { update: true })
+            } catch (e) {
+                Alert.alert('Something went wrong. Please try again')
+            }
+        } else {
+            // console.log(result.error)
+            Alert.alert('Something went wrong. Please try again')
+        }
     }
+ 
+    useEffect(() => {
+        navigation.setOptions({ 
+            headerBackTitle: '', 
+            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={() => setDone(true)}/> 
+
+        });
+    }, [])
 
     useEffect(() => {
         navigation.setOptions({ 
@@ -90,7 +114,7 @@ export default function EditHealthDetails({ route, navigation }) {
     }, [])
 
 
-    const renderDropDown = (text, value, data, setOnChange) => {
+    const DropDownField = (text, value, data, setOnChange) => {
         return(
         <View style={styles.optionView}>
             <Text style={styles.optionText}>{text}</Text>
@@ -116,39 +140,39 @@ export default function EditHealthDetails({ route, navigation }) {
                 scrollable={true}
                 hasSafeArea={false}
             >
-                {renderDropDown("Insulin", diet, booleanData, setDiet)}
+                {DropDownField("Diet", diet, dietData, setDiet)}
 
-                {renderDropDown("Diet", diet, dietData, setDiet)}
-
-                {renderDropDown("Smoking Status", smokingStatus, smokingData, setSmokingStatus)}
+                {DropDownField("Smoking Status", smokingStatus, smokingData, setSmokingStatus)}
 
                 <View style={styles.optionView}>
                     <Text style={styles.optionText}>Alcohol Consumption/L</Text>
                     <TextInput style={styles.valueText} onChangeText={setAlcoholConsumption} value={alcoholConsumption} keyboardType='decimal-pad'/>
                 </View>
-            
-                {renderDropDown("Blood Pressure", bloodPressure, bloodPressureData, setBloodPressure)}
 
-                {renderDropDown("Sex", sex, sexData, setSex)}
+                {DropDownField("Blood Pressure", bloodPressure, bloodPressureData, setBloodPressure)}
 
-                {renderText('Height (m)', height, (val) => {
-                    setHeight(val)
-                    setBMI(countBMI(val, weight).toFixed(2))}
-                )}
 
-                {renderText('Weight (kg)', weight, (val) => {
-                    setWeight(val)
-                    setBMI(countBMI(height, val).toFixed(2))}
-                )}
+                {DropDownField("Sex", sex, sexData, setSex)}
+                {DropDownField("Blood Type", bloodType, bloodData, setBloodType)}
 
-                {renderDropDown("Blood Type", bloodType, bloodData, setBloodType)}
-            
                 <View style={styles.optionView}>
-                    <Text style={styles.optionText}>BMI</Text>
-                    <Text style={styles.valueText}>{bmi}</Text>
+                    <Text style={styles.optionText}>Height (m)</Text>
+                    <TextInput style={styles.valueText} onChangeText={setHeight} value={height} keyboardType='decimal-pad'/>
                 </View>
-                <Text style={{color: 'grey', marginHorizontal: 28, marginTop: 10, marginBottom: 0, textAlign: 'justify'}}> 
-                    BMI is calculated from the inputted height and weight above, make sure that the data inputted above is correct so that your BMI measurement is also accurate
+
+                <View style={styles.optionView}>
+                    <Text style={styles.optionText}>Weight (kg)</Text>
+                    <TextInput style={styles.valueText} onChangeText={setWeight} value={weight} keyboardType='decimal-pad'/>
+                </View>
+
+
+                <View style={styles.optionView}>
+                    <Text style={styles.optionText}>BMI**</Text>
+                    <Text style={styles.valueText}>{(height && weight && isFinite(bmi)) ? bmi : '-'}</Text>
+                </View>
+
+                <Text style={styles.infoText}> 
+                    **BMI is calculated from the inputted height and weight
                 </Text>
                 
             </ScrollView>
