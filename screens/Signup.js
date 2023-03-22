@@ -1,19 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { View, StyleSheet } from 'react-native';
 import { Button, Input } from '@rneui/base';
 
 import { Formik } from 'formik'
 import { signupValidationSchema } from '../utils/validation';
-import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../config';
-
-import Constants from 'expo-constants';
-import axios from 'axios';
-
-const { manifest } = Constants;
-const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
 export default function Signup({navigation}) {
   return (
@@ -65,54 +57,7 @@ export default function Signup({navigation}) {
                 
                 <Button title="Signup" buttonStyle={styles.button} 
                   // onPress={() => navigation.replace("Personal Form")}
-                  // onPress={handleSubmit}
-                  onPress={async () => {
-                    let payload = JSON.stringify({ 'email': values.email, 'password': values.password })
-                    try {
-                        console.log(payload)
-                        const response = await axios.post(`${flaskURL}/auth/signup`, payload,{
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        });
-
-                        console.log("Image URI: " + response.data)
-                        if (response.data == "Account successfully created") {
-                          // alert("Account successfully created, you wil be logged in now")
-                          // Login directly if successful in creating account 
-                          signInWithEmailAndPassword(auth, values.email, values.password)
-                          .then((userCredential) => {
-                              // Signed in and will trigger onAuthStateChanged
-                              navigation.push("Create Account Splash")
-                              setTimeout(() => {
-                                // should show the Connected Manage Wearable page instead later
-                                // navigation.navigate("Profile");
-                              }, 3000);
-                        
-
-                          })
-                          .catch((error) => {
-                              // Log the error
-                              const errorCode = error.code;
-                              const errorMessage = error.message;
-                              console.log(errorCode)
-                              console.log(errorMessage)
-                              if (errorCode === 'auth/invalid-email' || errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password') {
-                                  Alert.alert('Email or password is incorrect')
-                              } else {
-                                  Alert.alert('Something went wrong during sign in, please sign in again')
-                                  navigation.replace("Login")
-                              }
-                          });
-                        }
-                        else {
-                          // console.log(response)
-                          alert("Error creating account \n Reason: " + response.data)
-                        }
-                    } catch (error) {
-                      alert("Error creating account \n Reason: " + error)
-                    } 
-                  }}
+                  onPress={handleSubmit}
                   disabled={!isValid || values.email === ''}
                 />
                 <Button 

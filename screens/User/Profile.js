@@ -176,7 +176,7 @@ export default function Profile({ navigation, route }) {
     const logout = () => {
         signOut(auth)
         .then(() => {
-            navigation.navigate("Login"); // CAN MAYBE USE REPLACE TO DELETE PREVIOUS DATA, AFRAID THERE IS BUG
+            navigation.replace("Login");
             console.log('User signed out!')
         });
     }

@@ -20,7 +20,6 @@ import PersonalDetailsForm from './screens/self-input-forms/PersonalDetailsForm'
 import HealthDetailsForm from './screens/self-input-forms/HealthDetailsForm';
 import GeneticsDataForm from './screens/self-input-forms/GeneticsDataForm';
 import SelfInputForm from './screens/SelfInputForm';
-import AccountCreateSplash from './screens/AccountCreateSplash';
 
 const dummydata = {
   first_name : "John",
@@ -67,7 +66,6 @@ export default RootNavigator = () => {
             <Stack.Screen name="Manage Wearable" component={ManageWearable} options={{headerBackTitle: ''}} />
             <Stack.Screen name="Confirm Auth" component={ConfirmAuth} options={{headerBackTitle: '', title: '' }} />
             <Stack.Screen name="Success Splash" component={SuccessSplash} options={{ headerShown: false }} />
-            <Stack.Screen name="Create Account Splash" component={AccountCreateSplash} options={{ headerShown: false }} />
 
             {/* <Stack.Screen name="Personal Form" component={PersonalDetailsForm} options={{ headerTitle: 'Personal Data' }} />
             <Stack.Screen name="Health Form" component={HealthDetailsForm} options={{ headerTitle: 'Health Data' }} />
