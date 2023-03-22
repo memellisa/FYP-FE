@@ -3,6 +3,7 @@ import ApiManagerFitbit from "./ApiManagerFitbit";
 import axios from 'axios';
 import * as Network from 'expo-network';
 import { flaskURL } from "../constants";
+import { auth } from "../../config";
 
 const postAccessToken = async (payload) => {
     try {
@@ -13,6 +14,23 @@ const postAccessToken = async (payload) => {
         });
         // ApiManagerFitbit('/fitbit/auth/token', { method: 'GET' }, payload);
         console.log('RESP ACC TOKEN', response.data)
+        return { data: response.data, error: null }
+    } catch (error) {
+        // console.log(payload)
+        // console.log('RESP',error.response)
+        return { data: null, error }
+    } 
+};
+
+const storeFitbitAccRefToken = async (payload) => {
+    try {
+        const response = await axios.post(`${flaskURL}/fitbit/storeToken/${auth.currentUser.uid}`, payload, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        // ApiManagerFitbit('/fitbit/auth/token', { method: 'GET' }, payload);
+        console.log('STORE TOKEN RESP:: ', response.data)
         return { data: response.data, error: null }
     } catch (error) {
         // console.log(payload)
@@ -49,9 +67,9 @@ const getProfile = async (payload) => {
 
 const getActivities = async (payload) => {
     try {
-        const response = await axios.post(`${flaskURL}/fitbit/activities`, payload, {
+        const response = await axios.get(`${flaskURL}/fitbit/activities/${auth.currentUser.uid}`, {
             headers: {
-            'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         });
         // console.log('RESP ACTIVITIES', response.data)
@@ -64,9 +82,9 @@ const getActivities = async (payload) => {
 
 const getWeeklySteps = async (payload) => {
     try {
-        const response = await axios.post(`${flaskURL}/fitbit/weeklySteps`, payload, {
+        const response = await axios.get(`${flaskURL}/fitbit/weeklySteps/${auth.currentUser.uid}`, {
             headers: {
-            'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         });
         // console.log('RESP WEEKKLY', response.data)
@@ -79,4 +97,4 @@ const getWeeklySteps = async (payload) => {
 
 
 
-export { postAccessToken, getAuthURL, getProfile, getActivities, getWeeklySteps }
+export { postAccessToken, getAuthURL, getProfile, getActivities, getWeeklySteps, storeFitbitAccRefToken }

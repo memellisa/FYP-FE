@@ -17,6 +17,8 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../config"
 import axios from 'axios';
 import { getUserInfo, getUser } from '../utils/api/user.api';
+import { Icon } from '@rneui/themed';
+import { isEqual } from 'lodash'
 
 
 // to be replaced by real data
@@ -111,7 +113,7 @@ const Home = ({ headerSubtitle, navigation}) => {
         const fetchedUserData = await AsyncStorage.getItem('userData')
         console.log('FETCHEDUSERR', (fetchedUserData))
         if (fetchedUserData && fetchedUserData !== "{}"){
-          if (fetchedUserData !== userData){
+          if (!isEqual(JSON.parse(fetchedUserData), userData)){
             setUserData(JSON.parse(fetchedUserData))
           }
         } else {
@@ -122,6 +124,7 @@ const Home = ({ headerSubtitle, navigation}) => {
               try {
                 await AsyncStorage.setItem('userData', JSON.stringify(result.data))
                 console.log('USERR', JSON.stringify(result.data))
+                getUserData()
               } catch (e) {
                 getUserData()
                 // Alert.alert('Something went wrong. Please try again')
@@ -143,7 +146,7 @@ const Home = ({ headerSubtitle, navigation}) => {
 
     useEffect(() => {
       getUserData()
-    }, [])
+    })
 
     useFocusEffect( () => {
       getFitbitTokens()
@@ -166,9 +169,8 @@ const Home = ({ headerSubtitle, navigation}) => {
         // }}
 
         const fetchActivities = async() => {
-          if (fitbitTokens && fitbitTokens !== "{}"){
-            const result = await getActivities(JSON.parse(fitbitTokens))
-            // console.log("ACTIVITY:::",JSON.stringify(result))
+            const result = await getActivities()
+            console.log("ACTIVITY:::",JSON.stringify(result))
             if (!result.error){
               let jsonResponse = JSON.parse(result.data)
               if (jsonResponse != userActivity) {
@@ -176,51 +178,50 @@ const Home = ({ headerSubtitle, navigation}) => {
                 setSummaryActivity(processSummaryActivity(jsonResponse.summary))
               }
             } else {
-                Alert.alert('Something went wrong. Please try again')
+                Alert.alert('Something went wrong getting Activities. Please try again')
             }
-        }}
+        }
 
         const fetchWeeklySteps = async() => {
-          if (fitbitTokens && fitbitTokens !== "{}"){
-            const result = await getWeeklySteps(JSON.parse(fitbitTokens) )
-            // console.log("STEPS:::",JSON.stringify(result.data))
-            if (!result.error){
-              if (result.data != userData) {
-                setWeeklySteps(result.data)
-              }
-            } else {
-                Alert.alert('Something went wrong. Please try again')
+          const result = await getWeeklySteps()
+          console.log("STEPS:::",JSON.stringify(result.data))
+          if (!result.error){
+            if (result.data != userData) {
+              setWeeklySteps(result.data)
             }
-        }}
-
-        const fetchProfilePicture  = async() => {
-          let payload = JSON.stringify({ 'user': auth.currentUser?.uid })
-          let user = auth.currentUser?.uid
-          try {
-              console.log(payload)
-              const response = await axios.get(`${flaskURL}/image/${user}`, {
-                  headers: {
-                      'Content-Type': 'application/json'
-                  }
-              });
-
-              console.log("Image URI: " + response.data)
-              setProfile(response.data)
-          } catch (error) {
-              console.log('ERROR',error)
-              setProfile('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
-          } 
+          } else {
+              Alert.alert('Something went wrong getting weekly steps. Please try again')
+          }
         }
+
+        // const fetchProfilePicture  = async() => {
+        //   let payload = JSON.stringify({ 'user': auth.currentUser?.uid })
+        //   let user = auth.currentUser?.uid
+        //   try {
+        //       console.log(payload)
+        //       const response = await axios.get(`${flaskURL}/image/${user}`, {
+        //           headers: {
+        //               'Content-Type': 'application/json'
+        //           }
+        //       });
+
+        //       console.log("Image URI: " + response.data)
+        //       setProfile(response.data)
+        //   } catch (error) {
+        //       console.log('ERROR',error)
+        //       setProfile('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
+        //   } 
+        // }
 
         // fetchProfile()
         fetchActivities()
         fetchWeeklySteps()
-        fetchProfilePicture()
+        // fetchProfilePicture()
       }, [fitbitTokens])
     )
     
     const leftComponent = <View style={{width:180}}>
-    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData ? userData.info.firstName :"LOADING"}</Text>
+    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData ? userData.info.firstName : "LOADING"}</Text>
     <Text style={styles.subheading}>{headerSubtitle}</Text>
     </View>
     return (
@@ -231,7 +232,7 @@ const Home = ({ headerSubtitle, navigation}) => {
               size={64}
               rounded
               // style={styles.avatar}
-              source={{uri: profile}}
+              source={{uri: userData?.info.img ? userData.info.img : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
               onPress={() => navigation.push("Profile")}
               containerStyle={{ backgroundColor: '#6733b9' }}
             />
@@ -245,7 +246,21 @@ const Home = ({ headerSubtitle, navigation}) => {
           </View>
           
           <Text style={{...styles.heading,fontSize: 20, marginLeft: 20, marginTop: 10}}>Weekly Log Steps</Text>
-          <BarGraph data={weeklySteps ? weeklySteps : emptyWeeklySteps}/>
+          <View>
+            {/* <View style={{...styles.warningGraph}}>
+              <Icon
+                name='warning'
+                type='entypo'
+                color='#517fa4'
+                style={{left: -0}}
+                size='40'
+              />
+              <Text style={{textAlign: 'center', color: 'gray'}}>
+                Something is wrong with the server, try reconnecting your smartwatch from the profile in a few moment
+              </Text>
+            </View> */}
+            <BarGraph data={weeklySteps ? weeklySteps : emptyWeeklySteps}/>
+          </View>
           <MotivationCard title="Keep the progress!" text="You have 47% more steps than last week!" minWidth={350}/>
           <StatusBar style="auto" />
         </ScrollView>
@@ -267,6 +282,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Poppins-SemiBold'
   },
+
+  warningGraph: {
+    width: '50%',
+    textAlign: 'center',
+    position: 'absolute',
+    top: '20%',
+    left: '30%',
+    right: 0,
+    padding: 'auto',
+    margin: 'auto',
+    // transform: 'translateY(-50%)',
+    color: 'gray',
+    zIndex: 100,
+  },
+
   subheading: {
     color: 'black',
     fontSize: 18,

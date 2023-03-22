@@ -98,7 +98,7 @@ export default function Profile({ navigation, route }) {
 
     // STILL NEED TO BE FIXED, HOW TO USE AXIOS GET???
     useEffect(() => {
-        getProfilePicture()
+        // getProfilePicture()
         // getUserPersonalData()
         getUserData()
     }, [isFocused])
@@ -106,6 +106,8 @@ export default function Profile({ navigation, route }) {
     const getUserData = async () => {
         const fetchUser = async() => {
             const result = await getUser()
+
+            console.log("WENMT HERERERE")
             
             if (!result.error){
               try {
@@ -129,7 +131,7 @@ export default function Profile({ navigation, route }) {
                 const fetchedUserData = await AsyncStorage.getItem('userData')
                 console.log('FETCHEDUSERR', (fetchedUserData))
                 if (fetchedUserData && fetchedUserData !== "{}"){
-                  if (fetchedUserData !== userData){
+                  if (!isEqual(JSON.parse(fetchedUserData), userData)){
                     setUserData(JSON.parse(fetchedUserData))
                   }
                 } else {
@@ -149,25 +151,25 @@ export default function Profile({ navigation, route }) {
     //     setPersonalData(resultInfo)
     // }
 
-    async function getProfilePicture() {
-        // const auth = getAuth();
-        let payload = JSON.stringify({ 'img': auth.currentUser?.uid })
-        let user = auth.currentUser?.uid
-        try {
-            console.log(payload)
-            const response = await axios.get(`${flaskURL}/image/${user}`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+    // async function getProfilePicture() {
+    //     // const auth = getAuth();
+    //     let payload = JSON.stringify({ 'img': auth.currentUser?.uid })
+    //     let user = auth.currentUser?.uid
+    //     try {
+    //         console.log(payload)
+    //         const response = await axios.get(`${flaskURL}/image/${user}`, {
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         });
 
-            console.log("Image URI: " + response.data)
-            setProfile(response.data)
-        } catch (error) {
-            console.log('ERROR',error.response)
-            setProfile('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
-        } 
-    }
+    //         console.log("Image URI: " + response.data)
+    //         setProfile(response.data)
+    //     } catch (error) {
+    //         console.log('ERROR',error.response)
+    //         setProfile('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
+    //     } 
+    // }
 
     const logout = () => {
         signOut(auth)
@@ -217,8 +219,10 @@ export default function Profile({ navigation, route }) {
                 }
             });
 
-            console.log("Image URI: " + response.data)
-            return response.data
+            console.log("Image URI: " + JSON.stringify(response.data))
+            await AsyncStorage.setItem('userData', JSON.stringify(response.data))
+            getUserData()
+            return 
         } catch (error) {
             console.log('RESP',error.response)
         } 
@@ -231,7 +235,8 @@ export default function Profile({ navigation, route }) {
                     <Avatar
                         size={100}
                         rounded
-                        source={{uri: profile}}/>
+                        source={{uri: userData?.info.img ? userData.info.img : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
+                    />
                     <Button radius={8} color="#f2f2f6" onPress={pickImage}>
                         <Text style={{color:'#0095FE'}}>Edit image</Text>
                     </Button>

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
-import { getAuthURL, postAccessToken } from '../../utils/api/fitbit.api';
+import { getAuthURL, postAccessToken, storeFitbitAccRefToken } from '../../utils/api/fitbit.api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -27,9 +27,13 @@ export default function ConfirmAuth({ route, navigation }) {
                 if (!result.error){
                     try {
                         const fitbitTokens = JSON.stringify({"accessToken": jsonResult.access_token, "refreshToken": jsonResult.refresh_token})
-                        await AsyncStorage.setItem('fitbitTokens', fitbitTokens)
+                        const result = await storeFitbitAccRefToken(JSON.stringify({"accessToken": jsonResult.access_token, "refreshToken": jsonResult.refresh_token}))
+                        // await AsyncStorage.setItem('fitbitTokens', fitbitTokens)
+                        if (result.data != "Success store token") {
+                            Alert.alert('Error trying to store access token in database, please login again to Fitbit')
+                        }
                     } catch (e) {
-                        Alert.alert('Something went wrong. Please try again')
+                        Alert.alert('Error trying to store access token in database, please login again to Fitbit')
                     }
                     navigation.push("Success Splash")
                 } else {
