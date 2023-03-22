@@ -9,11 +9,10 @@ import { signupValidationSchema } from '../utils/validation';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config';
 
-import Constants from 'expo-constants';
+import { flaskURL } from '../utils/constants';
 import axios from 'axios';
 
-const { manifest } = Constants;
-const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
+
 
 export default function Signup({navigation}) {
   return (

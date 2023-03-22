@@ -11,11 +11,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import axios from 'axios';
-import Constants from 'expo-constants';
+import { flaskURL } from '../utils/constants';
 import { auth } from '../config';
 
-const { manifest } = Constants;
-const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
 const Main = ({ navigation }) => {
     const [index, setIndex] = useState(0);

@@ -14,16 +14,12 @@ import axios from 'axios';
 
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from 'expo-file-system';
-import Constants from 'expo-constants';
+import { flaskURL } from '../../utils/constants';
 import { getUser, getUserInfo } from '../../utils/api/user.api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
-const { manifest } = Constants;
-
 const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
-
-const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
 
 // dummy data
@@ -176,6 +172,7 @@ export default function Profile({ navigation, route }) {
     const logout = () => {
         signOut(auth)
         .then(() => {
+            AsyncStorage.clear();
             navigation.navigate("Login"); // CAN MAYBE USE REPLACE TO DELETE PREVIOUS DATA, AFRAID THERE IS BUG
             console.log('User signed out!')
         });
