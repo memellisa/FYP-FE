@@ -10,7 +10,12 @@ import { getProfile } from '../utils/api/fitbit.api';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import axios from 'axios';
+import Constants from 'expo-constants';
+import { auth } from '../config';
 
+const { manifest } = Constants;
+const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
 const Main = ({ navigation }) => {
     const [index, setIndex] = useState(0);
@@ -18,6 +23,24 @@ const Main = ({ navigation }) => {
 
     const iconSize = 35;
 
+    async function checkUserData() {
+        try {
+            let user = auth.currentUser?.uid
+            const response = await axios.get(`${flaskURL}/user/verifyData/${user}`);
+            let hasData = response.data
+            if (hasData) {
+                return
+            } else {
+                navigation.push("Self Input Form")
+            }
+        } catch(error) {
+            return { data: null, error }
+        }
+    }
+
+    useEffect(() => {
+        checkUserData()
+    }, []) // Make auth only run once so not duplicate listener
     
   
     
