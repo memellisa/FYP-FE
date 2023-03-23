@@ -21,73 +21,23 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
 
-
-// dummy data
-// const personaldata = [
-//     {label: "First Name", value: "John"},
-//     {label: "Last Name", value: "Doe"},
-//     {label: "Date of Birth", value: "1/1/2000"},
-//     {label: "Username", value: "johndoe"},
-//     {label: "Socio-Economic Status", value: "Rich"},
-//     {label: "Phone Number", value: 98237191},
-//     {label: "Email", value: "johndoe@mail.com"}
-// ]
-
-// const healthdata = [
-//     {label: "Diet", value : "Keto"},
-//     {label: "Smoking Status", value : "Heavy"},
-//     {label: "Alcohol Consumption/L", value: "0.5"},
-//     {label: "Blood Pressure", value: "Normal"},
-// ]
-
-// const geneticsdata = [
-//     {label: "Age", value : 22},
-//     {label: "Sex", value : "Male"},
-//     {label: "Height (cm)", value: 1.80},
-//     {label: "Weight (kg)", value: 75},
-//     {label: "Blood Type", value: "O+"},
-    
-// ]
-
-// const personaldata = {
-//     first_name: "John",
-//     last_name: "Doe",
-//     dob: "1/1/2000",
-//     username: "johndoe",
-//     socio_economic_status: "Rich",
-//     phone_number: 98237191,
-//     email: "johndoe@mail.com"
-// }
-
-// const healthdata = {
-//     diet: "Keto",
-//     smoking_status: "Heavy",
-//     alcohol_consumption: 0.5,
-//     blood_pressure: "Normal",
-//     age: 22,
-//     sex: "Male",
-//     height: 1.80,
-//     weight: 75,
-//     blood_type: "O+"
-// }
-
-// const geneticsdata = {
-//     age: 22,
-//     sex: "Male",
-//     height: 1.80,
-//     weight: 75,
-//     blood_type: "O+"
-// }
+const calculateAge = (birthday) => {
+    const today = new Date()
+    const birthDate = new Date(birthday);
+    var tempAge = today.getFullYear() - birthDate.getFullYear()
+    var m = today.getMonth() - birthDate.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        tempAge--
+    }
+    return tempAge
+}
 
 export default function Profile({ navigation, route }) {
     // const data = route.params.data
     console.log("DATA PARAMS::", route.params)
 
-    const [image, setImage] = useState(null);
-    const [personalData, setPersonalData] = useState(null)
-    // const personaldata2 = jsonToArray(personaldata1)
-    // const healthdata2 = jsonToArray(healthdata1)
-    // const geneticsdata2 = jsonToArray(geneticsdata1)
+    // const [image, setImage] = useState(null);
+    // const [personalData, setPersonalData] = useState(null)
     const [userData, setUserData] = useState(null);
 
     const isFocused = useIsFocused()
@@ -98,16 +48,15 @@ export default function Profile({ navigation, route }) {
 
     // STILL NEED TO BE FIXED, HOW TO USE AXIOS GET???
     useEffect(() => {
-        // getProfilePicture()
-        // getUserPersonalData()
         getUserData()
+        console.log("FOCUSED")
     }, [isFocused])
 
     const getUserData = async () => {
         const fetchUser = async() => {
             const result = await getUser()
 
-            console.log("WENMT HERERERE")
+            // console.log("WENMT HERERERE")
             
             if (!result.error){
               try {
@@ -250,7 +199,8 @@ export default function Profile({ navigation, route }) {
                     dataToShow={{
                         "firstName": userData?.info.firstName,
                         "lastName": userData?.info.lastName,
-                        "dob": userData?.info.dob}}/>
+                        "dob": userData?.info.dob,
+                        "age": calculateAge(userData?.info.dob)}}/>
                 
                 <DetailsCard 
                     title={"Health Details"} 

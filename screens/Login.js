@@ -6,7 +6,6 @@ import { Button, Input, Text } from '@rneui/base';
 
 import { signInWithEmailAndPassword, getAuth, onAuthStateChanged  } from 'firebase/auth';
 import { auth } from '../config';
-import ApiManager from '../utils/api/ApiManager';
 
 
 import { Formik } from 'formik'

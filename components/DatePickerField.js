@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
         width: 190,
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
+        color: '#0F52BA'
     },
 
     modalView: {

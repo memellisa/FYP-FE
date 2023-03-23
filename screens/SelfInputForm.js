@@ -1,4 +1,4 @@
-import { Modal, StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { Modal, StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -8,134 +8,74 @@ import { getFormatedDate } from 'react-native-modern-datepicker'
 import DatePickerField from '../components/DatePickerField';
 import DropDownField from '../components/DropdownField';
 import InputTextField from '../components/InputTextField';
+import { Button } from '@rneui/base';
+import { Formik } from 'formik';
+import { userHealthValidationSchema, userInfoValidationSchema } from '../utils/validation';
+import { createUser } from '../utils/api/user.api';
+import { bloodData, booleanData, dietData, frequencyData, sexData } from '../utils/constants';
 
 
 const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
 
-const dietData = [
-    { label: 'No Restrictions', value: 'No Restrictions' },
-    { label: 'Keto', value: 'Keto' },
-    { label: 'Paleo', value: 'Paleo' },
-    { label: 'Vegetarian', value: 'Vegetarian' },
-    { label: 'Vegan', value: 'Vegan' },
-    { label: 'Mediterranean', value: 'Mediterranean' },
-    { label: 'Low Carb', value: 'Low Carb' },
-    { label: 'No Sugar', value: 'No Sugar' },
-];
-
-const smokingData = [
-    { label: 'Never', value: 'Never' },
-    { label: 'Heavy', value: 'Heavy' },
-    { label: 'Light', value: 'Light' },
-];
-
-const bloodPressureData = [
-    { label: 'Normal', value: 'Normal' },
-    { label: 'Elevated', value: 'Elevated' },
-    { label: 'HBP Stage 1', value: 'HBP Stage 1' },
-    { label: 'HBP Stage 2', value: 'HBP Stage 2' },
-    { label: 'HBP Stage 3', value: 'HBP Stage 3' },
-];
-
-const sexData = [
-    { label: 'Male', value: 'Male' },
-    { label: 'Female', value: 'Female' },
-];
-
-const bloodData = [
-    { label: 'A+', value: 'A+' },
-    { label: 'A-', value: 'A-' },
-    { label: 'B+', value: 'B+' },
-    { label: 'B-', value: 'B-' },
-    { label: 'AB+', value: 'AB+' },
-    { label: 'AB-', value: 'AB-' },
-    { label: 'O+', value: 'O+' },
-    { label: 'O-', value: 'O-' },
-]
-
-
 export default function SelfInputForm({ route, navigation }) {
-    // const otherData = route.params.data
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [diet, setDiet] = useState('')
-    const [smokingStatus, setSmokingStatus] = useState('')
-    const [alcoholConsumption, setAlcoholConsumption] = useState('')
-    const [bloodPressure, setBloodPressure] = useState('')
-    const [sex, setSex] = useState('')
-    const [bloodType, setBloodType] = useState('')
-    const [age, setAge] = useState(null)
-    const [height, setHeight] = useState('')
-    const [weight, setWeight] = useState('')
-    const [bmi, setBMI] = useState('')
-    const [formData, setFormData] = useState('')
 
     const today = new Date()
     const endDate = getFormatedDate(today.setDate(today.getDate()), 'YYYY/MM/DD')
-    const [dateOfBirth, setDateOfBirth] = useState(endDate)
     const [openModal, setOpenModal] = useState(false)
-
-    const onPress = () => {
-        console.log('ALL DATA',formData)
-        // send data to db
-        navigation.navigate("Main")
-    }
-
-    useEffect(() => {
-        setBMI(countBMI(height, weight).toFixed(2))
-    }, [height, weight])
-
-    useEffect(() => {
-        setFormData( {
-            'personal-data':{
-                'first_name': firstName,
-                'last_name': lastName,
-                'dob':  dateOfBirth,
-            },
-            'health-data': {
-                'diet': diet,
-                'smoking_status': smokingStatus,
-                'alcohol-consumption': alcoholConsumption,
-                'blood-pressure': bloodPressure,
-                'sex': sex,
-                'blood-type': bloodType,
-                'age': age,
-                'height': height,
-                'weight': weight,
-                'bmi': bmi
-            }
-        })
-    }, [firstName,lastName, dateOfBirth, diet, smokingStatus, alcoholConsumption, bloodPressure, sex,bloodType, age, weight, height, bmi])
-
-    useEffect(() => {
-        navigation.setOptions({ 
-            headerBackTitle: '', 
-            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={onPress}/> 
-        });
-    }, [])
-
-    
 
     const handleOnPress = () => {
         setOpenModal(!openModal)
-        calculateAge()
     }
 
-    const handleChangeDOB = (propDate) => {
-        setDateOfBirth(propDate)
-    }
-
-    const calculateAge = () => {
-        const birthDate = new Date(dateOfBirth);
-        console.log("DATES",today, birthDate)
+    const calculateAge = (birthday) => {
+        const birthDate = new Date(birthday);
         var tempAge = today.getFullYear() - birthDate.getFullYear()
         var m = today.getMonth() - birthDate.getMonth()
         if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
             tempAge--
         }
-        setAge(tempAge)
+        return tempAge
     }
 
+    const onPressDone = async (newData) => {
+        const temp = {
+            "info": {
+                "dob": newData.dob,
+                "firstName": newData.firstName,
+                "lastName": newData.lastName,
+                "img": null,
+                // "email": ''
+            },
+            "health": {
+                "alcoholConsumption": parseInt(newData.alcoholConsumption) ,
+                "bloodPressure": parseInt(newData.bloodPressure) ? true : false,
+                "bloodType": newData.bloodType,
+                "cholesterol": parseInt(newData.cholesterol) ? true : false,
+                "diet": newData.diet,
+                "height": parseInt(newData.height),
+                "insulin": parseInt(newData.insulin) ? true : false,
+                "sex": newData.sex,
+                "smokingStatus": parseInt(newData.smokingStatus),
+                "weight": parseInt(newData.weight)
+            }
+         }
+        //  console.log("TO BE SENT::",temp)
+        sendData(temp)
+    }
+
+    const sendData = async (newData) => {
+        console.log("NEW DATA:::",newData)
+        const result = await createUser(newData)
+        // console.log("EDIT HEALTH:::",result)
+        if (!result.error){
+            console.log('CREATED USERR', JSON.stringify(result.data))
+            navigation.navigate('Main')
+           
+        } else {
+            console.log(result.error)
+            Alert.alert('Something went wrong. Please try again')
+        }
+    }
     return (
         <SafeAreaProvider>
             <ScrollView
@@ -144,63 +84,127 @@ export default function SelfInputForm({ route, navigation }) {
                     keyboardDismissMode="interactive"
                     automaticallyAdjustKeyboardInsets={true}
                 >
-                
                 <Text style={styles.title}> 
                     Please fill in the fields below to allow us to better understand you
                 </Text>
-                
+                <Formik
+                    validateOnMount={true}
+                    validationSchema={userInfoValidationSchema.concat(userHealthValidationSchema)}
+                    initialValues={{ firstName:'', lastName:'', dob:endDate, insulin:'',cholesterol:'', diet:'', smokingStatus:'', alcoholConsumption:'', bloodPressure:'', sex:'', height:'', weight:'', bloodType:''}}
+                    onSubmit={values => onPressDone(values)}
+                >
+                    {({ handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    values,
+                    errors,
+                    touched,
+                    isValid, }) => (
+                    <>
+                        {InputTextField('First Name', values.firstName, handleChange('firstName'), (errors.firstName && touched.firstName) ? errors.firstName : '', handleBlur('firstName'))}
 
-                {InputTextField('First Name', firstName, setFirstName)}
+                        {InputTextField('Last Name', values.lastName, handleChange('lastName'), (errors.lastName && touched.lastName) ? errors.lastName : '', handleBlur('lastName'))}
 
-                {InputTextField('Last Name', lastName, setLastName)}
+                        {/* {DatePickerField('Date of Birth', openModal, handleOnPress, dateOfBirth, handleChangeDOB)} */}
+                        {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))}
 
-                {DatePickerField('Date of Birth', openModal, handleOnPress, dateOfBirth, handleChangeDOB)}
 
-                <View style={styles.optionView}>
-                    <Text style={styles.optionText}>Age*</Text>
-                    <Text style={styles.valueText}>{age != null ? age : '-'}</Text>
-                </View>
+                        <View style={styles.optionView}>
+                            <Text style={styles.optionText}>Age</Text>
+                            <Text style={styles.valueText}>{ !isNaN(values.dob) || !isNaN(calculateAge(values.dob)) ? calculateAge(values.dob) : '-'}</Text>
+                        </View>
 
-                {DropDownField("Diet", diet, dietData, setDiet)}
+                        {DropDownField(
+                            "Diet", 
+                            values.diet, 
+                            dietData, 
+                            handleChange('diet'),  
+                            (val) => touched.diet = val, 
+                            (errors.diet && touched.diet) ? errors.diet : '')}
+                     
+                        {DropDownField(
+                            "Smoking Status", 
+                            values.smokingStatus, 
+                            frequencyData, 
+                            handleChange('smokingStatus'),  
+                            (val) => touched.smokingStatus = val, 
+                            (errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')}
 
-                {DropDownField("Smoking Status", smokingStatus, smokingData, setSmokingStatus)}
+                        {DropDownField(
+                            "Alcohol Consumption", 
+                            values.alcoholConsumption, 
+                            frequencyData, 
+                            handleChange('alcoholConsumption'),  
+                            (val) => touched.alcoholConsumption = val, 
+                            (errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')}
 
-                <View style={styles.optionView}>
-                    <Text style={styles.optionText}>Alcohol Consumption/L</Text>
-                    <TextInput style={styles.valueText} onChangeText={setAlcoholConsumption} value={alcoholConsumption} keyboardType='decimal-pad'/>
-                </View>
+                        {DropDownField(
+                            "Blood Pressure", 
+                            values.bloodPressure, 
+                            booleanData, 
+                            handleChange('bloodPressure'),  
+                            (val) => touched.bloodPressure = val, 
+                            (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '')}
 
-                {DropDownField("Blood Pressure", bloodPressure, bloodPressureData, setBloodPressure)}
-                
+                        {DropDownField(
+                            "Insulin", 
+                            values.insulin, 
+                            booleanData, 
+                            handleChange('insulin'),  
+                            (val) => touched.insulin = val, 
+                            (errors.insulin && touched.insulin) ? errors.insulin : '')}
 
-                {DropDownField("Sex", sex, sexData, setSex)}
-                {DropDownField("Blood Type", bloodType, bloodData, setBloodType)}
+                        {DropDownField(
+                            "Cholesterol", 
+                            values.cholesterol, 
+                            booleanData, 
+                            handleChange('cholesterol'),  
+                            (val) => touched.cholesterol = val, 
+                            (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '')}
 
-                <View style={styles.optionView}>
-                    <Text style={styles.optionText}>Height (cm)</Text>
-                    <TextInput style={styles.valueText} onChangeText={setHeight} value={height} keyboardType='decimal-pad'/>
-                </View>
+                        {DropDownField(
+                            "Sex", 
+                            values.sex, 
+                            sexData, 
+                            handleChange('sex'),  
+                            (val) => touched.sex = val, 
+                            (errors.sex && touched.sex) ? errors.sex : '')}
 
-                <View style={styles.optionView}>
-                    <Text style={styles.optionText}>Weight (kg)</Text>
-                    <TextInput style={styles.valueText} onChangeText={setWeight} value={weight} keyboardType='decimal-pad'/>
-                </View>
-                
-            
-                <View style={styles.optionView}>
-                    <Text style={styles.optionText}>BMI**</Text>
-                    <Text style={styles.valueText}>{(height && weight && isFinite(bmi)) ? bmi : '-'}</Text>
-                </View>
+                        {DropDownField(
+                            "Blood Type", 
+                            values.bloodType, 
+                            bloodData, 
+                            handleChange('bloodType'),  
+                            (val) => touched.bloodType = val, 
+                            (errors.bloodType && touched.bloodType) ? errors.bloodType : '')}
 
-                <View style={{marginBottom: 40, marginTop: 20}}>
-                    <Text style={styles.infoText}> 
-                        *Age is calculated from the inputted date of birth
-                    </Text>
-                    <Text style={styles.infoText}> 
-                        **BMI is calculated from the inputted height and weight
-                    </Text>
-                </View>
-                
+                        {InputTextField('Height (cm)', values.height, handleChange('height'), (errors.height && touched.height) ? errors.height : '', handleBlur('height'))}
+
+                        {InputTextField('Weight (kg)', values.weight, handleChange('weight'), (errors.weight && touched.weight) ? errors.weight : '', handleBlur('weight'))}
+
+                        
+                    
+                        <View style={styles.optionView}>
+                            <Text style={styles.optionText}>BMI</Text>
+                            <Text style={styles.valueText}>{(values.height && values.weight && isFinite(countBMI(values.height, values.weight))) ? countBMI(values.height, values.weight) : '-'}</Text>
+                        </View>
+
+                        {/* <View style={{marginBottom: 40, marginTop: 20}}>
+                            <Text style={styles.infoText}> 
+                                *Age is calculated from the inputted date of birth
+                            </Text>
+                            <Text style={styles.infoText}> 
+                                **BMI is calculated from the inputted height and weight
+                            </Text>
+                        </View> */}
+                        <Button 
+                            title="Done" 
+                            buttonStyle={styles.button} 
+                            onPress={handleSubmit}
+                            disabled={!isValid}
+                        />
+                    </>)}
+                </Formik>
             </ScrollView>
         </SafeAreaProvider>
       );
@@ -208,8 +212,6 @@ export default function SelfInputForm({ route, navigation }) {
 
 const styles = StyleSheet.create({
     screenContainer: {
-        // alignItems: 'center',
-        // marginTop: -65,
         
         flex: 1,
         backgroundColor: '#fff',
@@ -299,7 +301,16 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5
-    }
+    },
+
+    button: {
+        marginTop: 30,
+        marginBottom: 40,
+        width: 180,
+        height: 50,
+        borderRadius: 5,
+        alignSelf: 'center'
+    },
 
 
 })

@@ -7,40 +7,29 @@ import NavigationButton from '../../../components/NavigationButton';
 import { putUserInfo } from '../../../utils/api/user.api';
 import DatePickerField from '../../../components/DatePickerField';
 import InputTextField from '../../../components/InputTextField';
+import { Formik } from 'formik';
+import { userInfoValidationSchema } from '../../../utils/validation';
 
 
 export default function EditPersonalDetails({ route, navigation }) {
     const data = route.params.data
-
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [dateOfBirth, setDateOfBirth] = useState('')
     const [openModal, setOpenModal] = useState(false)
-    const [age, setAge] = useState(null)
-    const [done, setDone] = useState(null)
 
-    const calculateAge = () => {
+    const calculateAge = (birthday) => {
         const today = new Date()
-        const birthDate = new Date(dateOfBirth);
-        console.log("DATES",today, birthDate)
+        const birthDate = new Date(birthday);
         var tempAge = today.getFullYear() - birthDate.getFullYear()
         var m = today.getMonth() - birthDate.getMonth()
         if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
             tempAge--
         }
-        setAge(tempAge)
+        return tempAge
     }
-                            
 
     const handleOnPress = () => {
         setOpenModal(!openModal)
-        calculateAge()
     }
 
-    const handleChangeDOB = (propDate) => {
-        setDateOfBirth(propDate)
-    }
-    
     const onPress = async (newData) => {
         // const tempppp = {
         //     "firstName": "Jane",
@@ -50,7 +39,7 @@ export default function EditPersonalDetails({ route, navigation }) {
         //     "img": "test"
         // }
         // console.log("NEW DATA:::",newData)
-        const result = await putUserInfo(newData)
+        const result = await putUserInfo({...newData, "img": data.img})
         console.log(result)
         if (!result.error){
             try {
@@ -64,29 +53,6 @@ export default function EditPersonalDetails({ route, navigation }) {
             Alert.alert('Something went wrong. Please try again')
         }
     }
- 
-    useEffect(() => {
-        navigation.setOptions({ 
-            headerBackTitle: '', 
-            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={() => setDone(true)}/> 
-
-        });
-        setFirstName(data.firstName)
-        setLastName(data.lastName)
-        setDateOfBirth(data.dob)
-    }, [])
-
-    useEffect(() => {
-        if (done) {
-            onPress({
-                "firstName": firstName,
-                "lastName": lastName,
-                "dob": dateOfBirth,
-                "email": data.email,
-                "img": data.img
-            })
-        }
-    }, [done])
 
 
     return (
@@ -96,21 +62,41 @@ export default function EditPersonalDetails({ route, navigation }) {
                 scrollable={true}
                 hasSafeArea={false}
             >
-                {InputTextField('First Name', firstName, setFirstName)}
+                <Formik
+                    validateOnMount={true}
+                    validationSchema={userInfoValidationSchema}
+                    initialValues={{ firstName: data.firstName, lastName: data.lastName, dob: data.dob}}
+                    onSubmit={values => onPress(values)}
+                >
+                    {({ handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    values,
+                    errors,
+                    touched,
+                    isValid, }) => (
+                    <>
+                        {isValid ? navigation.setOptions({ 
+                            headerBackTitle: '', 
+                            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={handleSubmit}/>}) : 
+                            navigation.setOptions({ headerBackTitle: '',  headerRight: null })
+                        }
 
-                {InputTextField('Last Name', lastName, setLastName)}
+                        {InputTextField('First Name', values.firstName, handleChange('firstName'), (errors.firstName && touched.firstName) ? errors.firstName : '', handleBlur('firstName'))}
 
-                {DatePickerField('Date of Birth', openModal, handleOnPress, dateOfBirth, handleChangeDOB)}
+                        {InputTextField('Last Name', values.lastName, handleChange('lastName'), (errors.lastName && touched.lastName) ? errors.lastName : '', handleBlur('lastName'))}
 
-                <View style={styles.optionView}>
-                    <Text style={styles.optionText}>Age*</Text>
-                    <Text style={styles.valueText}>{age != null ? age : '-'}</Text>
-                </View>
+                        {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))}
+
+                        <View style={styles.optionView}>
+                            <Text style={styles.optionText}>Age</Text>
+                            <Text style={styles.valueText}>{ !isNaN(values.dob) || !isNaN(calculateAge(values.dob)) ? calculateAge(values.dob) : '-'}</Text>
+                        </View>
+                    </>)}
+                </Formik>
                 
             </ScrollView>
         </SafeAreaProvider>
-        
-    
       );
 }
 

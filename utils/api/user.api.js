@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import ApiManagerFitbit from "./ApiManagerFitbit";
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../config"
@@ -7,22 +6,22 @@ import { flaskURL } from "../constants";
 
 
 
-// const postAccessToken = async (payload) => {
-//     try {
-//         const response = await axios.post(`${flaskURL}/user`, payload, {
-//             headers: {
-//             'Content-Type': 'application/json'
-//             }
-//         });
-//         // ApiManagerFitbit('/fitbit/auth/token', { method: 'GET' }, payload);
-//         console.log('RESP',response)
-//         return { data: response.data, error: null }
-//     } catch (error) {
-//         // console.log(payload)
-//         // console.log('RESP',error.response)
-//         return { data: null, error }
-//     } 
-// };
+const createUser = async (payload) => {
+    try {
+        const user = auth.currentUser.uid
+        const response = await axios.post(`${flaskURL}/user/${user}`, payload, {
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        });
+        console.log('RESP',response)
+        return { data: response.data, error: null }
+    } catch (error) {
+        // console.log(payload)
+        // console.log('RESP',error.response)
+        return { data: null, error }
+    } 
+};
 
 // const auth = getAuth();
 
@@ -51,6 +50,7 @@ const getUser = async () => {
 const getUserInfo = async () => {
     
     try {
+        const user = auth.currentUser.uid
         // console.log(`${flaskURL}/user/info/${user}`)
         const response = await axios.get(`${flaskURL}/user/info/${user}`,{
             headers: {
@@ -67,6 +67,7 @@ const getUserInfo = async () => {
 
 const putUserInfo = async (data) => {
     try {
+        const user = auth.currentUser.uid
         const response = await axios.put(`${flaskURL}/user/info/${user}`, data);
         // console.log('EDITTED USER INFO::',JSON.stringify(response))
         return { data: response.data, error: null }
@@ -78,6 +79,7 @@ const putUserInfo = async (data) => {
 const getUserHealth = async () => {
     
     try {
+        const user = auth.currentUser.uid
         // console.log(`${flaskURL}/user/health/${user}`)
         const response = await axios.get(`${flaskURL}/user/health/${user}`,{
             headers: {
@@ -94,6 +96,7 @@ const getUserHealth = async () => {
 
 const putUserHealth = async (data) => {
     try {
+        const user = auth.currentUser.uid
         const response = await axios.put(`${flaskURL}/user/health/${user}`, data);
         // console.log('EDITTED USER HEALTH::',JSON.stringify(response))
         return { data: response.data, error: null }
@@ -102,4 +105,4 @@ const putUserHealth = async (data) => {
     } 
 };
 
-export { getUser, getUserHealth, getUserInfo, putUserInfo, putUserHealth }
+export { createUser, getUser, getUserHealth, getUserInfo, putUserInfo, putUserHealth }

@@ -4,7 +4,7 @@ const loginValidationSchema = yup.object().shape({
     email: yup
       .string()
       .email("Please enter valid email")
-      .required('Email Address is Required'),
+      .required('Email Address is required'),
     password: yup
       .string()
       .min(6, ({ min }) => `Password must be at least ${min} characters`)
@@ -15,7 +15,7 @@ const signupValidationSchema = yup.object().shape({
     email: yup
         .string()
         .email("Please enter valid email")
-        .required('Email Address is Required'),
+        .required('Email Address is required'),
     password: yup
         .string()
         .min(6, ({ min }) => `Password must be at least ${min} characters`)
@@ -25,4 +25,53 @@ const signupValidationSchema = yup.object().shape({
         .oneOf([yup.ref('password'), null], 'Passwords must match')
 })
 
-export { loginValidationSchema, signupValidationSchema }
+const userInfoValidationSchema = yup.object().shape({
+    firstName: yup
+      .string()
+      .required('Please enter your first name'),
+    lastName: yup
+      .string()
+      .default('')
+      .nullable(),
+    dob: yup
+      .date()
+      .default(() => new Date())
+      .required('Please enter your date of birth'),
+})
+
+const userHealthValidationSchema = yup.object().shape({
+    insulin: yup
+      .string()
+      .required('Please select one'),
+    cholesterol: yup
+      .string()
+      .required('Please select one'),
+    bloodPressure: yup
+      .string()
+      .required('Please select one'),
+    alcoholConsumption: yup
+      .string()
+      .required('Please select one'),
+    smokingStatus: yup
+      .string()
+      .required('Please select one'),
+    diet: yup
+      .string()
+      .required('Please select one'),
+    sex: yup
+      .string()
+      .required('Please select one'),
+    height: yup
+      .string()
+      .matches(/^\d*\.?\d*$/, { message: 'Height must be a number' })
+      .required('Please enter your height in cm'),
+    weight: yup
+      .string()
+      .matches(/^\d*\.?\d*$/, { message: 'Weight must be a number' })
+      .required('Please enter your weight in kg'),
+    bloodType: yup
+      .string()
+      .required('Please select one'),
+})
+
+export { loginValidationSchema, signupValidationSchema, userInfoValidationSchema, userHealthValidationSchema }
