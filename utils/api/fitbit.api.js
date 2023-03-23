@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import ApiManagerFitbit from "./ApiManagerFitbit";
 import axios from 'axios';
 import * as Network from 'expo-network';
 import { flaskURL } from "../constants";
@@ -12,7 +11,6 @@ const postAccessToken = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        // ApiManagerFitbit('/fitbit/auth/token', { method: 'GET' }, payload);
         console.log('RESP ACC TOKEN', response.data)
         return { data: response.data, error: null }
     } catch (error) {
@@ -29,7 +27,6 @@ const storeFitbitAccRefToken = async (payload) => {
                 'Content-Type': 'application/json'
             }
         });
-        // ApiManagerFitbit('/fitbit/auth/token', { method: 'GET' }, payload);
         console.log('STORE TOKEN RESP:: ', response.data)
         return { data: response.data, error: null }
     } catch (error) {

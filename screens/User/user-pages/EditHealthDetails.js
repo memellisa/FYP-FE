@@ -1,5 +1,5 @@
 import { Button, Divider } from '@rneui/base'
-import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TextInput, TouchableHighlight } from 'react-native';
+import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TextInput, TouchableHighlight, Alert } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useState, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -7,103 +7,18 @@ import NavigationButton from '../../../components/NavigationButton';
 import { putUserHealth } from '../../../utils/api/user.api';
 import InputTextField from '../../../components/InputTextField';
 import DropDownField from '../../../components/DropdownField';
+import { Formik } from 'formik';
+import { userHealthValidationSchema } from '../../../utils/validation';
+import { bloodData, booleanData, dietData, frequencyData, sexData } from '../../../utils/constants';
 
-
-const dietData = [
-    { label: 'No Restrictions', value: 'normal' },
-    { label: 'Keto', value: 'Keto' },
-    { label: 'Paleo', value: 'Paleo' },
-    { label: 'Vegetarian', value: 'Vegetarian' },
-    { label: 'Vegan', value: 'Vegan' },
-    { label: 'Mediterranean', value: 'Mediterranean' },
-    { label: 'Low Carb', value: 'Low Carb' },
-    { label: 'No Sugar', value: 'No Sugar' },
-];
-
-const smokingData = [
-    { label: 'Never', value: 'Never' },
-    { label: 'Heavy', value: 'Heavy' },
-    { label: 'Light', value: 'Light' },
-];
-
-const bloodPressureData = [
-    { label: 'Normal', value: 'Normal' },
-    { label: 'Elevated', value: 'Elevated' },
-    { label: 'HBP Stage 1', value: 'HBP Stage 1' },
-    { label: 'HBP Stage 2', value: 'HBP Stage 2' },
-    { label: 'HBP Stage 3', value: 'HBP Stage 3' },
-];
 
 const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
 
-const sexData = [
-    { label: 'Male', value: 'M' },
-    { label: 'Female', value: 'F' },
-];
-
-const bloodData = [
-    { label: 'A+', value: 'A+' },
-    { label: 'A-', value: 'A-' },
-    { label: 'B+', value: 'B+' },
-    { label: 'B-', value: 'B-' },
-    { label: 'AB+', value: 'AB+' },
-    { label: 'AB-', value: 'AB-' },
-    { label: 'O+', value: 'O+' },
-    { label: 'O-', value: 'O-' },
-]
-
-const frequencyData = [
-    { label: 'Never', value: 0 },
-    { label: 'Previous', value: 1 },
-    { label: 'Seldom', value: 2 },
-    { label: 'Frequent', value: 3 },
-];
-
-
-const booleanData = [
-    { label: 'Yes', value: true },
-    { label: 'No', value: false },
-];
 
 export default function EditHealthDetails({ route, navigation }) {
     const data = route.params.data
-    console.log("DATA PARAMS HEALTH::",data)
+    // console.log("DATA PARAMS HEALTH::",data)
 
-    const [insulin, setInsulin] = useState('')
-    const [cholesterol, setCholesterol] = useState('')
-    const [sex, setSex] = useState('')
-    const [height, setHeight] = useState('')
-    const [weight, setWeight] = useState('')
-    const [bmi, setBMI] = useState('')
-    const [bloodType, setBloodType] = useState('')
-    const [diet, setDiet] = useState('')
-    const [smokingStatus, setSmokingStatus] = useState('')
-    const [alcoholConsumption, setAlcoholConsumption] = useState('')
-    const [bloodPressure, setBloodPressure] = useState('')
-    // const [medications, setMedications] = useState(null)
-    const [done, setDone] = useState(null)
-
-    
-    useEffect(() => {
-        navigation.setOptions({ 
-            headerBackTitle: '', 
-            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={() => setDone(true)}/> 
-
-        });
-        setInsulin(data.insulin)
-        setCholesterol(data.cholesterol)
-        setSex(data.sex)
-        setHeight(data.height)
-        setWeight(data.weight)
-        setBMI(countBMI(data.height, data.weight).toString())
-        setBloodType(data.bloodType)
-        setDiet(data.diet)
-        setSmokingStatus(data.smokingStatus)
-        setAlcoholConsumption(data.alcoholConsumption)
-        setBloodPressure(data.bloodPressure)
-    }, [])
-
-    
     const onPress = async (newData) => {
         // const tempppp = {
         //     "insulin": insulin,
@@ -117,42 +32,29 @@ export default function EditHealthDetails({ route, navigation }) {
         //     "weight": 86,
         //     "bloodType": bloodType
         // }
-        // console.log("NEW DATA:::",newData)
-        const result = await putUserHealth(newData)
-        // console.log("EDIT HEALTH:::",result)
+        console.log("NEW DATA:::",newData)
+        const result = await putUserHealth({
+            "alcoholConsumption": parseInt(newData.alcoholConsumption) ,
+            "bloodPressure": parseInt(newData.bloodPressure) ? true : false,
+            "bloodType": newData.bloodType,
+            "cholesterol": parseInt(newData.cholesterol) ? true : false,
+            "diet": newData.diet,
+            "height": parseInt(newData.height),
+            "insulin": parseInt(newData.insulin) ? true : false,
+            "sex": newData.sex,
+            "smokingStatus": parseInt(newData.smokingStatus),
+            "weight": parseInt(newData.weight)
+        })
+        console.log("EDIT HEALTH:::",result)
         if (!result.error){
-            try {
-                // console.log('EDItted USERR', JSON.stringify(result.data))
-                navigation.navigate("Profile", { update: true })
-            } catch (e) {
-                Alert.alert('Something went wrong. Please try again')
-            }
+            // console.log('EDItted USERR', JSON.stringify(result.data))
+            navigation.navigate("Profile", { update: true })
         } else {
             // console.log(result.error)
             Alert.alert('Something went wrong. Please try again')
         }
     }
 
-    useEffect(() => {
-        setBMI(countBMI(height, weight))
-    }, [height, weight])
-
-    useEffect(() => {
-        if (done) {
-            onPress({
-                "insulin": insulin,
-                "cholesterol": cholesterol,
-                "diet": diet,
-                "smokingStatus": smokingStatus,
-                "alcoholConsumption": alcoholConsumption,
-                "bloodPressure": bloodPressure,
-                "sex": sex,
-                "height": parseInt(height),
-                "weight": parseInt(weight),
-                "bloodType": bloodType
-            })
-        }
-    }, [done])
 
     return (
         <SafeAreaProvider>
@@ -160,39 +62,122 @@ export default function EditHealthDetails({ route, navigation }) {
                 style={styles.screenContainer}
                 scrollable={true}
                 hasSafeArea={false}
+                keyboardDismissMode="interactive"
+                automaticallyAdjustKeyboardInsets={true}
             >
 
-                {DropDownField("Insulin", insulin, booleanData, setInsulin)}
-                {DropDownField("Cholesterol", cholesterol, booleanData, setCholesterol)}
+            <Formik
+                validateOnMount={true}
+                validationSchema={userHealthValidationSchema}
+                initialValues={{ 
+                    insulin: data.insulin ? '1' : '0', 
+                    cholesterol: data.cholesterol ? '1' : '0', 
+                    diet: data.diet, 
+                    smokingStatus: data.smokingStatus.toString(), 
+                    alcoholConsumption: data.alcoholConsumption.toString(), 
+                    bloodPressure: data.bloodPressure ? '1' : '0', 
+                    sex: data.sex, height: data.height,
+                    weight: data.weight, 
+                    bloodType: data.bloodType}}
+                onSubmit={values => onPress(values)}
+                >
+                    {({ handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    values,
+                    errors,
+                    touched,
+                    isValid, }) => (
+                    <>
+                        {isValid ? navigation.setOptions({ 
+                            headerBackTitle: '', 
+                            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={handleSubmit}/>}) : 
+                            navigation.setOptions({ headerBackTitle: '',  headerRight: null })}
 
-                {/* <Text style={styles.infoText}> 
-                    Are you using Insulin for medical purposes?
-                </Text> */}
+                        {DropDownField(
+                            "Diet", 
+                            values.diet, 
+                            dietData, 
+                            handleChange('diet'),  
+                            () => touched.diet = true, (errors.diet && touched.diet) ? errors.diet : '')}
+                     
+                        {DropDownField(
+                            "Smoking Status", 
+                            values.smokingStatus, 
+                            frequencyData, 
+                            handleChange('smokingStatus'),  
+                            () => touched.smokingStatus = true, (errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')}
 
-                {DropDownField("Diet", diet, dietData, setDiet)}
+                        {DropDownField(
+                            "Alcohol Consumption", 
+                            values.alcoholConsumption, 
+                            frequencyData, 
+                            handleChange('alcoholConsumption'),  
+                            () => touched.alcoholConsumption = true, 
+                            (errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')}
 
-                {DropDownField("Smoking Status", smokingStatus, frequencyData, setSmokingStatus)}
+                        {DropDownField(
+                            "Blood Pressure", 
+                            values.bloodPressure, 
+                            booleanData, 
+                            handleChange('bloodPressure'),  
+                            () => touched.bloodPressure = true, 
+                            (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '')}
 
-                {DropDownField("Alcohol Consumption", alcoholConsumption, frequencyData, setAlcoholConsumption)}
+                        {DropDownField(
+                            "Insulin", 
+                            values.insulin, 
+                            booleanData, 
+                            handleChange('insulin'),  
+                            () => touched.insulin = true, 
+                            (errors.insulin && touched.insulin) ? errors.insulin : '')}
 
-                {DropDownField("Blood Pressure", bloodPressure, booleanData, setBloodPressure)}
+                        {DropDownField(
+                            "Cholesterol", 
+                            values.cholesterol, 
+                            booleanData, 
+                            handleChange('cholesterol'),  
+                            () => touched.cholesterol = true, 
+                            (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '')}
 
-                {DropDownField("Sex", sex, sexData, setSex)}
-                {DropDownField("Blood Type", bloodType, bloodData, setBloodType)}
+                        {DropDownField(
+                            "Sex", 
+                            values.sex, 
+                            sexData, 
+                            handleChange('sex'),  
+                            () => touched.sex = true, 
+                            (errors.sex && touched.sex) ? errors.sex : '')}
 
-                {InputTextField('Height (cm)', height, setHeight)}
+                        {DropDownField(
+                            "Blood Type", 
+                            values.bloodType, 
+                            bloodData, 
+                            handleChange('bloodType'),  
+                            () => touched.bloodType = true, 
+                            (errors.bloodType && touched.bloodType) ? errors.bloodType : '')}
 
-                {InputTextField('Weight (kg)', weight, setWeight)}
+                        {InputTextField(
+                            'Height (cm)', 
+                            values.height, 
+                            handleChange('height'), 
+                            (errors.height && touched.height) ? errors.height : '', 
+                            handleBlur('height'))}
 
-                <View style={styles.optionView}>
-                    <Text style={styles.optionText}>BMI</Text>
-                    <Text style={styles.valueText}>{(height && weight && isFinite(bmi)) ? bmi : '-'}</Text>
-                </View>
+                        {InputTextField(
+                            'Weight (kg)', 
+                            values.weight, 
+                            handleChange('weight'), 
+                            (errors.weight && touched.weight) ? errors.weight : '', 
+                            handleBlur('weight'))}
 
-                <Text style={styles.infoText}> 
-                    BMI is calculated from the inputted height and weight
-                </Text>
-                
+                        <View style={styles.optionView}>
+                            <Text style={styles.optionText}>BMI</Text>
+                            <Text style={styles.valueText}>{(values.height && values.weight && isFinite(countBMI(values.height, values.weight))) ? countBMI(values.height, values.weight) : '-'}</Text>
+                        </View>
+
+                        <View style={{marginBottom: 50}}/>
+                    </>)}
+                </Formik>
             </ScrollView>
         </SafeAreaProvider>
       );
@@ -200,24 +185,19 @@ export default function EditHealthDetails({ route, navigation }) {
 
 const styles = StyleSheet.create({
     screenContainer: {
-        // alignItems: 'center',
-        // marginTop: -65,
         flex: 1,
         backgroundColor: '#fff',
     },
 
     optionView: {
-        // position: 'relative',
         flexDirection: 'row',
         marginTop: 25,
         marginHorizontal: 30,
-        // paddingHorizontal: 20,
         alignItems: 'center'
     },
 
     optionText: {
         fontSize: 16,
-        // paddingTop:5,
         fontFamily: 'Poppins-SemiBold',
         width: 140
     },

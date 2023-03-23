@@ -19,7 +19,7 @@ const DropDownField = (text, value, data, setOnChange, handleOnFocus, errorMessa
                         setOnChange(item.value)
                     }}
                     onFocus={() =>{
-                        handleOnFocus()
+                        handleOnFocus(true)
                         setOnChange(value)
                     }}
                 />

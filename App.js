@@ -6,7 +6,6 @@ import { registerRootComponent } from 'expo';
 
 import Main from './screens/Main';
 import Profile from './screens/User/Profile';
-import EditGeneticsData from './screens/User/user-pages/EditGeneticsData';
 import { useFonts } from 'expo-font';
 import Login from './screens/Login';
 import Signup from './screens/Signup';
@@ -16,9 +15,6 @@ import ManageWearable from './screens/Wearable/ManageWearable';
 import ConfirmAuth from './screens/Wearable/ConfirmAuth';
 import SuccessSplash from './screens/Wearable/SuccessSplash';
 import { View } from 'react-native';
-import PersonalDetailsForm from './screens/self-input-forms/PersonalDetailsForm';
-import HealthDetailsForm from './screens/self-input-forms/HealthDetailsForm';
-import GeneticsDataForm from './screens/self-input-forms/GeneticsDataForm';
 import SelfInputForm from './screens/SelfInputForm';
 import AccountCreateSplash from './screens/AccountCreateSplash';
 
@@ -60,7 +56,6 @@ export default RootNavigator = () => {
             />
             <Stack.Screen name="Profile" component={Profile} options={{headerBackTitle: ''}} />
             
-            <Stack.Screen name="Edit Genetics Data" component={EditGeneticsData} />
             <Stack.Screen name="Edit Personal Details" component={EditPersonalDetails}/>
             <Stack.Screen name="Edit Health Details" component={EditHealthDetails}/>
 
@@ -69,9 +64,6 @@ export default RootNavigator = () => {
             <Stack.Screen name="Success Splash" component={SuccessSplash} options={{ headerShown: false }} />
             <Stack.Screen name="Create Account Splash" component={AccountCreateSplash} options={{ headerShown: false }} />
 
-            {/* <Stack.Screen name="Personal Form" component={PersonalDetailsForm} options={{ headerTitle: 'Personal Data' }} />
-            <Stack.Screen name="Health Form" component={HealthDetailsForm} options={{ headerTitle: 'Health Data' }} />
-            <Stack.Screen name="Genetics Form" component={GeneticsDataForm} options={{ headerTitle: 'Genetics Data' }} /> */}
             <Stack.Screen name="Self Input Form" component={SelfInputForm} options={{ 
               gestureEnabled: false,
               header: () =>

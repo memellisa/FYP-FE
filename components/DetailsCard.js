@@ -23,13 +23,20 @@ const DetailsCard = ({title, data, navigation, route, dataToShow}) => {
         } 
     }
 
+    const renderSex = (val) => {
+        return val === "F" ? "Female" : "Male"
+    }
+
     const jsonToArray = (dataToShow) => {
         const arr = []; 
         for(let i in dataToShow) {
             if (i === "alcoholConsumption" || i === "smokingStatus") 
                 arr.push([labels[i], renderValue(dataToShow[i])])
+            else if (i === "sex")
+                arr.push([labels[i], renderSex(dataToShow[i])])
             else 
                 arr.push([labels[i], typeof dataToShow[i] == "boolean" ? renderBool(dataToShow[i]) :
+                                    typeof dataToShow[i] == "number" ? dataToShow[i] :
                                     dataToShow[i] ? dataToShow[i] : '-' ])
         }
         return arr

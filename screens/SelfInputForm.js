@@ -12,127 +12,28 @@ import { Button } from '@rneui/base';
 import { Formik } from 'formik';
 import { userHealthValidationSchema, userInfoValidationSchema } from '../utils/validation';
 import { createUser } from '../utils/api/user.api';
+import { bloodData, booleanData, dietData, frequencyData, sexData } from '../utils/constants';
 
 
 const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
 
-const dietData = [
-    { label: 'No Restrictions', value: 'normal' },
-    { label: 'Keto', value: 'Keto' },
-    { label: 'Paleo', value: 'Paleo' },
-    { label: 'Vegetarian', value: 'Vegetarian' },
-    { label: 'Vegan', value: 'Vegan' },
-    { label: 'Mediterranean', value: 'Mediterranean' },
-    { label: 'Low Carb', value: 'Low Carb' },
-    { label: 'No Sugar', value: 'No Sugar' },
-];
-
-const sexData = [
-    { label: 'Male', value: 'M' },
-    { label: 'Female', value: 'F' },
-];
-
-const bloodData = [
-    { label: 'A+', value: 'A+' },
-    { label: 'A-', value: 'A-' },
-    { label: 'B+', value: 'B+' },
-    { label: 'B-', value: 'B-' },
-    { label: 'AB+', value: 'AB+' },
-    { label: 'AB-', value: 'AB-' },
-    { label: 'O+', value: 'O+' },
-    { label: 'O-', value: 'O-' },
-]
-
-const frequencyData = [
-    { label: 'Never', value: '0' },
-    { label: 'Previous', value: '1' },
-    { label: 'Seldom', value: '2' },
-    { label: 'Frequent', value: '3' },
-];
-
-const booleanData = [
-    { label: 'Yes', value: '1' },
-    { label: 'No', value: '0' },
-];
-
 export default function SelfInputForm({ route, navigation }) {
-    // const otherData = route.params.data
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [diet, setDiet] = useState('')
-    const [smokingStatus, setSmokingStatus] = useState('')
-    const [alcoholConsumption, setAlcoholConsumption] = useState('')
-    const [bloodPressure, setBloodPressure] = useState('')
-    const [insulin, setInsulin] = useState('')
-    const [cholesterol, setCholesterol] = useState('')
-    const [sex, setSex] = useState('')
-    const [bloodType, setBloodType] = useState('')
-    const [age, setAge] = useState(null)
-    const [height, setHeight] = useState('')
-    const [weight, setWeight] = useState('')
-    const [bmi, setBMI] = useState('')
-    const [formData, setFormData] = useState('')
-    const [done, setDone] = useState(null)
-
 
     const today = new Date()
     const endDate = getFormatedDate(today.setDate(today.getDate()), 'YYYY/MM/DD')
-    const [dateOfBirth, setDateOfBirth] = useState(endDate)
     const [openModal, setOpenModal] = useState(false)
-
-    // useEffect(() => {
-    //     setBMI(countBMI(height, weight))
-    // }, [height, weight])
-
-    useEffect(() => {
-        setFormData( {
-            'personal-data':{
-                'first_name': firstName,
-                'last_name': lastName,
-                'dob':  dateOfBirth,
-            },
-            'health-data': {
-                'diet': diet,
-                'smoking_status': smokingStatus,
-                'alcohol-consumption': alcoholConsumption,
-                'blood-pressure': bloodPressure,
-                'sex': sex,
-                'blood-type': bloodType,
-                'age': age,
-                'height': height,
-                'weight': weight,
-                'bmi': bmi
-            }
-        })
-    }, [firstName,lastName, dateOfBirth, diet, smokingStatus, alcoholConsumption, bloodPressure, sex,bloodType, age, weight, height, bmi])
-
-    // useEffect(() => {
-    //     navigation.setOptions({ 
-    //         headerBackTitle: '', 
-    //         // headerRight: () => <NavigationButton buttonName="Done" onPressHandler={onPress}/> 
-    //     });
-    // }, [])
-
-    
 
     const handleOnPress = () => {
         setOpenModal(!openModal)
-        // calculateAge()
-    }
-
-    const handleChangeDOB = (propDate) => {
-        setDateOfBirth(propDate)
     }
 
     const calculateAge = (birthday) => {
         const birthDate = new Date(birthday);
-        // console.log("DATES",today, birthDate)
         var tempAge = today.getFullYear() - birthDate.getFullYear()
         var m = today.getMonth() - birthDate.getMonth()
         if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
             tempAge--
         }
-        // setAge(tempAge)
         return tempAge
     }
 
@@ -175,15 +76,6 @@ export default function SelfInputForm({ route, navigation }) {
             Alert.alert('Something went wrong. Please try again')
         }
     }
-
-    // useEffect(() => {
-    //     if (done) {
-
-    //         onPressDone({
-    //         })
-    //     }
-    // }, [done])
-
     return (
         <SafeAreaProvider>
             <ScrollView
@@ -209,7 +101,6 @@ export default function SelfInputForm({ route, navigation }) {
                     touched,
                     isValid, }) => (
                     <>
-                        {/* {console.log(values)} */}
                         {InputTextField('First Name', values.firstName, handleChange('firstName'), (errors.firstName && touched.firstName) ? errors.firstName : '', handleBlur('firstName'))}
 
                         {InputTextField('Last Name', values.lastName, handleChange('lastName'), (errors.lastName && touched.lastName) ? errors.lastName : '', handleBlur('lastName'))}
@@ -228,21 +119,23 @@ export default function SelfInputForm({ route, navigation }) {
                             values.diet, 
                             dietData, 
                             handleChange('diet'),  
-                            () => touched.diet = true, (errors.diet && touched.diet) ? errors.diet : '')}
+                            (val) => touched.diet = val, 
+                            (errors.diet && touched.diet) ? errors.diet : '')}
                      
                         {DropDownField(
                             "Smoking Status", 
                             values.smokingStatus, 
                             frequencyData, 
                             handleChange('smokingStatus'),  
-                            () => touched.smokingStatus = true, (errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')}
+                            (val) => touched.smokingStatus = val, 
+                            (errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')}
 
                         {DropDownField(
                             "Alcohol Consumption", 
-                            alcoholConsumption, 
+                            values.alcoholConsumption, 
                             frequencyData, 
                             handleChange('alcoholConsumption'),  
-                            () => touched.alcoholConsumption = true, 
+                            (val) => touched.alcoholConsumption = val, 
                             (errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')}
 
                         {DropDownField(
@@ -250,7 +143,7 @@ export default function SelfInputForm({ route, navigation }) {
                             values.bloodPressure, 
                             booleanData, 
                             handleChange('bloodPressure'),  
-                            () => touched.bloodPressure = true, 
+                            (val) => touched.bloodPressure = val, 
                             (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '')}
 
                         {DropDownField(
@@ -258,7 +151,7 @@ export default function SelfInputForm({ route, navigation }) {
                             values.insulin, 
                             booleanData, 
                             handleChange('insulin'),  
-                            () => touched.insulin = true, 
+                            (val) => touched.insulin = val, 
                             (errors.insulin && touched.insulin) ? errors.insulin : '')}
 
                         {DropDownField(
@@ -266,7 +159,7 @@ export default function SelfInputForm({ route, navigation }) {
                             values.cholesterol, 
                             booleanData, 
                             handleChange('cholesterol'),  
-                            () => touched.cholesterol = true, 
+                            (val) => touched.cholesterol = val, 
                             (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '')}
 
                         {DropDownField(
@@ -274,7 +167,7 @@ export default function SelfInputForm({ route, navigation }) {
                             values.sex, 
                             sexData, 
                             handleChange('sex'),  
-                            () => touched.sex = true, 
+                            (val) => touched.sex = val, 
                             (errors.sex && touched.sex) ? errors.sex : '')}
 
                         {DropDownField(
@@ -282,7 +175,7 @@ export default function SelfInputForm({ route, navigation }) {
                             values.bloodType, 
                             bloodData, 
                             handleChange('bloodType'),  
-                            () => touched.bloodType = true, 
+                            (val) => touched.bloodType = val, 
                             (errors.bloodType && touched.bloodType) ? errors.bloodType : '')}
 
                         {InputTextField('Height (cm)', values.height, handleChange('height'), (errors.height && touched.height) ? errors.height : '', handleBlur('height'))}
@@ -307,7 +200,6 @@ export default function SelfInputForm({ route, navigation }) {
                         <Button 
                             title="Done" 
                             buttonStyle={styles.button} 
-                            // onPress={() => setDone(true)}
                             onPress={handleSubmit}
                             disabled={!isValid}
                         />

@@ -4,20 +4,13 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Header from '../components/Header';;
 import { Avatar } from '@rneui/themed';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
-import BotNavbar from '../components/BotNavbar';
 import BarGraph from '../components/BarGraph';
 import DataCard from '../components/DataCard';
 import MotivationCard from '../components/MotivationCard';
-import { useGetHello } from '../utils/api/hello.api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getActivities, getProfile, getWeeklySteps } from '../utils/api/fitbit.api';
-import { useFocusEffect } from '@react-navigation/native';
-import { flaskURL }  from '../utils/constants'
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../config"
-import axios from 'axios';
-import { getUserInfo, getUser } from '../utils/api/user.api';
-import { Icon } from '@rneui/themed';
+import { getActivities, getWeeklySteps } from '../utils/api/fitbit.api';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { getUser } from '../utils/api/user.api';
 import { isEqual } from 'lodash'
 
 
@@ -34,21 +27,14 @@ const emptyWeeklySteps = [
 
 
 const Home = ({ headerSubtitle, navigation}) => {
-  // only for trial
-    // const result = useGetHello()
 
-    // const results = getUserInfo()
-    // console.log("INFO",results)
-
-    const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
+    // const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
     const [userData, setUserData] = useState(null);
     const [fitbitTokens, setFitbitTokens] = useState(null)
     const [userActivity, setUserActivity] = useState(null);
     const [summaryActivity, setSummaryActivity] = useState(null);
     const [weeklySteps, setWeeklySteps] = useState(null)
-
-    const iconSize = 35;
-    // const auth = getAuth();
+    const isFocused = useIsFocused()
 
 
     const processSummaryActivity = (data) => {
@@ -109,48 +95,54 @@ const Home = ({ headerSubtitle, navigation}) => {
     }
 
     const getUserData = async () => {
+      const fetchUser = async() => {
+        const result = await getUser()
+        
+        if (!result.error && result.data.info.firstName){
+          try {
+            await AsyncStorage.setItem('userData', JSON.stringify(result.data))
+            console.log('USERR SET', JSON.stringify(result.data))
+            setUserData(result.data)
+          } catch (e) {
+            fetchUser()
+            // Alert.alert('Something went wrong. Please try again')
+          }
+        } else {
+          Alert.alert('Something went wrong. Please try again')
+        }
+      }
+
       try {
         const fetchedUserData = await AsyncStorage.getItem('userData')
-        console.log('FETCHEDUSERR', (fetchedUserData))
+        // console.log('HOME FETCHEDUSERR', fetchedUserData)
         if (fetchedUserData && fetchedUserData !== "{}"){
           if (!isEqual(JSON.parse(fetchedUserData), userData)){
+            // console.log("ALREADY SET")
             setUserData(JSON.parse(fetchedUserData))
           }
         } else {
-          const fetchUser = async() => {
-            const result = await getUser()
-            
-            if (!result.error){
-              try {
-                await AsyncStorage.setItem('userData', JSON.stringify(result.data))
-                console.log('USERR', JSON.stringify(result.data))
-                getUserData()
-              } catch (e) {
-                getUserData()
-                // Alert.alert('Something went wrong. Please try again')
-              }
-            } else {
-                Alert.alert('Something went wrong. Please try again')
-            }
-          }
+          // console.log("FETCHINGG")
           fetchUser()
         }
-        // return userData === null ? null : JSON.parse(userData) ;
       } catch(e) {
-        console.log("HERE BRO")
-        // error reading value
+        console.log("HERE BRO", e)
+        getUser()
       }
     }
 
-    
+    useEffect(() => {
+      getFitbitTokens()
+      getUserData()
+      console.log("FOCUSED")
+  }, [isFocused])
 
     useEffect(() => {
       getUserData()
     })
 
-    useFocusEffect( () => {
-      getFitbitTokens()
-    })
+    // useFocusEffect( () => {
+    //   getFitbitTokens()
+    // })
  
     useFocusEffect( 
       useCallback(() => {
@@ -221,7 +213,7 @@ const Home = ({ headerSubtitle, navigation}) => {
     )
     
     const leftComponent = <View style={{width:180}}>
-    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData ? userData.info.firstName : "LOADING"}</Text>
+    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.info.firstName}</Text>
     <Text style={styles.subheading}>{headerSubtitle}</Text>
     </View>
     return (

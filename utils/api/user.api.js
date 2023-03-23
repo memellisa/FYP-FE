@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import ApiManagerFitbit from "./ApiManagerFitbit";
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../config"
@@ -51,6 +50,7 @@ const getUser = async () => {
 const getUserInfo = async () => {
     
     try {
+        const user = auth.currentUser.uid
         // console.log(`${flaskURL}/user/info/${user}`)
         const response = await axios.get(`${flaskURL}/user/info/${user}`,{
             headers: {
@@ -67,6 +67,7 @@ const getUserInfo = async () => {
 
 const putUserInfo = async (data) => {
     try {
+        const user = auth.currentUser.uid
         const response = await axios.put(`${flaskURL}/user/info/${user}`, data);
         // console.log('EDITTED USER INFO::',JSON.stringify(response))
         return { data: response.data, error: null }
@@ -78,6 +79,7 @@ const putUserInfo = async (data) => {
 const getUserHealth = async () => {
     
     try {
+        const user = auth.currentUser.uid
         // console.log(`${flaskURL}/user/health/${user}`)
         const response = await axios.get(`${flaskURL}/user/health/${user}`,{
             headers: {
@@ -94,6 +96,7 @@ const getUserHealth = async () => {
 
 const putUserHealth = async (data) => {
     try {
+        const user = auth.currentUser.uid
         const response = await axios.put(`${flaskURL}/user/health/${user}`, data);
         // console.log('EDITTED USER HEALTH::',JSON.stringify(response))
         return { data: response.data, error: null }
