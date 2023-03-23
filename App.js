@@ -72,7 +72,11 @@ export default RootNavigator = () => {
             {/* <Stack.Screen name="Personal Form" component={PersonalDetailsForm} options={{ headerTitle: 'Personal Data' }} />
             <Stack.Screen name="Health Form" component={HealthDetailsForm} options={{ headerTitle: 'Health Data' }} />
             <Stack.Screen name="Genetics Form" component={GeneticsDataForm} options={{ headerTitle: 'Genetics Data' }} /> */}
-            <Stack.Screen name="Self Input Form" component={SelfInputForm} options={{ headerTitle: '' }} />
+            <Stack.Screen name="Self Input Form" component={SelfInputForm} options={{ 
+              gestureEnabled: false,
+              header: () =>
+              (<View style={{ height: 55 }}/>)
+            }} />
 
           </Stack.Navigator>
           {/* <BotNavbar /> */}

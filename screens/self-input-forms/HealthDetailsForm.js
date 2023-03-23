@@ -24,7 +24,7 @@ const smokingData = [
 ];
 
 const bloodPressureData = [
-    { label: 'Normal', value: 'Normal' },
+    { label: 'normal', value: 'normal' },
     { label: 'Elevated', value: 'Elevated' },
     { label: 'HBP Stage 1', value: 'HBP Stage 1' },
     { label: 'HBP Stage 2', value: 'HBP Stage 2' },

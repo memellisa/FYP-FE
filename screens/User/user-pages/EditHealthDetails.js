@@ -10,7 +10,7 @@ import DropDownField from '../../../components/DropdownField';
 
 
 const dietData = [
-    { label: 'No Restrictions', value: 'Normal' },
+    { label: 'No Restrictions', value: 'normal' },
     { label: 'Keto', value: 'Keto' },
     { label: 'Paleo', value: 'Paleo' },
     { label: 'Vegetarian', value: 'Vegetarian' },

@@ -7,22 +7,22 @@ import { flaskURL } from "../constants";
 
 
 
-// const postAccessToken = async (payload) => {
-//     try {
-//         const response = await axios.post(`${flaskURL}/user`, payload, {
-//             headers: {
-//             'Content-Type': 'application/json'
-//             }
-//         });
-//         // ApiManagerFitbit('/fitbit/auth/token', { method: 'GET' }, payload);
-//         console.log('RESP',response)
-//         return { data: response.data, error: null }
-//     } catch (error) {
-//         // console.log(payload)
-//         // console.log('RESP',error.response)
-//         return { data: null, error }
-//     } 
-// };
+const createUser = async (payload) => {
+    try {
+        const user = auth.currentUser.uid
+        const response = await axios.post(`${flaskURL}/user/${user}`, payload, {
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        });
+        console.log('RESP',response)
+        return { data: response.data, error: null }
+    } catch (error) {
+        // console.log(payload)
+        // console.log('RESP',error.response)
+        return { data: null, error }
+    } 
+};
 
 // const auth = getAuth();
 
@@ -102,4 +102,4 @@ const putUserHealth = async (data) => {
     } 
 };
 
-export { getUser, getUserHealth, getUserInfo, putUserInfo, putUserHealth }
+export { createUser, getUser, getUserHealth, getUserInfo, putUserInfo, putUserHealth }

@@ -1,23 +1,34 @@
 import { Modal, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
-const DropDownField = (text, value, data, setOnChange) => {
+const DropDownField = (text, value, data, setOnChange, handleOnFocus, errorMessage) => {
+
     return(
-    <View style={styles.optionView}>
-        <Text style={styles.optionText}>{text}</Text>
-        <Dropdown
-            style={styles.dropdown}
-            itemTextStyle={styles.itemStyle}
-            data={data}
-            maxHeight={300}
-            labelField="label"
-            valueField="value"
-            value={value}
-            onChange={item => {
-                setOnChange(item.value);
-            }}
-        />
-    </View>)
+        <View>
+            <View style={styles.optionView}>
+                <Text style={styles.optionText}>{text}</Text>
+                <Dropdown
+                    style={styles.dropdown}
+                    itemTextStyle={styles.itemStyle}
+                    data={data}
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    value={value}
+                    onChange={item => {
+                        setOnChange(item.value)
+                    }}
+                    onFocus={() =>{
+                        handleOnFocus()
+                        setOnChange(value)
+                    }}
+                />
+            </View>
+            <Text style={styles.errorText}>{errorMessage}</Text>
+        </View>
+    
+    
+    )
 }
 
 const styles = StyleSheet.create({
@@ -41,7 +52,13 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
     },
-
+    errorText: {
+        color: 'red',
+        fontSize: 13,
+        fontFamily: 'Poppins-Regular',
+        marginLeft: 170,
+        marginBottom: 0
+    },
 
     dropdown: {
         borderBottomColor: '#D3D3D3',
