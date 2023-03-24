@@ -7,7 +7,6 @@ import {LinearGradient} from 'expo-linear-gradient';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { View, Text, StyleSheet } from 'react-native';
-import BotNavbar from './BotNavbar';
 import BarGraph from './BarGraph';
 
 

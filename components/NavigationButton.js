@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, Image } from 'react-native';
-import { Text, Card, Button, Icon } from '@rneui/themed';
+import { StyleSheet } from 'react-native';
+import { Text, Button } from '@rneui/themed';
 
 const NavigationButton = ({ buttonName, onPressHandler }) => {
     return (

@@ -3,7 +3,6 @@ import React from 'react';
 
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import LineChart from '../components/LineChart';
-import BotNavbar from '../components/BotNavbar';
 import Header from '../components/Header';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import MotivationCard from '../components/MotivationCard';

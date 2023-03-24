@@ -3,10 +3,21 @@ import PropTypes from 'prop-types';
 import { StyleSheet, View, Dimensions } from "react-native";
 import { Bar, VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
 
-
 const windowWidth = Dimensions.get('window').width;
 
 const BarGraph = ({data}) =>  {
+  const findMax = () => {
+    var maxSteps = 2000
+    for (let i = 0; i < data.length; i++){
+      if (data[i].steps > maxSteps) 
+        maxSteps = data[i].steps + 500
+    }
+    return maxSteps
+  }
+
+  const max = findMax()
+  const chartWidth = windowWidth - (findMax() < 10000 ? 15 : 20)
+
   const onBarPressed = () => {
     return [
     {
@@ -18,6 +29,7 @@ const BarGraph = ({data}) =>  {
       mutation: () => ({ style: { fill: "orange" }})
     }];
   }
+
   const onBarNotPressed = () => { 
     return [
     {
@@ -33,9 +45,9 @@ const BarGraph = ({data}) =>  {
   return (
     <View style={styles.container}>
       <VictoryChart 
-          padding={{left: 50, bottom:40, top: 20}}
-          width={windowWidth-30} 
-          height={250}
+          padding={{left: 50, bottom:40, top: 20, right: 10}}
+          width={chartWidth} 
+          height={300}
           theme={VictoryTheme.material}
           >
       <VictoryBar 
@@ -45,6 +57,7 @@ const BarGraph = ({data}) =>  {
           style={
               { data:  styles.data }
           } 
+          domain={{y: [0, max]}}
           data={data} 
           x="day" 
           y="steps" 

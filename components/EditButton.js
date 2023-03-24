@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, Image } from 'react-native';
-import { Text, Card, Button, Icon } from '@rneui/themed';
+import { StyleSheet } from 'react-native';
+import { Text, Button, Icon } from '@rneui/themed';
 
 const EditButton = ({navigation, name, route, data}) => {
     return (

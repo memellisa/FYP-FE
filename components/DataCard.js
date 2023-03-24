@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, Image } from 'react-native';
-import { Text, Card, Button, Icon } from '@rneui/themed';
+import { View, StyleSheet } from 'react-native';
+import { Text, Card } from '@rneui/themed';
 
 const DataCard = ({title, numbers, units, note, minWidth}) => {
     var contents = []
@@ -17,10 +17,10 @@ const DataCard = ({title, numbers, units, note, minWidth}) => {
     
     return (
     <>
-        <Card containerStyle={{ width: minWidth, marginBottom:10, paddingRight:20, borderRadius:10 }} >
-            <Card.Title style={{fontSize: 18}}>{title}</Card.Title>
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>  
-                <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center'}}>
+        <Card containerStyle={{ width: minWidth, ...styles.container}} >
+            <Card.Title style={styles.title}>{title}</Card.Title>
+            <View style={styles.contentView}>  
+                <View style={styles.content}>
                     {contents}
                 </View>
                 {note && (<Text style={styles.note}>{note}</Text>)}
@@ -32,7 +32,24 @@ const DataCard = ({title, numbers, units, note, minWidth}) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        marginBottom:10, 
+        paddingRight:20,
+        borderRadius:10
+    },
+
+    title: {
+        fontSize: 18
+    },
+
+    contentView: {
+        alignItems: 'center', 
+        justifyContent: 'center'
+    },
+
+    content: {
+        flexDirection: "row", 
+        alignItems: 'center', 
+        justifyContent: 'center'
     },
 
     number: {

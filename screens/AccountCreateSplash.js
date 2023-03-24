@@ -11,7 +11,7 @@ const AccountCreateSplash = ({ route, navigation }) => {
                 scrollable={true}
                 hasSafeArea={false}
             >
-                <Text style={styles.heading}>You have successfully created an account! Redirecting to the next screen</Text>
+                <Text style={styles.heading}>You have successfully created an account!</Text>
                 
             </View>
         </SafeAreaProvider>

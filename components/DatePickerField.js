@@ -44,17 +44,14 @@ const DatePickerField = (text, openModal, handleOnPress, date, handleChangeDate)
 
 const styles = StyleSheet.create({
     optionView: {
-        // position: 'relative',
         flexDirection: 'row',
         marginTop: 25,
         marginHorizontal: 30,
-        // paddingHorizontal: 20,
         alignItems: 'center'
     },
 
     optionText: {
         fontSize: 16,
-        // paddingTop:5,
         fontFamily: 'Poppins-SemiBold',
         width: 140
     },
@@ -96,8 +93,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
     },
-
-
 })
 
 export default DatePickerField

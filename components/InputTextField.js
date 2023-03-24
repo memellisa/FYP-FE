@@ -1,7 +1,5 @@
 import { Icon } from '@rneui/base';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { Input } from '@rneui/base';
-import { Dropdown } from 'react-native-element-dropdown';
 
 const InputTextField = (text, value, onChangeText, errorMessage, handleBlur) => {
     const isNumber = text === 'Height (cm)' || text === 'Weight (kg)'
@@ -60,20 +58,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 
-
-    dropdown: {
-        borderBottomColor: '#D3D3D3',
-        borderBottomWidth: 1,
-        paddingRight: 5,
-        flex:1
-    },
-
-    itemStyle: {
-        fontFamily: 'Poppins-Regular',
-        fontSize: 16,
-    },
-
-
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
@@ -83,29 +67,6 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1
     },
     
-    modalView: {
-        margin: 20,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        width: '90%',
-        padding: 25,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5
-    },
-
-    closeModalText: {
-        fontFamily: 'Poppins-Regular',
-        fontSize: 16,
-    },
-
-
 })
 
 export default InputTextField

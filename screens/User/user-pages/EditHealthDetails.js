@@ -1,7 +1,4 @@
-import { Button, Divider } from '@rneui/base'
-import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TextInput, TouchableHighlight, Alert } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, ScrollView, Alert } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import NavigationButton from '../../../components/NavigationButton';
 import { putUserHealth } from '../../../utils/api/user.api';
@@ -10,14 +7,11 @@ import DropDownField from '../../../components/DropdownField';
 import { Formik } from 'formik';
 import { userHealthValidationSchema } from '../../../utils/validation';
 import { bloodData, booleanData, dietData, frequencyData, sexData } from '../../../utils/constants';
-
-
-const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
+import { countBMI } from '../../../utils/functions';
 
 
 export default function EditHealthDetails({ route, navigation }) {
     const data = route.params.data
-    // console.log("DATA PARAMS HEALTH::",data)
 
     const onPress = async (newData) => {
         // const tempppp = {
@@ -32,18 +26,18 @@ export default function EditHealthDetails({ route, navigation }) {
         //     "weight": 86,
         //     "bloodType": bloodType
         // }
-        console.log("NEW DATA:::",newData)
+        // console.log("NEW DATA:::",newData)
         const result = await putUserHealth({
             "alcoholConsumption": parseInt(newData.alcoholConsumption) ,
             "bloodPressure": parseInt(newData.bloodPressure) ? true : false,
             "bloodType": newData.bloodType,
             "cholesterol": parseInt(newData.cholesterol) ? true : false,
             "diet": newData.diet,
-            "height": parseInt(newData.height),
+            "height": parseFloat(newData.height),
             "insulin": parseInt(newData.insulin) ? true : false,
             "sex": newData.sex,
             "smokingStatus": parseInt(newData.smokingStatus),
-            "weight": parseInt(newData.weight)
+            "weight": parseFloat(newData.weight)
         })
         console.log("EDIT HEALTH:::",result)
         if (!result.error){
@@ -76,7 +70,8 @@ export default function EditHealthDetails({ route, navigation }) {
                     smokingStatus: data.smokingStatus.toString(), 
                     alcoholConsumption: data.alcoholConsumption.toString(), 
                     bloodPressure: data.bloodPressure ? '1' : '0', 
-                    sex: data.sex, height: data.height,
+                    sex: data.sex, 
+                    height: data.height,
                     weight: data.weight, 
                     bloodType: data.bloodType}}
                 onSubmit={values => onPress(values)}
@@ -89,10 +84,12 @@ export default function EditHealthDetails({ route, navigation }) {
                     touched,
                     isValid, }) => (
                     <>
-                        {isValid ? navigation.setOptions({ 
-                            headerBackTitle: '', 
-                            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={handleSubmit}/>}) : 
-                            navigation.setOptions({ headerBackTitle: '',  headerRight: null })}
+                        {
+                            isValid ? navigation.setOptions({ 
+                                        headerBackTitle: '', 
+                                        headerRight: () => <NavigationButton buttonName="Done" onPressHandler={handleSubmit}/>}) 
+                                    : navigation.setOptions({ headerBackTitle: '',  headerRight: null })
+                        }
 
                         {DropDownField(
                             "Diet", 

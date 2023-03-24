@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
-import BotNavbar from '../components/BotNavbar';
 import CarrierStatusCard from '../components/CarrierStatusCard';
 import DataCard from '../components/DataCard';
 import Header from '../components/Header';

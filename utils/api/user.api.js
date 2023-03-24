@@ -28,7 +28,7 @@ const createUser = async (payload) => {
 const getUser = async () => {
     try {
         const user = auth.currentUser.uid
-        console.log(`${flaskURL}/user/${user}`)
+        // console.log(`${flaskURL}/user/${user}`)
         const response = await axios.get(`${flaskURL}/user/${user}`);
         // console.log('RESP USER::',JSON.stringify(response))
         return { data: response.data, error: null }

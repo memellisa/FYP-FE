@@ -1,16 +1,15 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, Image } from 'react-native';
-import { Text, Card, Button, Icon } from '@rneui/themed';
+import { View, StyleSheet } from 'react-native';
+import { Text, Card } from '@rneui/themed';
 import Emoji from './Emoji';
 //  
 const MotivationCard = ({ title, text, minWidth}) => {
     return (
     <>  
-        <Card containerStyle={{ width: minWidth, marginBottom:10, paddingRight:20, borderRadius:10 }} >
-            
-            <View style={{flexDirection:'row', alignItems:'center'}}>  
+        <Card containerStyle={{...styles.container, width: minWidth, }} >
+            <View style={styles.content}>  
                 <Emoji symbol="🎉" label="confetti" />
-                <View style={{paddingLeft: 20}}>
+                <View style={styles.textView}>
                     <Text style={styles.title}>{title}</Text>
                     <Text style={styles.text}>{text}</Text>
                 </View>
@@ -22,7 +21,15 @@ const MotivationCard = ({ title, text, minWidth}) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        marginBottom:10, 
+        paddingRight:20, 
+        borderRadius:10, 
+        alignSelf: 'center'
+    },
+
+    content: {
+        flexDirection:'row', 
+        alignItems:'center'
     },
 
     title: {
@@ -30,12 +37,18 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Bold'
 
     },
+
     text: {
         color: '#808080',
         fontSize: 16,
         paddingEnd: 10,
         fontFamily: 'Poppins-Regular'
+    },
+
+    textView: {
+        paddingLeft: 20
     }
+
 });
 
 export default MotivationCard;

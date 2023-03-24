@@ -45,7 +45,6 @@ export default RootNavigator = () => {
     return (
       <SafeAreaProvider>
         <NavigationContainer> 
-          {/* <NewUserStack/> */}
           <Stack.Navigator screenOptions={{ animation: 'none'}} >
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
@@ -71,7 +70,6 @@ export default RootNavigator = () => {
             }} />
 
           </Stack.Navigator>
-          {/* <BotNavbar /> */}
         </NavigationContainer>
       </SafeAreaProvider>
     );
