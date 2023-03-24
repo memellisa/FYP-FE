@@ -1,7 +1,5 @@
-import { Button, Divider } from '@rneui/base'
-import { Image, Alert, ImageBackground, StyleSheet, Text, View, ScrollView, TextInput, TouchableHighlight } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import { useEffect, useState } from 'react';
+import { Alert, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import NavigationButton from '../../../components/NavigationButton';
 import { putUserInfo } from '../../../utils/api/user.api';
@@ -9,22 +7,12 @@ import DatePickerField from '../../../components/DatePickerField';
 import InputTextField from '../../../components/InputTextField';
 import { Formik } from 'formik';
 import { userInfoValidationSchema } from '../../../utils/validation';
+import { calculateAge } from '../../../utils/functions';
 
 
 export default function EditPersonalDetails({ route, navigation }) {
     const data = route.params.data
     const [openModal, setOpenModal] = useState(false)
-
-    const calculateAge = (birthday) => {
-        const today = new Date()
-        const birthDate = new Date(birthday);
-        var tempAge = today.getFullYear() - birthDate.getFullYear()
-        var m = today.getMonth() - birthDate.getMonth()
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            tempAge--
-        }
-        return tempAge
-    }
 
     const handleOnPress = () => {
         setOpenModal(!openModal)
@@ -42,18 +30,12 @@ export default function EditPersonalDetails({ route, navigation }) {
         const result = await putUserInfo({...newData, "img": data.img})
         console.log(result)
         if (!result.error){
-            try {
-                // console.log('EDItted USERR', JSON.stringify(result.data))
-                navigation.navigate("Profile", { update: true })
-            } catch (e) {
-                Alert.alert('Something went wrong. Please try again')
-            }
+            navigation.navigate("Profile", { update: true })
         } else {
             // console.log(result.error)
             Alert.alert('Something went wrong. Please try again')
         }
     }
-
 
     return (
         <SafeAreaProvider>
@@ -65,7 +47,10 @@ export default function EditPersonalDetails({ route, navigation }) {
                 <Formik
                     validateOnMount={true}
                     validationSchema={userInfoValidationSchema}
-                    initialValues={{ firstName: data.firstName, lastName: data.lastName, dob: data.dob}}
+                    initialValues={{ 
+                        firstName: data.firstName, 
+                        lastName: data.lastName, 
+                        dob: data.dob}}
                     onSubmit={values => onPress(values)}
                 >
                     {({ handleChange,
@@ -76,10 +61,11 @@ export default function EditPersonalDetails({ route, navigation }) {
                     touched,
                     isValid, }) => (
                     <>
-                        {isValid ? navigation.setOptions({ 
-                            headerBackTitle: '', 
-                            headerRight: () => <NavigationButton buttonName="Done" onPressHandler={handleSubmit}/>}) : 
-                            navigation.setOptions({ headerBackTitle: '',  headerRight: null })
+                        {
+                            isValid ? navigation.setOptions({ 
+                                        headerBackTitle: '', 
+                                        headerRight: () => <NavigationButton buttonName="Done" onPressHandler={handleSubmit}/>}) 
+                                    : navigation.setOptions({ headerBackTitle: '',  headerRight: null })
                         }
 
                         {InputTextField('First Name', values.firstName, handleChange('firstName'), (errors.firstName && touched.firstName) ? errors.firstName : '', handleBlur('firstName'))}

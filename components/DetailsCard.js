@@ -10,7 +10,7 @@ const DetailsCard = ({title, data, navigation, route, dataToShow}) => {
         return val ? 'Yes' : 'No'
     }
 
-    const renderValue = (val) => {
+    const renderFrequency = (val) => {
         switch(val){
             case 0:
                 return 'Never'
@@ -31,7 +31,7 @@ const DetailsCard = ({title, data, navigation, route, dataToShow}) => {
         const arr = []; 
         for(let i in dataToShow) {
             if (i === "alcoholConsumption" || i === "smokingStatus") 
-                arr.push([labels[i], renderValue(dataToShow[i])])
+                arr.push([labels[i], renderFrequency(dataToShow[i])])
             else if (i === "sex")
                 arr.push([labels[i], renderSex(dataToShow[i])])
             else 
@@ -86,19 +86,6 @@ const styles = StyleSheet.create({
         borderColor: '#fff'
     },
 
-    touchableFirst: {
-        borderTopWidth: 0,
-        paddingTop: 12,
-        paddingBottom: 12,
-        borderColor: '#bdbdbd'
-    },
-
-    touchable: {
-        paddingVertical: 12,
-        borderBottomWidth: 0.4,
-        borderColor: '#D3D3D3'
-    },
-
     optionView: {
         flexDirection: 'row',
         paddingVertical: 10,
@@ -113,29 +100,12 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
 
-    dropdown: {
-        top: -9,
-        right: 0,
-        height: 0,
-        width: '100%'
-    },
-
-    valueTextWithDropdown: {
-        position: 'absolute',
-        right: 20,
-        color: '#263cff'
-    },
-
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
         flex: 1,
         flexWrap: 'wrap',
     },
-
-    selectedTextStyle: {
-        opacity: 0
-    }
 });
 
 export default DetailsCard;

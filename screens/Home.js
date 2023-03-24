@@ -12,6 +12,7 @@ import { getActivities, getWeeklySteps } from '../utils/api/fitbit.api';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { getUser } from '../utils/api/user.api';
 import { isEqual } from 'lodash'
+import { getUserData } from '../utils/functions';
 
 
 // to be replaced by real data
@@ -26,7 +27,7 @@ const emptyWeeklySteps = [
 ];
 
 
-const Home = ({ headerSubtitle, navigation}) => {
+const Home = ({ headerSubtitle, navigation, route}) => {
 
     // const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
     const [userData, setUserData] = useState(null);
@@ -90,60 +91,16 @@ const Home = ({ headerSubtitle, navigation}) => {
         }
         // return fitbitTokens === null ? null : JSON.parse(fitbitTokens) ;
       } catch(e) {
+        console.log(e)
         // error reading value
       }
     }
-
-    const getUserData = async () => {
-      const fetchUser = async() => {
-        const result = await getUser()
-        
-        if (!result.error && result.data.info.firstName){
-          try {
-            await AsyncStorage.setItem('userData', JSON.stringify(result.data))
-            console.log('USERR SET', JSON.stringify(result.data))
-            setUserData(result.data)
-          } catch (e) {
-            fetchUser()
-            // Alert.alert('Something went wrong. Please try again')
-          }
-        } else {
-          Alert.alert('Something went wrong. Please try again')
-        }
-      }
-
-      try {
-        const fetchedUserData = await AsyncStorage.getItem('userData')
-        // console.log('HOME FETCHEDUSERR', fetchedUserData)
-        if (fetchedUserData && fetchedUserData !== "{}"){
-          if (!isEqual(JSON.parse(fetchedUserData), userData)){
-            // console.log("ALREADY SET")
-            setUserData(JSON.parse(fetchedUserData))
-          }
-        } else {
-          // console.log("FETCHINGG")
-          fetchUser()
-        }
-      } catch(e) {
-        console.log("HERE BRO", e)
-        getUser()
-      }
-    }
-
     useEffect(() => {
       getFitbitTokens()
-      getUserData()
+      getUserData(setUserData, userData, route?.params?.update)
       console.log("FOCUSED")
   }, [isFocused])
 
-    useEffect(() => {
-      getUserData()
-    })
-
-    // useFocusEffect( () => {
-    //   getFitbitTokens()
-    // })
- 
     useFocusEffect( 
       useCallback(() => {
         // const fetchProfile = async() => {
@@ -223,8 +180,7 @@ const Home = ({ headerSubtitle, navigation}) => {
             <Avatar
               size={64}
               rounded
-              // style={styles.avatar}
-              source={{uri: userData?.info.img ? userData.info.img : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
+              source={{uri: userData ? userData.info.img : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
               onPress={() => navigation.push("Profile")}
               containerStyle={{ backgroundColor: '#6733b9' }}
             />

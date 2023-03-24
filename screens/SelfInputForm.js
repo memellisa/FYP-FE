@@ -1,9 +1,6 @@
-import { Modal, StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, ScrollView, Alert } from 'react-native';
+import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import NavigationButton from '../components/NavigationButton';
-import DatePicker from 'react-native-modern-datepicker'
 import { getFormatedDate } from 'react-native-modern-datepicker'
 import DatePickerField from '../components/DatePickerField';
 import DropDownField from '../components/DropdownField';
@@ -13,9 +10,7 @@ import { Formik } from 'formik';
 import { userHealthValidationSchema, userInfoValidationSchema } from '../utils/validation';
 import { createUser } from '../utils/api/user.api';
 import { bloodData, booleanData, dietData, frequencyData, sexData } from '../utils/constants';
-
-
-const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
+import { calculateAge, countBMI } from '../utils/functions';
 
 export default function SelfInputForm({ route, navigation }) {
 
@@ -27,16 +22,6 @@ export default function SelfInputForm({ route, navigation }) {
         setOpenModal(!openModal)
     }
 
-    const calculateAge = (birthday) => {
-        const birthDate = new Date(birthday);
-        var tempAge = today.getFullYear() - birthDate.getFullYear()
-        var m = today.getMonth() - birthDate.getMonth()
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            tempAge--
-        }
-        return tempAge
-    }
-
     const onPressDone = async (newData) => {
         const temp = {
             "info": {
@@ -44,7 +29,6 @@ export default function SelfInputForm({ route, navigation }) {
                 "firstName": newData.firstName,
                 "lastName": newData.lastName,
                 "img": null,
-                // "email": ''
             },
             "health": {
                 "alcoholConsumption": parseInt(newData.alcoholConsumption) ,
@@ -52,30 +36,29 @@ export default function SelfInputForm({ route, navigation }) {
                 "bloodType": newData.bloodType,
                 "cholesterol": parseInt(newData.cholesterol) ? true : false,
                 "diet": newData.diet,
-                "height": parseInt(newData.height),
                 "insulin": parseInt(newData.insulin) ? true : false,
                 "sex": newData.sex,
                 "smokingStatus": parseInt(newData.smokingStatus),
-                "weight": parseInt(newData.weight)
+                "height": parseFloat(newData.height),
+                "weight": parseFloat(newData.weight)
             }
          }
-        //  console.log("TO BE SENT::",temp)
         sendData(temp)
     }
 
     const sendData = async (newData) => {
-        console.log("NEW DATA:::",newData)
+        // console.log("NEW DATA:::",newData)
         const result = await createUser(newData)
         // console.log("EDIT HEALTH:::",result)
         if (!result.error){
             console.log('CREATED USERR', JSON.stringify(result.data))
             navigation.navigate('Main')
-           
         } else {
             console.log(result.error)
             Alert.alert('Something went wrong. Please try again')
         }
     }
+
     return (
         <SafeAreaProvider>
             <ScrollView
@@ -90,7 +73,20 @@ export default function SelfInputForm({ route, navigation }) {
                 <Formik
                     validateOnMount={true}
                     validationSchema={userInfoValidationSchema.concat(userHealthValidationSchema)}
-                    initialValues={{ firstName:'', lastName:'', dob:endDate, insulin:'',cholesterol:'', diet:'', smokingStatus:'', alcoholConsumption:'', bloodPressure:'', sex:'', height:'', weight:'', bloodType:''}}
+                    initialValues={{ 
+                        firstName:'', 
+                        lastName:'', 
+                        dob:endDate, 
+                        insulin:'',
+                        cholesterol:'', 
+                        diet:'', 
+                        smokingStatus:'', 
+                        alcoholConsumption:'', 
+                        bloodPressure:'', 
+                        sex:'', 
+                        height:'', 
+                        weight:'', 
+                        bloodType:''}}
                     onSubmit={values => onPressDone(values)}
                 >
                     {({ handleChange,
@@ -105,9 +101,7 @@ export default function SelfInputForm({ route, navigation }) {
 
                         {InputTextField('Last Name', values.lastName, handleChange('lastName'), (errors.lastName && touched.lastName) ? errors.lastName : '', handleBlur('lastName'))}
 
-                        {/* {DatePickerField('Date of Birth', openModal, handleOnPress, dateOfBirth, handleChangeDOB)} */}
                         {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))}
-
 
                         <View style={styles.optionView}>
                             <Text style={styles.optionText}>Age</Text>
@@ -181,8 +175,6 @@ export default function SelfInputForm({ route, navigation }) {
                         {InputTextField('Height (cm)', values.height, handleChange('height'), (errors.height && touched.height) ? errors.height : '', handleBlur('height'))}
 
                         {InputTextField('Weight (kg)', values.weight, handleChange('weight'), (errors.weight && touched.weight) ? errors.weight : '', handleBlur('weight'))}
-
-                        
                     
                         <View style={styles.optionView}>
                             <Text style={styles.optionText}>BMI</Text>
@@ -212,23 +204,19 @@ export default function SelfInputForm({ route, navigation }) {
 
 const styles = StyleSheet.create({
     screenContainer: {
-        
         flex: 1,
         backgroundColor: '#fff',
     },
 
     optionView: {
-        // position: 'relative',
         flexDirection: 'row',
         marginTop: 25,
         marginHorizontal: 30,
-        // paddingHorizontal: 20,
         alignItems: 'center'
     },
 
     optionText: {
         fontSize: 16,
-        // paddingTop:5,
         fontFamily: 'Poppins-SemiBold',
         width: 140
     },
