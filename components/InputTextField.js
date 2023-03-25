@@ -8,7 +8,6 @@ const InputTextField = (text, value, onChangeText, errorMessage, handleBlur) => 
             <View style={styles.inputView}>
                 <View style={styles.inputTitleView}>
                     <Text style={styles.inputText}>{text}</Text>
-                    {/* <Icon name="help" color="#0F52BA" size='19'/> */}
                 </View>
                     <TextInput 
                         style={styles.valueText} 
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
     inputView: {
         flexDirection: 'row',
         marginTop: 25,
-        marginHorizontal: 30,
+        marginHorizontal: 20,
         alignItems: 'center'
     },
 
@@ -61,10 +60,11 @@ const styles = StyleSheet.create({
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
-        width: 190,
+        width: 195,
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
+        marginLeft: 10,
     },
     
 })

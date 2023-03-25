@@ -43,4 +43,10 @@ const booleanData = [
 
 const flaskURL = 'http://' + manifest.debuggerHost.split(":")[0] + ':8080'
 
-export { dietData, sexData, bloodData, frequencyData, booleanData, flaskURL }
+const formInfoMsgs = {
+    age: "Age is automatically calculated from the inputted date of birth",
+    bmi: "BMI is automatically calculated from the inputted height and weight",
+    medication: "Select 'Yes' if you are regularly taking any related medication, and 'No' otherwise"
+}
+
+export { dietData, sexData, bloodData, frequencyData, booleanData, flaskURL, formInfoMsgs }

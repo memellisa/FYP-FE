@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     optionView: {
         flexDirection: 'row',
         marginTop: 25,
-        marginHorizontal: 30,
+        marginHorizontal: 20,
         alignItems: 'center'
     },
 
@@ -69,7 +69,8 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
         borderBottomWidth: 1,
-        color: '#0F52BA'
+        color: '#0F52BA',
+        marginLeft: 10,
     },
 
     modalView: {

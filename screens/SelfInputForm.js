@@ -5,18 +5,21 @@ import { getFormatedDate } from 'react-native-modern-datepicker'
 import DatePickerField from '../components/DatePickerField';
 import DropDownField from '../components/DropdownField';
 import InputTextField from '../components/InputTextField';
-import { Button } from '@rneui/base';
+import { Button, Icon } from '@rneui/base';
 import { Formik } from 'formik';
 import { userHealthValidationSchema, userInfoValidationSchema } from '../utils/validation';
 import { createUser } from '../utils/api/user.api';
-import { bloodData, booleanData, dietData, frequencyData, sexData } from '../utils/constants';
+import { bloodData, booleanData, dietData, formInfoMsgs, frequencyData, sexData } from '../utils/constants';
 import { calculateAge, countBMI } from '../utils/functions';
+import InfoOverlay from '../components/InfoOverlay';
 
 export default function SelfInputForm({ route, navigation }) {
 
     const today = new Date()
     const endDate = getFormatedDate(today.setDate(today.getDate()), 'YYYY/MM/DD')
     const [openModal, setOpenModal] = useState(false)
+    const [infoVisible, setInfoVisible] = useState(false);
+    const [infoMsg, setInfoMsg] = useState(false);
 
     const handleOnPress = () => {
         setOpenModal(!openModal)
@@ -59,6 +62,15 @@ export default function SelfInputForm({ route, navigation }) {
         }
     }
 
+    const toggleOverlay = () => {
+        setInfoVisible(!infoVisible);
+      };
+
+    const onIconPress = (msg) => {
+        setInfoMsg(msg)
+        toggleOverlay()
+    }
+
     return (
         <SafeAreaProvider>
             <ScrollView
@@ -70,6 +82,7 @@ export default function SelfInputForm({ route, navigation }) {
                 <Text style={styles.title}> 
                     Please fill in the fields below to allow us to better understand you
                 </Text>
+
                 <Formik
                     validateOnMount={true}
                     validationSchema={userInfoValidationSchema.concat(userHealthValidationSchema)}
@@ -97,14 +110,29 @@ export default function SelfInputForm({ route, navigation }) {
                     touched,
                     isValid, }) => (
                     <>
-                        {InputTextField('First Name', values.firstName, handleChange('firstName'), (errors.firstName && touched.firstName) ? errors.firstName : '', handleBlur('firstName'))}
+                        {InfoOverlay(infoVisible, toggleOverlay, infoMsg)}
 
-                        {InputTextField('Last Name', values.lastName, handleChange('lastName'), (errors.lastName && touched.lastName) ? errors.lastName : '', handleBlur('lastName'))}
+                        {InputTextField(
+                            'First Name', 
+                            values.firstName,
+                            handleChange('firstName'), 
+                            (errors.firstName && touched.firstName) ? errors.firstName : '', 
+                            handleBlur('firstName'))}
+
+                        {InputTextField(
+                            'Last Name', 
+                            values.lastName, 
+                            handleChange('lastName'), 
+                            (errors.lastName && touched.lastName) ? errors.lastName : '', 
+                            handleBlur('lastName'))}
 
                         {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))}
 
                         <View style={styles.optionView}>
-                            <Text style={styles.optionText}>Age</Text>
+                            <View style={styles.inputTitleView}>
+                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.age)}/>
+                                <Text style={styles.fieldText}>Age</Text>
+                            </View>
                             <Text style={styles.valueText}>{ !isNaN(values.dob) || !isNaN(calculateAge(values.dob)) ? calculateAge(values.dob) : '-'}</Text>
                         </View>
 
@@ -138,7 +166,8 @@ export default function SelfInputForm({ route, navigation }) {
                             booleanData, 
                             handleChange('bloodPressure'),  
                             (val) => touched.bloodPressure = val, 
-                            (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '')}
+                            (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '',
+                            () => onIconPress(formInfoMsgs.medication))}
 
                         {DropDownField(
                             "Insulin", 
@@ -146,7 +175,9 @@ export default function SelfInputForm({ route, navigation }) {
                             booleanData, 
                             handleChange('insulin'),  
                             (val) => touched.insulin = val, 
-                            (errors.insulin && touched.insulin) ? errors.insulin : '')}
+                            (errors.insulin && touched.insulin) ? errors.insulin : '',
+                            () => onIconPress(formInfoMsgs.medication))}
+
 
                         {DropDownField(
                             "Cholesterol", 
@@ -154,7 +185,9 @@ export default function SelfInputForm({ route, navigation }) {
                             booleanData, 
                             handleChange('cholesterol'),  
                             (val) => touched.cholesterol = val, 
-                            (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '')}
+                            (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '',
+                            () => onIconPress(formInfoMsgs.medication))}
+
 
                         {DropDownField(
                             "Sex", 
@@ -172,23 +205,28 @@ export default function SelfInputForm({ route, navigation }) {
                             (val) => touched.bloodType = val, 
                             (errors.bloodType && touched.bloodType) ? errors.bloodType : '')}
 
-                        {InputTextField('Height (cm)', values.height, handleChange('height'), (errors.height && touched.height) ? errors.height : '', handleBlur('height'))}
+                        {InputTextField(
+                            'Height (cm)', 
+                            values.height, 
+                            handleChange('height'), 
+                            (errors.height && touched.height) ? errors.height : '',
+                            handleBlur('height'))}
 
-                        {InputTextField('Weight (kg)', values.weight, handleChange('weight'), (errors.weight && touched.weight) ? errors.weight : '', handleBlur('weight'))}
+                        {InputTextField(
+                            'Weight (kg)', 
+                            values.weight, 
+                            handleChange('weight'), 
+                            (errors.weight && touched.weight) ? errors.weight : '', 
+                            handleBlur('weight'))}
                     
                         <View style={styles.optionView}>
-                            <Text style={styles.optionText}>BMI</Text>
+                            <View style={styles.inputTitleView}>
+                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.bmi)}/>
+                                <Text style={styles.fieldText}>BMI</Text>
+                            </View>
                             <Text style={styles.valueText}>{(values.height && values.weight && isFinite(countBMI(values.height, values.weight))) ? countBMI(values.height, values.weight) : '-'}</Text>
                         </View>
 
-                        {/* <View style={{marginBottom: 40, marginTop: 20}}>
-                            <Text style={styles.infoText}> 
-                                *Age is calculated from the inputted date of birth
-                            </Text>
-                            <Text style={styles.infoText}> 
-                                **BMI is calculated from the inputted height and weight
-                            </Text>
-                        </View> */}
                         <Button 
                             title="Done" 
                             buttonStyle={styles.button} 
@@ -211,11 +249,11 @@ const styles = StyleSheet.create({
     optionView: {
         flexDirection: 'row',
         marginTop: 25,
-        marginHorizontal: 30,
+        marginHorizontal: 20,
         alignItems: 'center'
     },
 
-    optionText: {
+    fieldText: {
         fontSize: 16,
         fontFamily: 'Poppins-SemiBold',
         width: 140
@@ -234,7 +272,8 @@ const styles = StyleSheet.create({
         width: 190,
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
+        marginLeft: 10,
     },
 
     closeModalText: {
@@ -299,6 +338,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignSelf: 'center'
     },
-
+    inputTitleView: {
+        width: 140, 
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
 
 })

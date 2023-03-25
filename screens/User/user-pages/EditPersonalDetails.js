@@ -8,11 +8,16 @@ import InputTextField from '../../../components/InputTextField';
 import { Formik } from 'formik';
 import { userInfoValidationSchema } from '../../../utils/validation';
 import { calculateAge } from '../../../utils/functions';
+import { Icon } from '@rneui/base';
+import { formInfoMsgs } from '../../../utils/constants';
+import InfoOverlay from '../../../components/InfoOverlay';
 
 
 export default function EditPersonalDetails({ route, navigation }) {
     const data = route.params.data
     const [openModal, setOpenModal] = useState(false)
+    const [infoVisible, setInfoVisible] = useState(false);
+    const [infoMsg, setInfoMsg] = useState(false);
 
     const handleOnPress = () => {
         setOpenModal(!openModal)
@@ -36,6 +41,17 @@ export default function EditPersonalDetails({ route, navigation }) {
             Alert.alert('Something went wrong. Please try again')
         }
     }
+
+
+    const toggleOverlay = () => {
+        setInfoVisible(!infoVisible);
+      };
+
+    const onIconPress = (msg) => {
+        setInfoMsg(msg)
+        toggleOverlay()
+    }
+
 
     return (
         <SafeAreaProvider>
@@ -61,6 +77,7 @@ export default function EditPersonalDetails({ route, navigation }) {
                     touched,
                     isValid, }) => (
                     <>
+                    {InfoOverlay(infoVisible, toggleOverlay, infoMsg)}
                         {
                             isValid ? navigation.setOptions({ 
                                         headerBackTitle: '', 
@@ -75,7 +92,10 @@ export default function EditPersonalDetails({ route, navigation }) {
                         {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))}
 
                         <View style={styles.optionView}>
-                            <Text style={styles.optionText}>Age</Text>
+                            <View style={styles.inputTitleView}>
+                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.age)}/>
+                                <Text style={styles.fieldText}>Age</Text>
+                            </View>
                             <Text style={styles.valueText}>{ !isNaN(values.dob) || !isNaN(calculateAge(values.dob)) ? calculateAge(values.dob) : '-'}</Text>
                         </View>
                     </>)}
@@ -95,11 +115,11 @@ const styles = StyleSheet.create({
     optionView: {
         flexDirection: 'row',
         marginTop: 25,
-        marginHorizontal: 30,
+        marginHorizontal: 20,
         alignItems: 'center'
     },
 
-    optionText: {
+    fieldText: {
         fontSize: 16,
         fontFamily: 'Poppins-SemiBold',
         width: 140
@@ -120,10 +140,15 @@ const styles = StyleSheet.create({
         borderBottomColor: '#D3D3D3',
         borderBottomWidth: 1
     },
-
     itemStyle: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
+    },
+
+    inputTitleView: {
+        width: 140, 
+        flexDirection: 'row',
+        alignItems: 'center',
     },
 
 })
