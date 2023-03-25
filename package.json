@@ -29,6 +29,7 @@
     "expo-linking": "~3.2.4",
     "expo-network": "~4.3.0",
     "expo-random": "~12.3.0",
+    "expo-sensors": "~11.4.0",
     "expo-splash-screen": "~0.16.2",
     "expo-status-bar": "~1.4.0",
     "expo-web-browser": "~11.0.0",

@@ -17,6 +17,7 @@ import SuccessSplash from './screens/Wearable/SuccessSplash';
 import { View } from 'react-native';
 import SelfInputForm from './screens/SelfInputForm';
 import AccountCreateSplash from './screens/AccountCreateSplash';
+import { AccelerometerPage } from './screens/Accelerometer';
 
 const dummydata = {
   first_name : "John",
@@ -46,6 +47,7 @@ export default RootNavigator = () => {
       <SafeAreaProvider>
         <NavigationContainer> 
           <Stack.Navigator screenOptions={{ animation: 'none'}} >
+            <Stack.Screen name="Accelerometer" component={AccelerometerPage} options={{ headerShown: false }} />
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
             <Stack.Screen name="Main" component={Main} options={{ 
