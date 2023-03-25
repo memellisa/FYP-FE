@@ -6,12 +6,17 @@ import InputTextField from '../../../components/InputTextField';
 import DropDownField from '../../../components/DropdownField';
 import { Formik } from 'formik';
 import { userHealthValidationSchema } from '../../../utils/validation';
-import { bloodData, booleanData, dietData, frequencyData, sexData } from '../../../utils/constants';
+import { bloodData, booleanData, dietData, formInfoMsgs, frequencyData, sexData } from '../../../utils/constants';
 import { countBMI } from '../../../utils/functions';
+import { Icon } from '@rneui/base';
+import InfoOverlay from '../../../components/InfoOverlay';
+import { useState } from 'react';
 
 
 export default function EditHealthDetails({ route, navigation }) {
     const data = route.params.data
+    const [infoVisible, setInfoVisible] = useState(false);
+    const [infoMsg, setInfoMsg] = useState(false);
 
     const onPress = async (newData) => {
         // const tempppp = {
@@ -49,6 +54,14 @@ export default function EditHealthDetails({ route, navigation }) {
         }
     }
 
+    const toggleOverlay = () => {
+        setInfoVisible(!infoVisible);
+      };
+
+    const onIconPress = (msg) => {
+        setInfoMsg(msg)
+        toggleOverlay()
+    }
 
     return (
         <SafeAreaProvider>
@@ -84,6 +97,7 @@ export default function EditHealthDetails({ route, navigation }) {
                     touched,
                     isValid, }) => (
                     <>
+                    {InfoOverlay(infoVisible, toggleOverlay, infoMsg)}
                         {
                             isValid ? navigation.setOptions({ 
                                         headerBackTitle: '', 
@@ -119,7 +133,8 @@ export default function EditHealthDetails({ route, navigation }) {
                             booleanData, 
                             handleChange('bloodPressure'),  
                             () => touched.bloodPressure = true, 
-                            (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '')}
+                            (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '',
+                            () => onIconPress(formInfoMsgs.medication))}
 
                         {DropDownField(
                             "Insulin", 
@@ -127,7 +142,8 @@ export default function EditHealthDetails({ route, navigation }) {
                             booleanData, 
                             handleChange('insulin'),  
                             () => touched.insulin = true, 
-                            (errors.insulin && touched.insulin) ? errors.insulin : '')}
+                            (errors.insulin && touched.insulin) ? errors.insulin : '',
+                            () => onIconPress(formInfoMsgs.medication))}
 
                         {DropDownField(
                             "Cholesterol", 
@@ -135,7 +151,8 @@ export default function EditHealthDetails({ route, navigation }) {
                             booleanData, 
                             handleChange('cholesterol'),  
                             () => touched.cholesterol = true, 
-                            (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '')}
+                            (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '',
+                            () => onIconPress(formInfoMsgs.medication))}
 
                         {DropDownField(
                             "Sex", 
@@ -168,7 +185,10 @@ export default function EditHealthDetails({ route, navigation }) {
                             handleBlur('weight'))}
 
                         <View style={styles.optionView}>
-                            <Text style={styles.optionText}>BMI</Text>
+                            <View style={styles.inputTitleView}>
+                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.bmi)}/>
+                                <Text style={styles.optionText}>BMI</Text>
+                            </View>
                             <Text style={styles.valueText}>{(values.height && values.weight && isFinite(countBMI(values.height, values.weight))) ? countBMI(values.height, values.weight) : '-'}</Text>
                         </View>
 
@@ -189,7 +209,7 @@ const styles = StyleSheet.create({
     optionView: {
         flexDirection: 'row',
         marginTop: 25,
-        marginHorizontal: 30,
+        marginHorizontal: 20,
         alignItems: 'center'
     },
 
@@ -224,6 +244,12 @@ const styles = StyleSheet.create({
     itemStyle: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
+    },
+
+    inputTitleView: {
+        width: 140, 
+        flexDirection: 'row',
+        alignItems: 'center',
     },
 
 })
