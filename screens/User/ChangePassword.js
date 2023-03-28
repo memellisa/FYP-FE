@@ -7,16 +7,17 @@ import { auth } from "../../config";
 import { updatePassword, signOut, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { changePasswordValidationScheme } from '../../utils/validation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NavigationButton from "../../components/NavigationButton";
 
-function ChangeResetPassword({navigation}) {
-    const [loading, setLoading] = React.useState(false);
+function ChangePassword({navigation}) {
+    // const [loading, setLoading] = React.useState(false);
 
     const changePassword = (values) => {
         if (values.password === '' || values.newPassword === '') {
             Alert.alert('Email or password is required')
         }
         else {
-            setLoading(true)
+            // setLoading(true)
             const user = auth.currentUser;
             var credential = EmailAuthProvider.credential(
                 auth.currentUser.email,
@@ -27,7 +28,7 @@ function ChangeResetPassword({navigation}) {
                 updatePassword(user, values.newPassword).then(() => {
                     signOut(auth)
                         .then(() => {
-                            setLoading(false)
+                            // setLoading(false)
                             AsyncStorage.clear();
                             navigation.navigate("Login"); // CAN MAYBE USE REPLACE TO DELETE PREVIOUS DATA, AFRAID THERE IS BUG
                         });
@@ -67,6 +68,10 @@ function ChangeResetPassword({navigation}) {
                     isValid, }) => (
                     <>
 
+                        { navigation.setOptions({ 
+                                        headerBackTitle: '', 
+                                        headerRight: () => <NavigationButton buttonName="Save" onPressHandler={handleSubmit} disabled={!isValid}/>}) 
+                        }
                         <Text style={{color: 'grey', marginHorizontal: 20, marginTop: 10, marginBottom: 0, textAlign: 'justify'}}> 
                             You will be logged out of the current session if the password change is successful, please login again with your new password. 
                             {"\n\n"}
@@ -82,8 +87,6 @@ function ChangeResetPassword({navigation}) {
                                         style={styles.valueText} 
                                         value={values.password} 
                                         onChangeText={handleChange('password')} 
-                                        multiline={false} 
-                                        keyboardType={'default'}
                                         onBlur={handleBlur('password')}
                                         secureTextEntry={true}
                                     />
@@ -100,8 +103,6 @@ function ChangeResetPassword({navigation}) {
                                         style={styles.valueText} 
                                         value={values.newPassword} 
                                         onChangeText={handleChange('newPassword')} 
-                                        multiline={false} 
-                                        keyboardType={'default'}
                                         onBlur={handleBlur('newPassword')}
                                         secureTextEntry={true}
                                     />
@@ -118,8 +119,6 @@ function ChangeResetPassword({navigation}) {
                                         style={styles.valueText} 
                                         value={values.confirmNewPassword} 
                                         onChangeText={handleChange('confirmNewPassword')} 
-                                        multiline={false} 
-                                        keyboardType={'default'}
                                         onBlur={handleBlur('confirmNewPassword')}
                                         secureTextEntry={true}
                                     />
@@ -131,13 +130,13 @@ function ChangeResetPassword({navigation}) {
                             Forgotten your password instead?
                         </Text> */}
 
-                        <Button 
+                        {/* <Button 
                             title="Change Password" 
                             buttonStyle={styles.button} 
                             onPress={handleSubmit}
                             loading={loading}
                             disabled={!isValid}
-                        />
+                        /> */}
 
                     </>)}
                 </Formik>
@@ -157,8 +156,8 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
         // marginTop: -65,
         flex: 1,
-        // backgroundColor: '#fff',
-        backgroundColor: '#f2f2f6',
+        backgroundColor: '#fff',
+        // backgroundColor: '#f2f2f6',
 
     },
 
@@ -214,4 +213,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default ChangeResetPassword;
+export default ChangePassword;

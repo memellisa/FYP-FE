@@ -160,8 +160,8 @@ export default function Profile({ navigation, route }) {
                         <Text style={styles.buttonText}>Manage Wearable</Text>
                 </Button>
 
-                <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Change Reset Password")}>
-                        <Text style={styles.buttonText}>Change/Reset Password</Text>
+                <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Change Password")}>
+                        <Text style={styles.buttonText}>Change Password</Text>
                 </Button>
 
                 <Button radius={8} color="#fff" style={{...styles.button, marginBottom: 30}} onPress={logout} >

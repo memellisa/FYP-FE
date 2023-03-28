@@ -23,6 +23,7 @@ const signupValidationSchema = yup.object().shape({
     confirmPassword: yup
         .string()
         .oneOf([yup.ref('password'), null], 'Passwords must match')
+        .required('Password must be confirmed'),
 })
 
 const changePasswordValidationScheme = yup.object().shape({
@@ -36,6 +37,7 @@ const changePasswordValidationScheme = yup.object().shape({
   confirmNewPassword: yup
   .string()
   .oneOf([yup.ref('newPassword'), null], 'Passwords must match')
+  .required('New password must be confirmed'),
 })
 
 const userInfoValidationSchema = yup.object().shape({

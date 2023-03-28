@@ -2,15 +2,15 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Text, Button } from '@rneui/themed';
 
-const NavigationButton = ({ buttonName, onPressHandler }) => {
+const NavigationButton = ({ buttonName, onPressHandler, disabled=false }) => {
     return (
         <Button
             // onPress={() => navigation.navigate(name, { data: route.params.data })}
-            onPress={onPressHandler}
+            onPress={disabled ? ()=>{} : onPressHandler}
             color="#fff"
             style={styles.button}
             >
-            <Text style={styles.text}>{buttonName}</Text>
+            <Text style={{...styles.text, color: disabled ? 'grey' : '#0096FF'}}>{buttonName}</Text>
         </Button>
     );
 };
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     },
 
     text: {
-        color: '#0096FF', 
+        // color: '#0096FF', 
         fontSize: 18,
     },
 

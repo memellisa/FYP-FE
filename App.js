@@ -19,7 +19,7 @@ import SelfInputForm from './screens/SelfInputForm';
 import AccountCreateSplash from './screens/AccountCreateSplash';
 import CommunityGroupList from './screens/Community/CommunityGroupList';
 import Article from './screens/Community/Article';
-import ChangeResetPassword from './screens/User/ChangeResetPassword';
+import ChangePassword from './screens/User/ChangePassword';
 
 const dummydata = {
   first_name : "John",
@@ -60,7 +60,7 @@ export default RootNavigator = () => {
             
             <Stack.Screen name="Edit Personal Details" component={EditPersonalDetails}/>
             <Stack.Screen name="Edit Health Details" component={EditHealthDetails}/>
-            <Stack.Screen name="Change Reset Password" component={ChangeResetPassword} options={{ headerShown: true }} />
+            <Stack.Screen name="Change Password" component={ChangePassword} options={{ headerShown: true }} />
 
             <Stack.Screen name="Manage Wearable" component={ManageWearable} options={{headerBackTitle: ''}} />
             <Stack.Screen name="Confirm Auth" component={ConfirmAuth} options={{headerBackTitle: '', title: '' }} />

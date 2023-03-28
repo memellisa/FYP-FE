@@ -190,7 +190,7 @@ export default function Login({navigation}) {
                     // onPress={() => login()}
                     loading={loading}
                     onPress={handleSubmit}
-                    disabled={!isValid || values.email === ''}
+                    disabled={!isValid}
                 />
                 <Button 
                     title="Don't have an account? Signup today!" 
