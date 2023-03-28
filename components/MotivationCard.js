@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     text: {
         color: '#808080',
         fontSize: 16,
-        paddingEnd: 10,
+        paddingEnd: 20,
         fontFamily: 'Poppins-Regular'
     },
 

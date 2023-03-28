@@ -2,7 +2,8 @@ import React from 'react';
 import { View, StyleSheet, Image, Pressable } from 'react-native';
 import { Text, Card } from '@rneui/themed';
 
-const CommunityCard = ({ imgURI, title, text, minWidth, onPress}) => {
+
+const ArticleCard = ({ imgURI, author, title, date, content, minWidth, onPress}) => {
     return (
     <>  
         <Pressable onPress={onPress} >
@@ -10,9 +11,14 @@ const CommunityCard = ({ imgURI, title, text, minWidth, onPress}) => {
                 <Image
                     style={styles.image}
                     source={{uri: imgURI}}/>
-                <View style={{ alignItems:'center' }}>  
+                <View>  
                     <Text style={styles.title}>{title}</Text>
-                    <Text style={styles.text}>{text}</Text>
+                    <Text style={styles.info}>
+                        Written By: {author}
+                        {"\n"}
+                        {date}
+                    </Text>
+                    <Text style={styles.text}>{content}</Text>
                 </View>
             </Card>
         </Pressable>
@@ -39,6 +45,16 @@ const styles = StyleSheet.create({
         paddingEnd: 10,
         fontFamily: 'Poppins-Regular'
     },
+
+    info: {
+        color: '#C0C6CC',
+        fontSize: 13,
+        textAlign: 'right',
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingEnd: 10,
+        fontFamily: 'Poppins-Regular'
+    },
     
     image: {
         width: 300,
@@ -47,4 +63,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CommunityCard;
+export default ArticleCard;

@@ -3,7 +3,7 @@ import { Tab as TabComponent, TabView } from '@rneui/themed';
 import Home from './Home';
 import Genetics from './Genetics';
 import Risk from './Risk';
-import Community from './Community';
+import Community from './Community/Community';
 import {  Alert, StyleSheet } from 'react-native';
 import { Icon } from '@rneui/base';
 import { getProfile } from '../utils/api/fitbit.api';
