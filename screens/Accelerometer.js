@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
 import { Accelerometer } from 'expo-sensors';
+import * as FileSystem from 'expo-file-system';
+// import { Dirs, FileSystem } from 'react-native-file-access';
+
+
+// var blob = new Blob(["Welcome to Websparrow.org."],
+//                 { type: "text/plain;charset=utf-8" });
+//                 let fileUri = FileSystem.documentDirectory + "accelerometerData.txt";
+//                 await FileSystem.writeAsStringAsync(fileUri, "Hello World", { encoding: FileSystem.EncodingType.UTF8 });
+//         _subscribe();
 
 export const AccelerometerPage = ({ headerSubtitle, navigation, route}) => {
-    const [{ x, y, z }, setData] = useState({
+    const [data, setData] = useState({
         x: 0,
         y: 0,
         z: 0,
       });
 
     const [subscription, setSubscription] = useState(null);
-    const _interval = () => Accelerometer.setUpdateInterval(115); // Set interval of checking every 5 seconds
+    const _interval = () => Accelerometer.setUpdateInterval(5000); // Set interval of checking every 5 seconds
 
     const _subscribe = () => {
         setSubscription(
@@ -24,22 +33,56 @@ export const AccelerometerPage = ({ headerSubtitle, navigation, route}) => {
     };
     
     useEffect(() => {
+        emptyFileData()
         _subscribe();
+        Accelerometer.setUpdateInterval(5000);
         return () => _unsubscribe();
     }, []);
+
+    const emptyFileData = async () => {
+        let fileUri = FileSystem.documentDirectory + "accelerometerData.txt";
+        await FileSystem.writeAsStringAsync(fileUri, "", { encoding: FileSystem.EncodingType.UTF8 });
+    }
+
+    const saveData = async (data) => {
+        let fileUri = FileSystem.documentDirectory + "accelerometerData.txt";
+        let currentData;
+        await FileSystem.readAsStringAsync(fileUri, { encoding: FileSystem.EncodingType.UTF8 }).then(data => {
+            currentData = data // are you sure you want to resolve the data and not the base64 string? 
+        }).catch(err => {
+            console.log("​getFile -> err", err)
+        });
+        console.log(currentData)
+        await FileSystem.writeAsStringAsync(fileUri, currentData + "\n" + JSON.stringify(data), { encoding: FileSystem.EncodingType.UTF8 });
+    }
+
+    useEffect(() => { // This gets triggered everytime the data changes, which is a 5 second interval
+        saveData(data)
+    }, [data]);
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Accelerometer: (in gs where 1g = 9.81 m/s^2)</Text>
-            <Text style={styles.text}>x: {x}</Text>
-            <Text style={styles.text}>y: {y}</Text>
-            <Text style={styles.text}>z: {z}</Text>
+            <Text style={styles.text}>x: {data.x}</Text>
+            <Text style={styles.text}>y: {data.y}</Text>
+            <Text style={styles.text}>z: {data.z}</Text>
             <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={subscription ? _unsubscribe : _subscribe} style={styles.button}>
                 <Text>{subscription ? 'On' : 'Off'}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={_interval} style={[styles.button, styles.middleButton]}>
                 <Text>Set Interval</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => {
+                let fileUri = FileSystem.documentDirectory + "accelerometerData.txt";
+                FileSystem.readAsStringAsync(fileUri, { encoding: FileSystem.EncodingType.UTF8 }).then(data => {
+                    console.log(data) // are you sure you want to resolve the data and not the base64 string? 
+                }).catch(err => {
+                    console.log("​getFile -> err", err)
+                });
+            }} style={[styles.button, styles.middleButton]}>
+                <Text>Read File and Log Content</Text>
             </TouchableOpacity>
             </View>
         </View>
