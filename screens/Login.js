@@ -89,8 +89,10 @@ export default function Login({navigation}) {
   let unsubscribe;
 
     useEffect(() => {
+        setLoading(false)
         unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
+                setLoading(true)
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 // const uid = user.uid;
@@ -99,6 +101,7 @@ export default function Login({navigation}) {
                 setTimeout(() => {
                   // should show the Connected Manage Wearable page instead later
                   // navigation.navigate("Profile");
+                  setLoading(false)
                   navigation.navigate("Main");
                 }, 2000);
                 // ...
@@ -185,6 +188,7 @@ export default function Login({navigation}) {
                     // onPress={() => navigation.replace("Main")}
                     // onPress={() => {onLogin()}}
                     // onPress={() => login()}
+                    loading={loading}
                     onPress={handleSubmit}
                     disabled={!isValid || values.email === ''}
                 />

@@ -17,9 +17,9 @@ import { getUserData } from '../utils/functions';
 
 // to be replaced by real data
 const emptyWeeklySteps = [
-  { day: "SUN", steps: 0 },
-  { day: "MON", steps: 0 },
-  { day: "TUE", steps: 0 },
+  { day: "SUN", steps: 1110 },
+  { day: "MON", steps: 14230 },
+  { day: "TUE", steps: 2310 },
   { day: "WED", steps: 0 },
   { day: "THU", steps: 0 },
   { day: "FRI", steps: 0 },
@@ -127,7 +127,7 @@ const Home = ({ headerSubtitle, navigation, route}) => {
                 setSummaryActivity(processSummaryActivity(jsonResponse.summary))
               }
             } else {
-                Alert.alert('Something went wrong getting Activities. Please try again')
+                // Alert.alert('Something went wrong getting Activities. Please try again')
             }
         }
 
@@ -136,10 +136,11 @@ const Home = ({ headerSubtitle, navigation, route}) => {
           console.log("STEPS:::",JSON.stringify(result.data))
           if (!result.error){
             if (result.data != userData) {
-              setWeeklySteps(result.data)
+              // setWeeklySteps(result.data)
+                setWeeklySteps(emptyWeeklySteps)
             }
           } else {
-              Alert.alert('Something went wrong getting weekly steps. Please try again')
+              // Alert.alert('Something went wrong getting weekly steps. Please try again')
           }
         }
 
@@ -180,7 +181,7 @@ const Home = ({ headerSubtitle, navigation, route}) => {
             <Avatar
               size={64}
               rounded
-              source={{uri: userData ? userData.info.img : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
+              source={{uri: userData?.info.img ? userData?.info.img : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
               onPress={() => navigation.push("Profile")}
               containerStyle={{ backgroundColor: '#6733b9' }}
             />
