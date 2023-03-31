@@ -48,7 +48,7 @@ const dummydata = [
     },
 
 ]
-function CommunityGroupList(navigation, group) {
+function Group(navigation, group) {
     const [articleList, setArticleList] = useState([])
 
     const leftComponent = <View style={{width:350}}>
@@ -87,14 +87,11 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
-      // alignItems: 'center',
-      // justifyContent: 'center',
     },
 
     heading: {
         color: 'black',
         fontSize: 25,
-        // width: 250,
         fontWeight: 'bold',
         fontFamily: 'Poppins-SemiBold'
       },
@@ -102,9 +99,8 @@ const styles = StyleSheet.create({
     subheading: {
         color: '#0096FF',
         fontSize: 15,
-        // width: 250,
         fontFamily: 'Poppins-Regular'
     },
 });
 
-export default CommunityGroupList;
+export default Group;

@@ -4,11 +4,8 @@ import Home from './Home';
 import Genetics from './Genetics';
 import Risk from './Risk';
 import Community from './Community/Community';
-import {  Alert, StyleSheet } from 'react-native';
+import {  StyleSheet } from 'react-native';
 import { Icon } from '@rneui/base';
-import { getProfile } from '../utils/api/fitbit.api';
-import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import axios from 'axios';
 import { flaskURL } from '../utils/constants';

@@ -1,10 +1,31 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Keyboard } from 'react-native';
 import { Button, Input } from '@rneui/base';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 function Article({navigation, route}) {
     const [commentValue, setCommentValue] = useState("")
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            () => {
+                setKeyboardVisible(true); // or some other action
+            }
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            () => {
+                setKeyboardVisible(false); // or some other action
+            }
+        );
+
+        return () => {
+        keyboardDidHideListener.remove();
+        keyboardDidShowListener.remove();
+        };
+    }, []);
 
     const handleCommentChange = (event) => {
         setCommentValue(event.target.value)
@@ -13,7 +34,9 @@ function Article({navigation, route}) {
     const { article } = route.params;
     return (
         <SafeAreaProvider>
-            <ScrollView style={styles.container} contentContainerStyle={{paddingBottom: 35}}>
+            <ScrollView 
+                automaticallyAdjustKeyboardInsets={true} 
+                style={styles.container} >
                 <Text style={styles.info}>
                     Written By: {article.author}
                     {"\n"}
@@ -27,9 +50,9 @@ function Article({navigation, route}) {
                     {article.content}
                 </Text>
 
-                <View style={{borderWidth: 0.5, marginTop: 20}}></View>
+                
 
-                <View>
+                <View style={styles.commentView}>
                     <Text style={styles.heading2}>Comments:</Text>
                     <Input 
                         value={commentValue} 
@@ -40,7 +63,6 @@ function Article({navigation, route}) {
                     />
                 </View>
 
-
             </ScrollView>
         </SafeAreaProvider>
     )
@@ -50,14 +72,11 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
-      // alignItems: 'center',
-      // justifyContent: 'center',
     },
     heading: {
       color: 'black',
       fontSize: 25,
       textAlign: 'center',
-      // width: 250,
       fontWeight: 'bold',
       fontFamily: 'Poppins-SemiBold'
     },
@@ -66,7 +85,6 @@ const styles = StyleSheet.create({
         color: 'black',
         fontSize: 23,
         textAlign: 'left',
-        // width: 250,
         paddingTop: 20,
         paddingStart: 20,
         fontWeight: 'bold',
@@ -76,7 +94,6 @@ const styles = StyleSheet.create({
     subheading: {
       color: '#0096FF',
       fontSize: 15,
-      // width: 250,
       fontFamily: 'Poppins-Regular'
     },
 
@@ -110,6 +127,12 @@ const styles = StyleSheet.create({
         paddingEnd: 20,
         fontFamily: 'Poppins-Regular'
     },
+
+    commentView: {
+        marginTop: 20,
+        marginBottom: isKeyboardVisible ? 0 : 20
+
+    }
   
   });
 

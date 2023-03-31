@@ -2,7 +2,6 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { registerRootComponent } from 'expo';
 
 import Main from './screens/Main';
 import Profile from './screens/User/Profile';
@@ -17,7 +16,7 @@ import SuccessSplash from './screens/Wearable/SuccessSplash';
 import { View } from 'react-native';
 import SelfInputForm from './screens/SelfInputForm';
 import AccountCreateSplash from './screens/AccountCreateSplash';
-import CommunityGroupList from './screens/Community/CommunityGroupList';
+import Group from './screens/Community/Group';
 import Article from './screens/Community/Article';
 
 const dummydata = {
@@ -64,7 +63,7 @@ export default RootNavigator = () => {
             <Stack.Screen name="Confirm Auth" component={ConfirmAuth} options={{headerBackTitle: '', title: '' }} />
             <Stack.Screen name="Success Splash" component={SuccessSplash} options={{ headerShown: false }} />
             <Stack.Screen name="Create Account Splash" component={AccountCreateSplash} options={{ headerShown: false }} />
-            <Stack.Screen name="Community Article List" component={CommunityGroupList} options={{ headerShown: true }} />
+            <Stack.Screen name="Group" component={Group} options={{ headerShown: true }} />
             <Stack.Screen name="Article" component={Article} options={{ headerShown: true }} />
 
             <Stack.Screen name="Self Input Form" component={SelfInputForm} options={{ 
