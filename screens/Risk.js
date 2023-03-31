@@ -9,12 +9,12 @@ import MotivationCard from '../components/MotivationCard';
 
 
 // to be replaced by real data
-const dummydata = [
-  { month: "JAN", risk: 40 },
-  { month: "FEB", risk: 37 },
-  { month: "MAR", risk: 33 },
-  { month: "APR", risk: 28 },
-  { month: "MAY", risk: 24 },
+const emptyData = [
+  { month: "JAN", risk: 0 },
+  { month: "FEB", risk: 0 },
+  { month: "MAR", risk: 0 },
+  { month: "APR", risk: 0 },
+  { month: "MAY", risk: 0 },
 ];
 
 const dummyavg = [
@@ -26,23 +26,46 @@ const dummyavg = [
 ];
 
 export default function Genetics({headerTitle, headerSubtitle}) {
-      // this is just dummy
-      const leftComponent = <View style={{width:250}}>
-                              <Text style={styles.heading}>{headerTitle}</Text>
-                              <Text style={styles.subheading}>{headerSubtitle}</Text>
-                            </View>
+  const [monthlyRisk, setMonthlyRisk] = useState(emptyData)
+    // this is just dummy
+    const leftComponent = <View style={{width:250}}>
+                            <Text style={styles.heading}>{headerTitle}</Text>
+                            <Text style={styles.subheading}>{headerSubtitle}</Text>
+                          </View>
+
+  const fetchMonthlyRisk = async() => {
+    const result = await getUser()
     
-    return (
-      <SafeAreaProvider>
-        <ScrollView style={styles.container}>
-          <Header leftComponent={leftComponent} rightComponent={{}}/>
-          <LineChart data={dummydata} average={dummyavg}/>
-          <MotivationCard title="Suggestion" text="20 more active minutes can reduce 0.5% more risk" minWidth={350}/>
-          <StatusBar style="auto" />
-        </ScrollView>
-      </SafeAreaProvider>
+    if (!result.error) {
+      try {
+        // console.log('RISK', JSON.stringify(result.data))
+        setMonthlyRisk(result.data)
+      } catch (e) {
+        fetchMonthlyRisk()
+        console.log(e)
+        // Alert.alert('Something went wrong. Please try again')
+      }
+    } 
+    else {
+      Alert.alert('Something went wrong getting USER. Please try again')
+    }
+  }
+
+  useEffect(() => {
+    getUserData()
+    console.log("FOCUSED")
+  }, [isFocused])
   
-    );
+  return (
+    <SafeAreaProvider>
+      <ScrollView style={styles.container}>
+        <Header leftComponent={leftComponent} rightComponent={{}}/>
+        <LineChart data={dummydata} average={dummyavg}/>
+        <MotivationCard title="Suggestion" text="20 more active minutes can reduce 0.5% more risk" minWidth={350}/>
+        {/* <StatusBar style="auto" /> */}
+      </ScrollView>
+    </SafeAreaProvider>
+  );
 }
 
 const styles = StyleSheet.create({

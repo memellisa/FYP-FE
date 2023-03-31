@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import { StyleSheet, View, Dimensions } from "react-native";
-import { Bar, VictoryLine, VictoryChart, VictoryTheme, VictoryAxis, VictoryLabel, VictoryLegend } from "victory-native";
+import { VictoryLine, VictoryChart, VictoryTheme, VictoryLabel, VictoryLegend } from "victory-native";
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -21,7 +21,7 @@ const LineChart = ({data, average}) =>  {
             style={{ border: { stroke: "black" }, title: {fontSize: 20 } }}
             data={[
             { name: "Your 10-Year CHD Risk (%)", symbol: { fill: "#c43a31" } },
-            { name: "Average population risk", symbol: { fill: "#00D100" } },
+            // { name: "Average population risk", symbol: { fill: "#00D100" } },
             ]}
         />
         <VictoryLine
@@ -42,14 +42,14 @@ const LineChart = ({data, average}) =>  {
                 textAnchor="end"
                 verticalAnchor="middle"/>}
             />
-        <VictoryLine
+        {/* <VictoryLine
             style={{
                 data: { stroke: "#00D100" },
                 parent: { border: "1px solid #ccc"}
             }}
             data={average} 
             x="month" 
-            y="risk" />
+            y="risk" /> */}
         
         </VictoryChart>
         
