@@ -28,7 +28,8 @@ const dummydata = [
             date: "String",
             content: "String",
             comment: []
-        }]
+        }],
+        likes: 100
     },
     {
         article_id: 2,
@@ -44,26 +45,26 @@ const dummydata = [
         Many people forget that your heart is a muscle, and like all muscles, it requires exercise. 
         If you don’t work it, it will weaken much quicker over time. Getting your heart pumping at faster rates on a regular basis keeps it in shape and healthy, reducing the risk of heart disease. 
         Cardio helps lower your blood pressure by reducing the levels of bad cholesterol and raising levels of good cholesterol. This will eventually lower your resting heart rate because your heart pumps blood more efficiently.`,
-        comments: []
+        comments: [],
+        likes: 100
     },
 
 ]
-function Group(navigation, group) {
+const Group = ({ navigation, route }) => {
     const [articleList, setArticleList] = useState([])
-
-    const leftComponent = <View style={{width:350}}>
-                              <Text style={styles.heading}>Cardio</Text> 
-                              {console.log("Change Cardio to Group Later")}
-                        </View>
+    const group = route.params?.data;
 
     useEffect(() => {
         setArticleList(dummydata) //Change to request to BE
     }, [])
 
+    useEffect(() => {
+        navigation.setOptions({ headerBackTitle: '', title: group.name }) 
+    }, [])
+
     return(
         <SafeAreaProvider>
             <ScrollView style={styles.container} contentContainerStyle={{paddingBottom: 35}}>
-                <Header leftComponent={leftComponent} rightComponent={{}}/>
                 <View style={{alignItems: 'center',}}>
                     {articleList.map((article) => (
                         <ArticleCard 
@@ -73,7 +74,7 @@ function Group(navigation, group) {
                             title={article.title}
                             content={article.content.substring(0,100) + "..."}
                             minWidth={350}
-                            onPress={() => console.log(navigation.navigation.push("Article", { article: article }))}
+                            onPress={() => console.log(navigation.navigate("Article", { article: article }))}
                         />
                     ))}
                 </View>

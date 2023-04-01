@@ -64,7 +64,7 @@ export default RootNavigator = () => {
             <Stack.Screen name="Success Splash" component={SuccessSplash} options={{ headerShown: false }} />
             <Stack.Screen name="Create Account Splash" component={AccountCreateSplash} options={{ headerShown: false }} />
             <Stack.Screen name="Group" component={Group} options={{ headerShown: true }} />
-            <Stack.Screen name="Article" component={Article} options={{ headerShown: true }} />
+            <Stack.Screen name="Article" component={Article} options={{ headerShown: true, title: '' }} />
 
             <Stack.Screen name="Self Input Form" component={SelfInputForm} options={{ 
               gestureEnabled: false,

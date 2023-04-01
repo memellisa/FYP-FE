@@ -26,7 +26,7 @@ export default function Community({navigation, headerTitle, headerSubtitle}) {
               text="Regular cardio-based physical activity enables the heart to achieve improved blood flow"
               minWidth={350}
               navigation={navigation}
-              onPress={() => navigation.push("Group")} />
+              onPress={() => navigation.navigate("Group", {data: {name:'Cardio'}})} />
             <CommunityCard 
               imgURI='https://assets.sweat.com/html_body_blocks/images/000/013/890/original/EasyHealthySnacks_en65ab5213130c9862172ac11435f055d9_en38b28edc7b2830a46f6e00bfeceeb1b6.jpg?1596090039https://www.freepik.com/free-photo/outdoor-shot-active-dark-skinned-man-running-morning-has-regular-trainings-dressed-tracksuit-comfortable-sneakers-concentrated-into-distance-sees-finish-far-away_12204561.htm#query=person%20running&position=4&from_view=keyword'
               title="Healthy Snacking"
