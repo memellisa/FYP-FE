@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
-import * as Network from 'expo-network';
 import { flaskURL } from "../constants";
 import { auth } from "../../config";
 
