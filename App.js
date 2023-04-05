@@ -18,6 +18,8 @@ import SelfInputForm from './screens/SelfInputForm';
 import AccountCreateSplash from './screens/AccountCreateSplash';
 import Group from './screens/Community/Group';
 import Article from './screens/Community/Article';
+import AllRisk from './screens/Risk/AllRisk';
+
 
 const dummydata = {
   first_name : "John",
@@ -65,6 +67,8 @@ export default RootNavigator = () => {
             <Stack.Screen name="Create Account Splash" component={AccountCreateSplash} options={{ headerShown: false }} />
             <Stack.Screen name="Group" component={Group} options={{ headerShown: true }} />
             <Stack.Screen name="Article" component={Article} options={{ headerShown: true }} />
+
+            <Stack.Screen name="All Risk" component={AllRisk} options={{ headerBackTitle: '' }} />
 
             <Stack.Screen name="Self Input Form" component={SelfInputForm} options={{ 
               gestureEnabled: false,

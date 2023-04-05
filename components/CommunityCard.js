@@ -2,11 +2,11 @@ import React from 'react';
 import { View, StyleSheet, Image, Pressable } from 'react-native';
 import { Text, Card } from '@rneui/themed';
 
-const CommunityCard = ({ imgURI, title, text, minWidth, onPress}) => {
+const CommunityCard = ({ imgURI, title, text, width, onPress}) => {
     return (
     <>  
         <Pressable onPress={onPress} >
-            <Card containerStyle={{ ...styles.container, width: minWidth}}  >
+            <Card containerStyle={{ ...styles.container, width: width}}  >
                 <Image
                     style={styles.image}
                     source={{uri: imgURI}}/>

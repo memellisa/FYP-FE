@@ -72,7 +72,7 @@ function Group(navigation, group) {
                             date={article.article_date}
                             title={article.title}
                             content={article.content.substring(0,100) + "..."}
-                            minWidth={350}
+                            width={350}
                             onPress={() => console.log(navigation.navigation.push("Article", { article: article }))}
                         />
                     ))}

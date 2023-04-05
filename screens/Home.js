@@ -121,7 +121,7 @@ const Home = ({ headerSubtitle, navigation, route}) => {
             const result = await getActivities()
             console.log("ACTIVITY:::",JSON.stringify(result))
             if (!result.error){
-              let jsonResponse = JSON.parse(result.data)
+              let jsonResponse = result.data //benerin later
               if (jsonResponse != userActivity) {
                 setUserActivity(jsonResponse)
                 setSummaryActivity(processSummaryActivity(jsonResponse.summary))
@@ -187,11 +187,11 @@ const Home = ({ headerSubtitle, navigation, route}) => {
             />
           }/>
           <View style={{ flexDirection: "row", flexWrap: "wrap-reverse", alignItems: 'center', justifyContent: 'center'}}>
-            <DataCard title="Steps" numbers={summaryActivity ? summaryActivity.steps.value : 0} units={summaryActivity ? summaryActivity.steps.unit : 'steps'} minWidth={160}/>
-            <DataCard title="Calories" numbers={summaryActivity ? summaryActivity.calories.value : 0} units={summaryActivity ? summaryActivity.calories.unit : 'cals'} minWidth={160}/>
-            <DataCard title="Distance" numbers={summaryActivity ? summaryActivity.distance.value : 0} units={summaryActivity ? summaryActivity.distance.unit : 'km'} minWidth={160}/>
-            {/* <DataCard title="Floors" numbers="11" minWidth={160}/> */}
-            <DataCard title="Activity" numbers={summaryActivity ? summaryActivity.activity.value : ['0', '0']} units={summaryActivity ? summaryActivity.activity.unit : ['h', 'm']} minWidth={160}/>
+            <DataCard title="Steps" numbers={summaryActivity ? summaryActivity.steps.value : 0} units={summaryActivity ? summaryActivity.steps.unit : 'steps'} width={160}/>
+            <DataCard title="Calories" numbers={summaryActivity ? summaryActivity.calories.value : 0} units={summaryActivity ? summaryActivity.calories.unit : 'cals'} width={160}/>
+            <DataCard title="Distance" numbers={summaryActivity ? summaryActivity.distance.value : 0} units={summaryActivity ? summaryActivity.distance.unit : 'km'} width={160}/>
+            {/* <DataCard title="Floors" numbers="11" width={160}/> */}
+            <DataCard title="Activity" numbers={summaryActivity ? summaryActivity.activity.value : ['0', '0']} units={summaryActivity ? summaryActivity.activity.unit : ['h', 'm']} width={160}/>
           </View>
           
           <Text style={{...styles.heading,fontSize: 20, marginLeft: 20, marginTop: 10}}>Weekly Log Steps</Text>
@@ -210,7 +210,7 @@ const Home = ({ headerSubtitle, navigation, route}) => {
             </View> */}
             <BarGraph data={weeklySteps ? weeklySteps : emptyWeeklySteps}/>
           </View>
-          <MotivationCard title="Keep the progress!" text="You have 47% more steps than last week!" minWidth={350}/>
+          <MotivationCard title="Keep the progress!" text="You have 47% more steps than last week!" width={350}/>
           <StatusBar style="auto" />
         </ScrollView>
       </SafeAreaProvider>

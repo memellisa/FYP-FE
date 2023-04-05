@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, Card } from '@rneui/themed';
 
-const DataCard = ({title, numbers, units, note, minWidth}) => {
+const DataCard = ({title, numbers, units, note, width}) => {
     var contents = []
 
     if (Array.isArray(numbers)){
@@ -16,8 +16,7 @@ const DataCard = ({title, numbers, units, note, minWidth}) => {
     }
     
     return (
-    <>
-        <Card containerStyle={{ width: minWidth, ...styles.container}} >
+        <Card containerStyle={{ width: width, ...styles.container}} >
             <Card.Title style={styles.title}>{title}</Card.Title>
             <View style={styles.contentView}>  
                 <View style={styles.content}>
@@ -26,7 +25,6 @@ const DataCard = ({title, numbers, units, note, minWidth}) => {
                 {note && (<Text style={styles.note}>{note}</Text>)}
             </View>
         </Card>
-    </>
     );
 };
 
@@ -34,7 +32,7 @@ const styles = StyleSheet.create({
     container: {
         marginBottom:10, 
         paddingRight:20,
-        borderRadius:10
+        borderRadius:10,
     },
 
     title: {
