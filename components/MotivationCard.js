@@ -3,10 +3,10 @@ import { View, StyleSheet } from 'react-native';
 import { Text, Card } from '@rneui/themed';
 import Emoji from './Emoji';
 //  
-const MotivationCard = ({ title, text, minWidth}) => {
+const MotivationCard = ({ title, text, width}) => {
     return (
     <>  
-        <Card containerStyle={{...styles.container, width: minWidth, }} >
+        <Card containerStyle={{...styles.container, width: width, }} >
             <View style={styles.content}>  
                 <Emoji symbol="🎉" label="confetti" />
                 <View style={styles.textView}>

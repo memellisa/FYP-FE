@@ -61,5 +61,51 @@ const calculateAge = (birthday) => {
 
 const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
 
+const labelMonth = (month) => {
+  switch (month) { 
+    case 1:
+      return "JAN"
+    case 2:
+      return "FEB"
+    case 3:
+      return "MAR"
+    case 4:
+      return "APR"
+    case 5:
+      return "MAY"
+    case 6:
+      return "JUN"
+    case 7:
+      return "JUL"
+    case 8:
+      return "AUG"
+    case 9:
+      return "SEP"
+    case 10:
+      return "OCT"
+    case 11:
+      return "NOV"
+    case 12:
+      return "DEC"
+    default:
+      return '' 
+  }
+}
 
-export { getUserData, calculateAge, countBMI }
+const processRiskData =  (data, label, index) => {
+  var res = []
+  for (let i = 1; i <= index; i++){
+    const val = data[i.toString()]
+    if (val){
+      res.push(
+        {
+          time: label ? label(i) : i,
+          risk: parseFloat((val * 100).toFixed(2))
+        }
+      )
+      console.log(res)
+    } else break
+  }
+  return res
+}
+export { getUserData, calculateAge, countBMI, labelMonth, processRiskData }

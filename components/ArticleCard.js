@@ -3,11 +3,11 @@ import { View, StyleSheet, Image, Pressable } from 'react-native';
 import { Text, Card } from '@rneui/themed';
 
 
-const ArticleCard = ({ imgURI, author, title, date, content, minWidth, onPress}) => {
+const ArticleCard = ({ imgURI, author, title, date, content, width, onPress}) => {
     return (
     <>  
         <Pressable onPress={onPress} >
-            <Card containerStyle={{ ...styles.container, width: minWidth}}  >
+            <Card containerStyle={{ ...styles.container, width: width}}  >
                 <Image
                     style={styles.image}
                     source={{uri: imgURI}}/>

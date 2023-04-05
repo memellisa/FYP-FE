@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet, Image } from 'react-native';
 import { Text, Card, Button, Icon } from '@rneui/themed';
-import EditButton from './EditButton';
+import NavigateButton from './NavigateButton';
 import labels from '../utils/labels';
 
 const DetailsCard = ({title, data, navigation, route, dataToShow}) => {
@@ -50,7 +50,7 @@ const DetailsCard = ({title, data, navigation, route, dataToShow}) => {
         <Card containerStyle={styles.container} >
             <View style={styles.cardHeader}>
                 <Text style={styles.title}>{title}</Text>
-                <EditButton name={`Edit ${title}`} navigation={navigation} route={route} data={data} />
+                <NavigateButton name='Edit' nav={`Edit ${title}`} navigation={navigation} data={data} />
             </View>
             
             {arrayData.map((obj, i) => 

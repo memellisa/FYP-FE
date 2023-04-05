@@ -1,65 +1,44 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Dimensions } from "react-native";
-import { Bar, VictoryLine, VictoryChart, VictoryTheme, VictoryAxis, VictoryLabel, VictoryLegend } from "victory-native";
+import { StyleSheet, View } from "react-native";
+import { VictoryLine, VictoryChart, VictoryTheme, VictoryAxis } from "victory-native";
 
-
-const windowWidth = Dimensions.get('window').width;
-
-const LineChart = ({data, average}) =>  {
-    var tempData = [...data]
-    tempData.splice(0,1)
-    const labelData = data.map((e, i) => {
-            return i == data.length - 1 ? {...e, 'diff': (e.risk - data[i-1].risk).toString()+'%\n(than last month)'} : e})
-
+const LineChart = ({data, domainX}) =>  {
+  const domain = data ? {} : {y: []}
   return (
     <View style={styles.container}>
-      <VictoryChart  minDomain={{ y: 0 }} height={300}  theme={VictoryTheme.material}>
-      <VictoryLegend x={25} y={2}
-            orientation="horizontal"
-            gutter={15}
-            style={{ border: { stroke: "black" }, title: {fontSize: 20 } }}
-            data={[
-            { name: "Your 10-Year CHD Risk (%)", symbol: { fill: "#c43a31" } },
-            { name: "Average population risk", symbol: { fill: "#00D100" } },
-            ]}
-        />
+      <VictoryChart 
+      
+        width={420}  
+        minDomain={{ y: 0 }} 
+        padding={{left: 47, right: 50, bottom: 60, top: 5}}
+        height={300}  
+        theme={VictoryTheme.material}>
         <VictoryLine
+            data={data ? data : []} 
+            domain={domain}
             style={{
-                data: { stroke: "#c43a31" },
-                parent: { border: "1px solid #ccc"},
-                labels: { padding: 0 } 
+                data: {stroke: "#c43a31" },
             }}
-            
-            data={labelData} 
-            
-            x="month" 
+            x="time" 
             y="risk" 
-            labels={({datum}) => datum.diff}
-            labelComponent={
-                <VictoryLabel
-                dy={15}
-                textAnchor="end"
-                verticalAnchor="middle"/>}
             />
-        <VictoryLine
-            style={{
-                data: { stroke: "#00D100" },
-                parent: { border: "1px solid #ccc"}
-            }}
-            data={average} 
-            x="month" 
-            y="risk" />
-        
+            <VictoryAxis
+              style={{
+                tickLabels: {fontSize: 9, padding: 5}
+              }}
+              tickValues={domainX}
+              tickFormat={(t) => typeof t == 'string' || t % 5 == 0 || t == 1 ? t : ''}
+            />
+            <VictoryAxis dependentAxis/>
         </VictoryChart>
-        
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
+    alignItems: "flex-start"
   },
   data: {
      fill: "#0047AB" 

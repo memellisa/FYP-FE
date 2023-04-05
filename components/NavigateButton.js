@@ -2,14 +2,14 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Text, Button, Icon } from '@rneui/themed';
 
-const EditButton = ({navigation, name, route, data}) => {
+const NavigateButton = ({navigation, nav, name, data}) => {
     return (
         <Button
-            onPress={() => navigation.navigate(name, { data: data })}
+            onPress={() => navigation.navigate(nav, { data: data })}
             color="#fff"
             style={styles.button}
             >
-            <Text style={styles.text}>Edit</Text>
+            <Text style={styles.text}>{name}</Text>
             <Icon name='navigate-next' size={25} color="#0096FF"/>
         </Button>
     );
@@ -34,4 +34,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default EditButton;
+export default NavigateButton;

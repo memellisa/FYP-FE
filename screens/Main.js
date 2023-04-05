@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Tab as TabComponent, TabView } from '@rneui/themed';
 import Home from './Home';
 import Genetics from './Genetics';
-import Risk from './Risk';
+import Risk from './Risk/Risk';
 import Community from './Community/Community';
 import {  StyleSheet } from 'react-native';
 import { Icon } from '@rneui/base';
@@ -37,6 +37,9 @@ const Main = ({ navigation }) => {
         checkUserData()
     }, []) // Make auth only run once so not duplicate listener
     
+    // useEffect(() => {
+    //     console.log(index)
+    // }, [index])
   
     
     return (
@@ -49,7 +52,7 @@ const Main = ({ navigation }) => {
                     <Genetics headerTitle={"Genetic Report"} headerSubtitle={"From 23andMe"} navigation={navigation}/>
                 </TabView.Item>
                 <TabView.Item style={{width: '100%'}}>
-                    <Risk headerTitle={"10-Year CHD Risk"} headerSubtitle={""} navigation={navigation}/>
+                    <Risk headerTitle={"10-Year CHD Risk"} headerSubtitle={""} navigation={navigation} focused={index == 2}/>
                 </TabView.Item>
                 <TabView.Item style={{width: '100%'}}>
                     <Community headerTitle={"Welcome to Community"} headerSubtitle={"Your home for fitness related news, local events, connecting with friends, and discovering groups"} navigation={navigation}/>
