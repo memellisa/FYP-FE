@@ -3,29 +3,38 @@ import { View, Text, StyleSheet, ScrollView, Image, Keyboard } from 'react-nativ
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { getPostByID } from "../../utils/api/community.api";
 import { fDate } from '../../utils/formatTime';
-// import BottomSheet, { BottomSheetTextInput, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetTextInput, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Avatar, Button, Card, FAB, Icon, Input } from '@rneui/base';
+import Comment from "../../components/Comment";
+import { postComment } from "../../utils/api/community.api";
+import { auth } from "../../config";
+
 
 function Article({navigation, route}) {
     const { article_id } = route.params;
-    const [commentValue, setCommentValue] = useState("")
+    const [comment, setComment] = useState("")
+    // const [commentValue, setCommentValue] = useState("")
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [article, setArticle] = useState({})
 
     const [like, setLike] = useState(false) // later fetch from db
-    const [numOfLikes, setNumOfLikes] = useState(100) // later fetch from db, might need to format to k
-    const [numOfComments, setNumOfComments] = useState(100) // later fetch from db, might need to format to k
  
     const fetchPost = async () => {
         const result = await getPostByID(article_id)
 
         if (!result.error) {
-            console.log(result.data)
             setArticle(result.data)
         } 
           else {
             Alert.alert('Something went wrong getting USER. Please try again')
         }
+    }
+
+
+    const handlePostComment = async () => {
+        await postComment(article_id, auth.currentUser.uid, comment)
+        setComment('')
+        fetchPost()
     }
 
     // ref
@@ -72,11 +81,6 @@ function Article({navigation, route}) {
         keyboardDidShowListener.remove();
         };
     }, []);
-
-    const handleCommentChange = (event) => {
-        setCommentValue(event.target.value)
-    }
-
     
     return (
         <SafeAreaProvider>
@@ -124,7 +128,7 @@ function Article({navigation, route}) {
                 icon={{ name:"comment", color: "white", size:23 }}
                 color="#0F52BA"
                 size="small"
-                title={article.likes ? article.likes.toString() : "0"}
+                title={article.comments ? article.comments.length.toString() : "0"}
                 onPress={handleSnapPress}/>
 
             <BottomSheet
@@ -144,15 +148,15 @@ function Article({navigation, route}) {
                         name="send" 
                         color="#0F52BA" 
                         size='25'  
-                        // onPress={handlePostComment}
+                        onPress={handlePostComment}
                          /> 
                 </View>
                
                 <Text style={styles.commentHeading}>Comments:</Text>
                 <Text style={styles.info}>
-                    {numOfComments + ' comments'} 
+                    {article.comments ? article.comments.length + ' comment(s)' : 0 + ' comment(s)'} 
                 </Text>
-                <BottomSheetScrollView contentContainerStyle={styles.bottomSheetContent}>
+                <BottomSheetScrollView contentContainerStyle={{...styles.bottomSheetContent }}>
                    {/* <View style={styles.postedComment}>
                     <Avatar
                         size={45}
@@ -168,7 +172,7 @@ function Article({navigation, route}) {
                         </Card>
                     </View>
                    </View> */}
-                   <Comment comment={{}}/>
+                   {article.comments ? <Comment comment={article.comments}/> : ""}
                    
 
                 </BottomSheetScrollView>

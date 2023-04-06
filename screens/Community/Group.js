@@ -54,8 +54,7 @@ function Group(route, navigation) {
     const [articleList, setArticleList] = useState({})
 
     const leftComponent = <View style={{width:350}}>
-                              <Text style={styles.heading}>Cardio</Text> 
-                              {console.log("Change Cardio to Group Later")}
+                              <Text style={styles.heading}>{route.route.params.forumName}</Text> 
                         </View>
 
     const fetchArticleinForum = async () => {
@@ -71,7 +70,6 @@ function Group(route, navigation) {
       
 
     useEffect(() => {
-        console.log(route.route.params.forumName)
         fetchArticleinForum()
         setArticleList(dummydata) //Change to request to BE
     }, [])

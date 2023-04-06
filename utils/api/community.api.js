@@ -36,40 +36,6 @@ const getPostsInForums = async (name) => {
     } 
 };
 
-const uploadPostImage = async (payload) => {
-    try {
-        const response = await axios.post(`${flaskURL}/imagePosts`, payload,{
-            headers: {
-            "Access-Control-Allow-Origin": "*",
-            'Content-Type': 'application/json'
-            }
-        });
-        console.log('RESP',response)
-        return { data: response.data, error: null }
-    } catch (error) {
-        // console.log(payload)
-        // console.log('RESP',error.response)
-        return { data: null, error }
-    } 
-};
-
-const createPost = async (payload) => {
-    try {
-        const response = await axios.post(`${flaskURL}/community/post`, payload,{
-            headers: {
-            "Access-Control-Allow-Origin": "*",
-            'Content-Type': 'application/json'
-            }
-        });
-        console.log('RESP',response)
-        return { data: response.data, error: null }
-    } catch (error) {
-        // console.log(payload)
-        // console.log('RESP',error.response)
-        return { data: null, error }
-    } 
-};
-
 const getPostByID = async (postID) => {
     try {
         const response = await axios.get(`${flaskURL}/community/post/${postID}`,{
@@ -78,7 +44,7 @@ const getPostByID = async (postID) => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log('RESP',response)
+        // console.log('RESP',response)
         return { data: response.data, error: null }
     } catch (error) {
         // console.log(payload)
@@ -87,4 +53,20 @@ const getPostByID = async (postID) => {
     } 
 };
 
-export { getAllForumFromDB, getPostsInForums, uploadPostImage, createPost, getPostByID }
+const postComment = async (postID, uid, comment) => {
+    try {
+        let payload = {"post_id": postID, "user_id": uid, "comment": comment}
+        const response = await axios.post(`${flaskURL}/community/post/comment`, payload, {
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        });
+        return { data: response.data, error: null }
+    } catch (error) {
+        // console.log(payload)
+        // console.log('RESP',error.response)
+        return { data: null, error }
+    }
+}
+
+export { getAllForumFromDB, getPostsInForums, getPostByID, postComment }
