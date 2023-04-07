@@ -13,11 +13,9 @@ import { auth } from "../../config";
 function Article({navigation, route}) {
     const { article_id } = route.params;
     const [comment, setComment] = useState("")
-    // const [commentValue, setCommentValue] = useState("")
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [article, setArticle] = useState({})
 
-    const [like, setLike] = useState(false) // later fetch from db
  
     const fetchPost = async () => {
         const result = await getPostByID(article_id)
@@ -96,31 +94,20 @@ function Article({navigation, route}) {
                     {article.content}
                 </Text>
 
-                {/* <View style={styles.commentView}>
-                    <Text style={styles.heading2}>Comments:</Text>
-                    <Input 
-                        value={commentValue} 
-                        onChangeText={value => setCommentValue(value)}
-                        placeholder='Enter comment here...' 
-                        style={styles.input} 
-                        inputContainerStyle={{borderWidth: 1, borderRadius: 20, marginTop: 10}}
-                    />
-                </View> */}
-
                 <Text style={styles.info}>
                     Written By: {article.author}
                     {"\n"}
                     {fDate(article.date)}
                 </Text>
             </ScrollView>
-            <FAB  
+            {/* <FAB  
                 style={{bottom:70}}
                 placement="right"
                 icon={{ name:like ? "favorite" : "favorite-border", color: "white"}}
                 color="#0F52BA"
                 size="small"
                 title={article.likes ? article.likes.toString() : "0"}
-                onPress={handleLikeClicked}/>
+                onPress={handleLikeClicked}/> */}
         
             <FAB  
                 style={{bottom:20}}
@@ -157,24 +144,7 @@ function Article({navigation, route}) {
                     {article.comments ? article.comments.length + ' comment(s)' : 0 + ' comment(s)'} 
                 </Text>
                 <BottomSheetScrollView contentContainerStyle={{...styles.bottomSheetContent }}>
-                   {/* <View style={styles.postedComment}>
-                    <Avatar
-                        size={45}
-                        rounded
-                        source={{uri:  "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
-                        onPress={() => navigation.push("Profile")}
-                        containerStyle={{ backgroundColor: '#6733b9' }}
-                    />
-                    <View>
-                        <Text style={styles.userName}>Jane Doe</Text>
-                        <Card containerStyle={styles.commentContainer}>
-                            <Text style={styles.commentText}>COMMENT 2 COMMENT 2eqdqed COMMENT 2 COMMENT 2</Text>
-                        </Card>
-                    </View>
-                   </View> */}
                    {article.comments ? <Comment comment={article.comments}/> : ""}
-                   
-
                 </BottomSheetScrollView>
             </BottomSheet>
         </SafeAreaProvider>
