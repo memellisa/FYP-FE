@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ArticleCard from '../../components/ArticleCard';
 import Header from '../../components/Header';
+import { getPostsInForums } from '../../utils/api/community.api';
+import { fDate } from '../../utils/formatTime';
 
 const dummydata = [
     {
@@ -48,15 +50,27 @@ const dummydata = [
     },
 
 ]
-function Group(navigation, group) {
-    const [articleList, setArticleList] = useState([])
+function Group(route, navigation) {
+    const [articleList, setArticleList] = useState({})
 
     const leftComponent = <View style={{width:350}}>
-                              <Text style={styles.heading}>Cardio</Text> 
-                              {console.log("Change Cardio to Group Later")}
+                              <Text style={styles.heading}>{route.route.params.forumName}</Text> 
                         </View>
 
+    const fetchArticleinForum = async () => {
+        const result = await getPostsInForums(route.route.params.forumName)
+
+        if (!result.error) {
+            setArticleList(result.data.posts)
+        } 
+          else {
+            Alert.alert('Something went wrong getting USER. Please try again')
+        }
+    }
+      
+
     useEffect(() => {
+        fetchArticleinForum()
         setArticleList(dummydata) //Change to request to BE
     }, [])
 
@@ -65,16 +79,17 @@ function Group(navigation, group) {
             <ScrollView style={styles.container} contentContainerStyle={{paddingBottom: 35}}>
                 <Header leftComponent={leftComponent} rightComponent={{}}/>
                 <View style={{alignItems: 'center',}}>
-                    {articleList.map((article) => (
-                        <ArticleCard 
-                            imgURI={article.article_img}
-                            author={article.author}
-                            date={article.article_date}
-                            title={article.title}
-                            content={article.content.substring(0,100) + "..."}
+                    {Object.entries(articleList).map((article) => (
+                        <ArticleCard
+                            key={article[1].title} 
+                            imgURI={article[1].img_url}
+                            author={article[1].author}
+                            date={fDate(article[1].date)}
+                            title={article[1].title}
+                            content={article[1].content_summary + "..."}
                             width={350}
-                            onPress={() => console.log(navigation.navigation.push("Article", { article: article }))}
-                        />
+                            onPress={() => console.log(route.navigation.push("Article", { article_id: article[1].id }))}
+                    />
                     ))}
                 </View>
             </ScrollView>
@@ -100,6 +115,19 @@ const styles = StyleSheet.create({
         color: '#0096FF',
         fontSize: 15,
         fontFamily: 'Poppins-Regular'
+    },
+
+    container_bot: { 
+        paddingBottom: 20,
+    },
+    buttonStyle: {
+        paddingStart:0,
+        paddingEnd:0
+    },
+    textStyle: {
+        fontSize: 12,
+        padding: 0,
+        margin:0
     },
 });
 
