@@ -35,9 +35,9 @@ const storeFitbitAccRefToken = async (payload) => {
     } 
 };
 
-const getAuthURL = async () => {
+const getAuthURL = async (uid) => {
     try {
-        const response = await axios.get(`${flaskURL}/fitbit/auth/url`);
+        const response = await axios.get(`${flaskURL}/fitbit/auth/url/${uid}`);
         // console.log('RESP',response)
         return { data: response.data, error: null }
     } catch (error) {
