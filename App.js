@@ -19,6 +19,7 @@ import AccountCreateSplash from './screens/AccountCreateSplash';
 import Group from './screens/Community/Group';
 import Article from './screens/Community/Article';
 import AllRisk from './screens/Risk/AllRisk';
+import ChangePassword from './screens/User/ChangePassword';
 
 
 const dummydata = {
@@ -60,6 +61,7 @@ export default RootNavigator = () => {
             
             <Stack.Screen name="Edit Personal Details" component={EditPersonalDetails}/>
             <Stack.Screen name="Edit Health Details" component={EditHealthDetails}/>
+            <Stack.Screen name="Change Password" component={ChangePassword} options={{ headerShown: true }} />
 
             <Stack.Screen name="Manage Wearable" component={ManageWearable} options={{headerBackTitle: ''}} />
             <Stack.Screen name="Confirm Auth" component={ConfirmAuth} options={{headerBackTitle: '', title: '' }} />

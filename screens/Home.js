@@ -136,8 +136,8 @@ const Home = ({ headerSubtitle, navigation, route}) => {
           console.log("STEPS:::",JSON.stringify(result.data))
           if (!result.error){
             if (result.data != userData) {
-              // setWeeklySteps(result.data)
-                setWeeklySteps(emptyWeeklySteps)
+              setWeeklySteps(result.data)
+                // setWeeklySteps(emptyWeeklySteps)
             }
           } else {
               // Alert.alert('Something went wrong getting weekly steps. Please try again')

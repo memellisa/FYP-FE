@@ -25,6 +25,19 @@ const signupValidationSchema = yup.object().shape({
         .oneOf([yup.ref('password'), null], 'Passwords must match')
 })
 
+const changePasswordValidationScheme = yup.object().shape({
+  password: yup
+    .string()
+    .required('Please enter your current password'),
+  newPassword: yup
+    .string()
+    .min(6, ({ min }) => `New password must be at least ${min} characters`)
+    .required('New password must be filled'),
+  confirmNewPassword: yup
+  .string()
+  .oneOf([yup.ref('newPassword'), null], 'Passwords must match')
+})
+
 const userInfoValidationSchema = yup.object().shape({
     firstName: yup
       .string()
@@ -74,4 +87,4 @@ const userHealthValidationSchema = yup.object().shape({
       .required('Please select one'),
 })
 
-export { loginValidationSchema, signupValidationSchema, userInfoValidationSchema, userHealthValidationSchema }
+export { loginValidationSchema, signupValidationSchema, userInfoValidationSchema, userHealthValidationSchema, changePasswordValidationScheme }
