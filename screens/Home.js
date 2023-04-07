@@ -41,12 +41,12 @@ const Home = ({ headerSubtitle, navigation, route}) => {
     const processSummaryActivity = (data) => {
       var totalDistance = 0
       for(let i = 0; i < 7; i++){
-        if (data.distances[i].activity == 'total'){
-          totalDistance = data.distances[i].distance 
+        if (data?.distances[i].activity == 'total'){
+          totalDistance = data?.distances[i].distance 
         }
       }
       
-      const totalActiveMinutes = data.lightlyActiveMinutes + data.fairlyActiveMinutes + data.veryActiveMinutes
+      const totalActiveMinutes = data?.lightlyActiveMinutes + data?.fairlyActiveMinutes + data?.veryActiveMinutes
 
       var hours = Math.floor(totalActiveMinutes/60)
       if (hours < 10){
@@ -61,11 +61,11 @@ const Home = ({ headerSubtitle, navigation, route}) => {
 
       const summary = {
         'steps': {
-          value: data.steps,
+          value: data?.steps,
           unit: 'steps'
         },
         'calories': {
-          value: data.caloriesOut,
+          value: data?.caloriesOut,
           unit: 'cals'
         },
         'distance': {
@@ -121,8 +121,8 @@ const Home = ({ headerSubtitle, navigation, route}) => {
             const result = await getActivities()
             console.log("ACTIVITY:::",JSON.stringify(result))
             if (!result.error){
-              let jsonResponse = result.data //benerin later
-              if (jsonResponse != userActivity) {
+              let jsonResponse = JSON.parse(result.data)
+              if (!isEqual(jsonResponse, userActivity)) {
                 setUserActivity(jsonResponse)
                 setSummaryActivity(processSummaryActivity(jsonResponse.summary))
               }

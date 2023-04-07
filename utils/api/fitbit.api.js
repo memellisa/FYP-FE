@@ -68,7 +68,7 @@ const getActivities = async (payload) => {
                 'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP ACTIVITIES', response.data)
+        console.log('RESP ACTIVITIES', response.data)
         return { data: response.data, error: null }
     } catch (error) {
         console.log('RESP ACTIVITIES ERROR',error.response)
