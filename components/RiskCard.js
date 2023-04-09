@@ -25,7 +25,7 @@ const RiskCard = ({today, yesterday, lastMonth}) => {
     return (
         <Card containerStyle={styles.container} >
 
-            {renderContent('Today:', today)}
+            {renderContent('Today:', today, `Don't worry! Today's risk will gradually decrease, it is initially large because you have not done any activity`)}
             {renderContent('Yesterday:', yesterday, `Your risk is ${dayDiff > 0 ? 'higher' : 'lower'} by ${Math.abs(dayDiff)}% than yesterday`)}
             {renderContent('Last Month:', lastMonth, `Your risk is ${monthDiff > 0 ? 'higher' : 'lower'} by ${Math.abs(monthDiff)}% than last month`)}
         </Card>

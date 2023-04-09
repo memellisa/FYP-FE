@@ -54,10 +54,10 @@ export default function SelfInputForm({ route, navigation }) {
         const result = await createUser(newData)
         // console.log("EDIT HEALTH:::",result)
         if (!result.error){
-            console.log('CREATED USERR', JSON.stringify(result.data))
+            // console.log('CREATED USERR', JSON.stringify(result.data))
             navigation.navigate('Main')
         } else {
-            console.log(result.error)
+            // console.log(result.error)
             Alert.alert('Something went wrong. Please try again')
         }
     }

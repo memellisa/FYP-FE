@@ -15,7 +15,7 @@ const Comment = ({comment}) => {
     return(
         <View style={styles.postedComment}>
             {comment.map((comm) => {
-                console.log("COMM", comm)
+                // console.log("COMM", comm)
                 let content = comm
                 return <View style={{flexDirection: "row", marginBottom: 20}}>
                     <Avatar

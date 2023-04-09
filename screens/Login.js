@@ -130,8 +130,8 @@ export default function Login({navigation}) {
                 // Log the error
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log(errorCode)
-                console.log(errorMessage)
+                // console.log(errorCode)
+                // console.log(errorMessage)
                 if (errorCode === 'auth/invalid-email' || errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password') {
                     Alert.alert('Email or password is incorrect')
                 } else {

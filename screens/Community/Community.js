@@ -37,10 +37,10 @@ export default function Community({navigation, headerTitle, headerSubtitle}) {
           <Header leftComponent={leftComponent} rightComponent={{}}/>
           <View style={{alignItems: 'center',}}>
           {forumList.map((groups) => {
-            console.log("GROUP", groups)
-            return <View>
+            return <View key={Math.floor(Math.random() * 10000)}>
               {Object.entries(groups).map((group) => {
                 return <CommunityCard 
+                          key={Math.floor(Math.random() * 10000)}
                           imgURI={group[1].img_url}
                           title={group[0]}
                           text={group[1].description}

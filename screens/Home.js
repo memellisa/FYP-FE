@@ -64,6 +64,10 @@ const Home = ({ headerSubtitle, navigation, route}) => {
           value: data?.steps,
           unit: 'steps'
         },
+        'activityCalories': {
+          value: data?.activityCalories,
+          unit: 'cals'
+        },
         'calories': {
           value: data?.caloriesOut,
           unit: 'cals'
@@ -77,6 +81,7 @@ const Home = ({ headerSubtitle, navigation, route}) => {
           unit: ['h', 'm']
         },
       }
+      console.log("SUMMARY PROCESSED", summary)
       return summary
     }
 
@@ -91,14 +96,14 @@ const Home = ({ headerSubtitle, navigation, route}) => {
         }
         // return fitbitTokens === null ? null : JSON.parse(fitbitTokens) ;
       } catch(e) {
-        console.log(e)
+        // console.log(e)
         // error reading value
       }
     }
     useEffect(() => {
       getFitbitTokens()
       getUserData(setUserData, userData, route?.params?.update)
-      console.log("FOCUSED")
+      // console.log("FOCUSED")
   }, [isFocused])
 
     useFocusEffect( 
@@ -125,6 +130,7 @@ const Home = ({ headerSubtitle, navigation, route}) => {
               if (!isEqual(jsonResponse, userActivity)) {
                 setUserActivity(jsonResponse)
                 setSummaryActivity(processSummaryActivity(jsonResponse.summary))
+                await AsyncStorage.setItem('activitySummary', JSON.stringify(processSummaryActivity(jsonResponse.summary)))
               }
             } else {
                 // Alert.alert('Something went wrong getting Activities. Please try again')
@@ -186,6 +192,9 @@ const Home = ({ headerSubtitle, navigation, route}) => {
               containerStyle={{ backgroundColor: '#6733b9' }}
             />
           }/>
+          <View style={{ flexDirection: "row", flexWrap: "wrap-reverse", alignItems: 'center', justifyContent: 'center'}}>
+            <DataCard title="Active Calories" numbers={summaryActivity ? summaryActivity.activityCalories.value : 0} units={summaryActivity ? summaryActivity.activityCalories.unit : 'cals'} width={200}/>
+          </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap-reverse", alignItems: 'center', justifyContent: 'center'}}>
             <DataCard title="Steps" numbers={summaryActivity ? summaryActivity.steps.value : 0} units={summaryActivity ? summaryActivity.steps.unit : 'steps'} width={160}/>
             <DataCard title="Calories" numbers={summaryActivity ? summaryActivity.calories.value : 0} units={summaryActivity ? summaryActivity.calories.unit : 'cals'} width={160}/>

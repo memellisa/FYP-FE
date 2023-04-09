@@ -22,14 +22,12 @@ export default function Signup({navigation}) {
     }
     let payload = JSON.stringify({ 'email': values.email, 'password': values.password })
     try {
-        console.log(payload)
         const response = await axios.post(`${flaskURL}/auth/signup`, payload,{
             headers: {
                 'Content-Type': 'application/json'
             }
         });
 
-        console.log("Image URI: " + response.data)
         if (response.data == "Account successfully created") {
           // alert("Account successfully created, you wil be logged in now")
           // Login directly if successful in creating account 
@@ -49,8 +47,6 @@ export default function Signup({navigation}) {
               // Log the error
               const errorCode = error.code;
               const errorMessage = error.message;
-              console.log(errorCode)
-              console.log(errorMessage)
               if (errorCode === 'auth/invalid-email' || errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password') {
                   Alert.alert('Email or password is incorrect')
               } else {
