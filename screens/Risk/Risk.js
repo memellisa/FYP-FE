@@ -72,10 +72,11 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   const calculateTodayRisk = async () => {
     const activitySummary = await AsyncStorage.getItem("activitySummary")
     // console.log("ACTIVITY SUMMARY RISK PAGE:::", JSON.parse(activitySummary))
-    const result = await postRisk({"data": JSON.parse(activitySummary)})
+    const result = await postRisk()
     if (!result.error) {
       console.log("HOIHHIHIHIH:::",result)
-      setTodayRisk(result.data.ok.split(" = ")[1])
+      setTodayRisk(result.data.ok.risks.risk_today)
+      setYesterdayRisk(result.data.ok.risks.risk_yesterday)
     } 
     else {
       // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
@@ -99,7 +100,7 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
     // if (month < 10) {
     //     month = `0${month}`;
     // }
-    console.log("TYPEOFDATE", typeof date)
+    // console.log("TYPEOFDATE", typeof date)
     let dateFormat = date.split('/')
     
     return `${dateFormat[2]}/${dateFormat[0]}/${dateFormat[1]}`;
@@ -108,29 +109,29 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   useEffect(() => {
     const today = new Date()
     // today.toLocaleDateString("en-US",  {timeZone: "Asia/Hong_Kong"})
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1)
+    // const yesterday = new Date(today)
+    // yesterday.setDate(yesterday.getDate() - 1)
 
     const lastYear = new Date("December 31, " + (today.getFullYear() - 1).toString() + " 01:15:00")
     // console.log("CHECKKKK", lastYear.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}).split(",")[0])
     // const formatToday = formatDate(today.getDay(), today.getMonth()+1, today.getFullYear())
-    const formatYesterday = formatDate(yesterday.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}).split(",")[0])
+    // const formatYesterday = formatDate(yesterday.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}).split(",")[0])
     const formatLastYear = formatDate(lastYear.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}).split(",")[0])
 
     if (focused) {
-      console.log("TODAY DATE", today.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
-      console.log("YESTERDAY DATE", yesterday.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
-      console.log("LAST DAY YEAR DATE", lastYear.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
+      // console.log("TODAY DATE", today.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
+      // console.log("YESTERDAY DATE", yesterday.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
+      // console.log("LAST DAY YEAR DATE", lastYear.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
       fetchOneYearRisk()
       fetchOneMonthRisk()
-      calculateTodayRisk()
-      fetchOneDayRisk(formatYesterday, setYesterdayRisk)
+      calculateTodayRisk() 
+      // fetchOneDayRisk(formatYesterday, setYesterdayRisk) // CHANGED TO BE COMBINED, WE RECALCULATE YESTERDAY TO ENSURE MOST UPDATED DATA
       fetchOneDayRisk(formatLastYear, setLastYearRisk)
     }
     
     // fetchOneDayRisk(formatToday, setTodayRisk)
     calculateTodayRisk()
-    fetchOneDayRisk(formatYesterday, setYesterdayRisk)
+    // fetchOneDayRisk(formatYesterday, setYesterdayRisk) 
     fetchOneDayRisk(formatLastYear, setLastYearRisk)
   }, [focused])
   
