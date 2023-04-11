@@ -150,7 +150,7 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
         </Button>
 
         <Text style={{...styles.heading,fontSize: 20, marginLeft: 20, marginTop: 10}}>Your Risk Summary</Text>
-        <RiskCard today={todayRisk ? (todayRisk * 100).toFixed(2) : 0} yesterday={yesterdayRisk ? (yesterdayRisk * 100).toFixed(2) : 0} lastMonth={lastYearRisk ? (lastYearRisk * 100).toFixed(2) : 0}/>
+        <RiskCard today={todayRisk ? (todayRisk * 100) : 0} yesterday={yesterdayRisk ? (yesterdayRisk * 100) : 0} lastMonth={lastYearRisk ? (lastYearRisk * 100) : 0}/>
 
         <Button radius={8} style={styles.button} onPress={() => navigation.push("All Risk")}>
               <Text style={styles.buttonText}>Show all data</Text>

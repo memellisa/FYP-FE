@@ -4,15 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
 import { Button, Input } from '@rneui/base';
 
-import { Formik, useFormikContext } from 'formik'
+import { Formik } from 'formik'
 import { signupValidationSchema } from '../utils/validation';
-import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../config';
 
 import { flaskURL } from '../utils/constants';
 import axios from 'axios';
-
-
 
 export default function Signup({navigation}) {
   const onPress = async (values) => {

@@ -15,7 +15,6 @@ import { auth } from '../config';
 const Main = ({ navigation }) => {
     const [index, setIndex] = useState(0);
 
-
     const iconSize = 35;
 
     async function checkUserData() {
@@ -35,12 +34,7 @@ const Main = ({ navigation }) => {
 
     useEffect(() => {
         checkUserData()
-    }, []) // Make auth only run once so not duplicate listener
-    
-    // useEffect(() => {
-    //     console.log(index)
-    // }, [index])
-  
+    }, [])
     
     return (
         <>

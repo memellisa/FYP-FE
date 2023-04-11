@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, Image, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Keyboard, TextInput } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { getPostByID } from "../../utils/api/community.api";
 import { fDate } from '../../utils/formatTime';
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
           alignItems: 'center',
       },
       bottomSheetInput: {
-          width: 310,
+          width: "85%",
           marginRight: 10,
           padding: 12,
           fontSize: 16,

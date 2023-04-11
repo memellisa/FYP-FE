@@ -1,7 +1,5 @@
-import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { auth } from '../config';
 
 const AccountCreateSplash = ({ route, navigation }) => {
     return (

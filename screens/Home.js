@@ -17,9 +17,9 @@ import { getUserData } from '../utils/functions';
 
 // to be replaced by real data
 const emptyWeeklySteps = [
-  { day: "SUN", steps: 1110 },
-  { day: "MON", steps: 14230 },
-  { day: "TUE", steps: 2310 },
+  { day: "SUN", steps: 0 },
+  { day: "MON", steps: 0 },
+  { day: "TUE", steps: 0 },
   { day: "WED", steps: 0 },
   { day: "THU", steps: 0 },
   { day: "FRI", steps: 0 },
