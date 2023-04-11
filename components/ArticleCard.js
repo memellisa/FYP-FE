@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     
     image: {
         // width: 300,
-        width: '85%',
+        maxWidth: '95%',
         height: 200,
         marginVertical: 10
     },
