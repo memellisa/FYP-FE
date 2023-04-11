@@ -51,7 +51,7 @@ export default RootNavigator = () => {
               (<View style={{ height: 35 }}/>)
             }} 
             />
-            <Stack.Screen name="Profile" component={Profile} options={{headerBackTitle: ''}} />
+            <Stack.Screen name="Profile" component={Profile} options={{headerBackTitle: '' }} />
             
             <Stack.Screen name="Edit Personal Details" component={EditPersonalDetails}/>
             <Stack.Screen name="Edit Health Details" component={EditHealthDetails}/>

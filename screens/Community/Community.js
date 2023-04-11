@@ -18,7 +18,7 @@ export default function Community({navigation, headerTitle, headerSubtitle}) {
       setForumList(result.data)
     } 
     else {
-      Alert.alert('Something went wrong getting USER. Please try again')
+      // Alert.alert('Something went wrong getting USER. Please try again')
     }
   }
 

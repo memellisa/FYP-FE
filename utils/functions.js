@@ -18,7 +18,7 @@ const getUserData = async (setUserData, userData=null, update=false) => {
           }
         } 
         else {
-          Alert.alert('Something went wrong getting USER. Please try again')
+          // Alert.alert('Something went wrong getting USER. Please try again')
         }
     }
 

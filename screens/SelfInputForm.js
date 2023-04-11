@@ -14,6 +14,9 @@ import { calculateAge, countBMI } from '../utils/functions';
 import InfoOverlay from '../components/InfoOverlay';
 import { useHeaderHeight } from '@react-navigation/elements'
 
+import axios from 'axios';
+import { flaskURL } from '../utils/constants';
+import { auth } from '../config';
 
 export default function SelfInputForm({ route, navigation }) {
 
@@ -58,7 +61,15 @@ export default function SelfInputForm({ route, navigation }) {
         // console.log("EDIT HEALTH:::",result)
         if (!result.error){
             // console.log('CREATED USERR', JSON.stringify(result.data))
-            navigation.navigate('Main')
+            let user = auth.currentUser?.uid
+            let responseWearable = await axios.get(`${flaskURL}/user/verifyWearable/${user}`);
+            console.log("WEARABLE", responseWearable.data)
+            if (!responseWearable.data) {
+                navigation.push("Manage Wearable", {"hideBackButton": true})
+            }
+            else {
+                navigation.navigate('Main')
+            }
         } else {
             // console.log(result.error)
             Alert.alert('Something went wrong. Please try again')
