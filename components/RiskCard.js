@@ -13,7 +13,7 @@ const RiskCard = ({today, yesterday, lastMonth}) => {
                 <View style={styles.contentView}>  
                     <View style={styles.content}>
                         <Text style={styles.heading}>{title}</Text>
-                        <Text style={styles.number}>{data + '%'}</Text>
+                        <Text style={styles.number}>{data.toFixed(2) + '%'}</Text>
                     </View>
                     {note && (<Text style={styles.note}>{note}</Text>)}
                     
@@ -25,9 +25,9 @@ const RiskCard = ({today, yesterday, lastMonth}) => {
     return (
         <Card containerStyle={styles.container} >
 
-            {renderContent('Today:', today)}
-            {renderContent('Yesterday:', yesterday, `Your risk is ${dayDiff > 0 ? 'higher' : 'lower'} by ${Math.abs(dayDiff)}% than yesterday`)}
-            {renderContent('Last Month:', lastMonth, `Your risk is ${monthDiff > 0 ? 'higher' : 'lower'} by ${Math.abs(monthDiff)}% than last month`)}
+            {renderContent('Today:', today, `Don't worry! Today's risk will gradually decrease, it is initially large because you have not done any activity`)}
+            {renderContent('Yesterday:', yesterday, `Your risk is ${dayDiff > 0 ? 'higher' : 'lower'} by ${Math.abs(dayDiff).toFixed(2)}% than yesterday`)}
+            {renderContent('Last Month:', lastMonth, `Your risk is ${monthDiff > 0 ? 'higher' : 'lower'} by ${Math.abs(monthDiff).toFixed(2)}% than last month`)}
         </Card>
     );
 };

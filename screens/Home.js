@@ -17,9 +17,9 @@ import { getUserData } from '../utils/functions';
 
 // to be replaced by real data
 const emptyWeeklySteps = [
-  { day: "SUN", steps: 1110 },
-  { day: "MON", steps: 14230 },
-  { day: "TUE", steps: 2310 },
+  { day: "SUN", steps: 0 },
+  { day: "MON", steps: 0 },
+  { day: "TUE", steps: 0 },
   { day: "WED", steps: 0 },
   { day: "THU", steps: 0 },
   { day: "FRI", steps: 0 },
@@ -41,12 +41,12 @@ const Home = ({ headerSubtitle, navigation, route}) => {
     const processSummaryActivity = (data) => {
       var totalDistance = 0
       for(let i = 0; i < 7; i++){
-        if (data.distances[i].activity == 'total'){
-          totalDistance = data.distances[i].distance 
+        if (data?.distances[i].activity == 'total'){
+          totalDistance = data?.distances[i].distance 
         }
       }
       
-      const totalActiveMinutes = data.lightlyActiveMinutes + data.fairlyActiveMinutes + data.veryActiveMinutes
+      const totalActiveMinutes = data?.lightlyActiveMinutes + data?.fairlyActiveMinutes + data?.veryActiveMinutes
 
       var hours = Math.floor(totalActiveMinutes/60)
       if (hours < 10){
@@ -61,11 +61,15 @@ const Home = ({ headerSubtitle, navigation, route}) => {
 
       const summary = {
         'steps': {
-          value: data.steps,
+          value: data?.steps,
           unit: 'steps'
         },
+        'activityCalories': {
+          value: data?.activityCalories,
+          unit: 'cals'
+        },
         'calories': {
-          value: data.caloriesOut,
+          value: data?.caloriesOut,
           unit: 'cals'
         },
         'distance': {
@@ -77,6 +81,7 @@ const Home = ({ headerSubtitle, navigation, route}) => {
           unit: ['h', 'm']
         },
       }
+      console.log("SUMMARY PROCESSED", summary)
       return summary
     }
 
@@ -91,14 +96,14 @@ const Home = ({ headerSubtitle, navigation, route}) => {
         }
         // return fitbitTokens === null ? null : JSON.parse(fitbitTokens) ;
       } catch(e) {
-        console.log(e)
+        // console.log(e)
         // error reading value
       }
     }
     useEffect(() => {
       getFitbitTokens()
       getUserData(setUserData, userData, route?.params?.update)
-      console.log("FOCUSED")
+      // console.log("FOCUSED")
   }, [isFocused])
 
     useFocusEffect( 
@@ -121,10 +126,11 @@ const Home = ({ headerSubtitle, navigation, route}) => {
             const result = await getActivities()
             console.log("ACTIVITY:::",JSON.stringify(result))
             if (!result.error){
-              let jsonResponse = result.data //benerin later
-              if (jsonResponse != userActivity) {
+              let jsonResponse = JSON.parse(result.data)
+              if (!isEqual(jsonResponse, userActivity)) {
                 setUserActivity(jsonResponse)
                 setSummaryActivity(processSummaryActivity(jsonResponse.summary))
+                await AsyncStorage.setItem('activitySummary', JSON.stringify(processSummaryActivity(jsonResponse.summary)))
               }
             } else {
                 // Alert.alert('Something went wrong getting Activities. Please try again')
@@ -136,8 +142,8 @@ const Home = ({ headerSubtitle, navigation, route}) => {
           console.log("STEPS:::",JSON.stringify(result.data))
           if (!result.error){
             if (result.data != userData) {
-              // setWeeklySteps(result.data)
-                setWeeklySteps(emptyWeeklySteps)
+              setWeeklySteps(result.data)
+                // setWeeklySteps(emptyWeeklySteps)
             }
           } else {
               // Alert.alert('Something went wrong getting weekly steps. Please try again')
@@ -186,6 +192,9 @@ const Home = ({ headerSubtitle, navigation, route}) => {
               containerStyle={{ backgroundColor: '#6733b9' }}
             />
           }/>
+          <View style={{ flexDirection: "row", flexWrap: "wrap-reverse", alignItems: 'center', justifyContent: 'center'}}>
+            <DataCard title="Active Calories" numbers={summaryActivity ? summaryActivity.activityCalories.value : 0} units={summaryActivity ? summaryActivity.activityCalories.unit : 'cals'} width={200}/>
+          </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap-reverse", alignItems: 'center', justifyContent: 'center'}}>
             <DataCard title="Steps" numbers={summaryActivity ? summaryActivity.steps.value : 0} units={summaryActivity ? summaryActivity.steps.unit : 'steps'} width={160}/>
             <DataCard title="Calories" numbers={summaryActivity ? summaryActivity.calories.value : 0} units={summaryActivity ? summaryActivity.calories.unit : 'cals'} width={160}/>

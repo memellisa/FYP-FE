@@ -31,7 +31,7 @@ export default function Profile({ navigation, route }) {
   
     useEffect(() => {
         getUserData(setUserData, userData, route?.params?.update)
-        console.log("FOCUSED")
+        // console.log("FOCUSED")
     }, [isFocused])
 
 
@@ -70,7 +70,7 @@ export default function Profile({ navigation, route }) {
             aspect: [4, 3],
         });
     
-        console.log({ pickerResult });
+        // console.log({ pickerResult });
     
         handleImagePicked(pickerResult);
     };
@@ -84,7 +84,7 @@ export default function Profile({ navigation, route }) {
                 setProfile(resultURL)
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             alert("Upload failed, sorry :(");
         } finally {
             setUploading(false)
@@ -103,12 +103,12 @@ export default function Profile({ navigation, route }) {
                 }
             });
 
-            console.log("Image URI: " + JSON.stringify(response.data))
+            // console.log("Image URI: " + JSON.stringify(response.data))
             await AsyncStorage.setItem('userData', JSON.stringify(response.data))
             getUserData(setUserData, userData, true)
             return 
         } catch (error) {
-            console.log('RESP',error.response)
+            // console.log('RESP',error.response)
         } 
     }
 
@@ -158,6 +158,10 @@ export default function Profile({ navigation, route }) {
 
                 <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Manage Wearable")}>
                         <Text style={styles.buttonText}>Manage Wearable</Text>
+                </Button>
+
+                <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Change Password")}>
+                        <Text style={styles.buttonText}>Change Password</Text>
                 </Button>
 
                 <Button radius={8} color="#fff" style={{...styles.button, marginBottom: 30}} onPress={logout} >

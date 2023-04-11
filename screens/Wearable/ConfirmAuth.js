@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
 import { getAuthURL, postAccessToken, storeFitbitAccRefToken } from '../../utils/api/fitbit.api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from '../../config';
 
 
 // TODO: detect whether there is already a wearable connected to the account or not
@@ -19,7 +19,7 @@ export default function ConfirmAuth({ route, navigation }) {
     useEffect( () => {
         if (authCode !== ''){
             (async () => {
-                const result = await postAccessToken(JSON.stringify({ 'authCode': authCode }))
+                const result = await postAccessToken(JSON.stringify({ 'authCode': authCode, 'uid': auth.currentUser.uid }))
                 console.log('Fitbit Connected')
                 // console.log(result.data.access_token)
                 let jsonResult = JSON.parse(result.data)
@@ -57,7 +57,7 @@ export default function ConfirmAuth({ route, navigation }) {
      
     
     const handlePressButtonAsync = async () => {
-        const res = await getAuthURL()
+        const res = await getAuthURL(auth.currentUser.uid)
 
         console.log( res )
         if (res.error) return

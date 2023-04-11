@@ -30,6 +30,6 @@ export const auth = getAuth(app);
 // FITBIT
 
 export const fitbitConfig = {
-    client_id: '239278',
-    client_secret: '4047256f795f1ec2a3815c2662e2c83a'
+    client_id: '23QW7N',
+    client_secret: '08af734a9127adb92ffc86d88fc9adfe'
 }

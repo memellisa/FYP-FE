@@ -1,92 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 
-import { View, StyleSheet, Alert, ActivityIndicator, Modal } from 'react-native';
-import { Button, Input, Text } from '@rneui/base';
+import { View, StyleSheet, Alert } from 'react-native';
+import { Button, Input } from '@rneui/base';
 
-import { signInWithEmailAndPassword, getAuth, onAuthStateChanged  } from 'firebase/auth';
+import { signInWithEmailAndPassword, onAuthStateChanged  } from 'firebase/auth';
 import { auth } from '../config';
 
 
 import { Formik } from 'formik'
 import { loginValidationSchema } from '../utils/validation';
 
-
-// function LoadingAnimation() {
-//   return (
-//     <Modal transparent={true}>
-//       <View style={styles.indicatorWrapper}>
-//         <ActivityIndicator size="large"/>
-//       </View>
-//     </Modal>
-//   );
-// }
-
 export default function Login({navigation}) {
-  const [email, setEmail] = React.useState('fyp@hku.hk');
-  const [password, setPassword] = React.useState('123456');
   const [loading, setLoading] = React.useState(false);
-
-  // function onLogin() {
-  //   setLoading(true)
-  //   if (email === '' || password === '') {
-  //     Alert.alert('Email or password is required')
-  //     setLoading(false);
-  //   } else {
-  //     signInWithEmailAndPassword(auth, email, password)
-  //       .then((userCredential) => {
-  //         const user = userCredential.user;
-  //         setLoading(false);
-  //         console.log("USER:::",user);
-  //         navigation.replace("Main");
-  //         // store in AsyncStorage to be implemented
-  //       })
-  //     .catch((error) => {
-  //         const errorCode = error.code;
-  //         const errorMessage = error.message;
-  //         console.log(errorCode, errorMessage)
-  //         if (errorCode === 'auth/user-not-found') {
-  //           Alert.alert('Email or password is incorrect')
-  //         } else {
-  //           Alert.alert('Something went wrong')
-  //         }
-  //     });
-  //   }
-  //   setLoading(false);
-  // }
-
-  // const login = async () => {
-  //   setLoading(true)
-  //   if (email === '' || password === '') {
-  //     Alert.alert('Email or password is required')
-  //     setLoading(false);
-  //   } else {
-  //     try {
-  //       const response = await ApiManager('/auth/login', { 
-  //         method: 'GET', 
-  //         params: { 'email': email, 'password': password } 
-  //       })
-    
-  //       if (response.data.error){
-  //         setLoading(false)
-  //         if (response.data.error === 'INVALID_PASSWORD' || response.data.error === 'EMAIL_NOT_FOUND') {
-  //           Alert.alert('Email or password is incorrect')
-  //         } else {
-  //           Alert.alert('Something went wrong')
-  //         }
-  //       } else {
-  //         console.log("LOGIN",response.data)
-  //         setLoading(false)
-  //         navigation.replace("Main");
-  //         return JSON.stringify(response)
-  //       }
-  //     } catch (error) {
-  //       Alert.alert('Something went wrong')
-  //     }
-  //   }
-  // }
-
-  let unsubscribe;
 
     useEffect(() => {
         setLoading(false)
@@ -95,8 +21,6 @@ export default function Login({navigation}) {
                 setLoading(true)
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
-                // const uid = user.uid;
-                // console.log(user)
                 console.log("LOGGED IN")
                 setTimeout(() => {
                   // should show the Connected Manage Wearable page instead later
@@ -106,8 +30,6 @@ export default function Login({navigation}) {
                 }, 2000);
                 // ...
             } else {
-                // User is signed out
-                // ...
                 console.log("LOGGED OUT")
                 navigation.navigate("Login")
             }
@@ -130,8 +52,8 @@ export default function Login({navigation}) {
                 // Log the error
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log(errorCode)
-                console.log(errorMessage)
+                // console.log(errorCode)
+                // console.log(errorMessage)
                 if (errorCode === 'auth/invalid-email' || errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password') {
                     Alert.alert('Email or password is incorrect')
                 } else {

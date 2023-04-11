@@ -7,8 +7,9 @@ import LineChart from '../../components/LineChart';
 import Header from '../../components/Header';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { labelMonth, processRiskData } from '../../utils/functions';
-import { getDailyRisk, getMonthlyRisk, getOneRisk } from '../../utils/api/risk.api';
+import { getDailyRisk, getMonthlyRisk, getOneRisk, postRisk } from '../../utils/api/risk.api';
 import RiskCard from '../../components/RiskCard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Risk({headerTitle, headerSubtitle, focused, navigation}) {
   const [monthlyRisk, setMonthlyRisk] = useState()
@@ -39,7 +40,7 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
     const result = await getMonthlyRisk(today.getFullYear())
     if (!result.error) {
       setMonthlyRisk(processRiskData(result, (val) => labelMonth(val), 12))
-      console.log(processRiskData(result))
+      // console.log(processRiskData(result))
     } 
     else {
       // Alert.alert('Something went wrong getting ONE YEAR. Please try again')
@@ -50,7 +51,7 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
     const result = await getDailyRisk()
     if (!result.error) {
       setDailyRisk(processRiskData(result, null, 31))
-      console.log(processRiskData(result))
+      // console.log(processRiskData(result))
     } 
     else {
       // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
@@ -60,8 +61,22 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   const fetchOneDayRisk = async (date, setData) => {
     const result = await getOneRisk(date.replaceAll('/', ''))
     if (!result.error) {
-      console.log("HOIHHIHIHIH:::",result)
+      console.log("ONE DAY RISK:::", date.replaceAll('/', ''), result)
       setData(result)
+    } 
+    else {
+      // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
+    }
+  }
+
+  const calculateTodayRisk = async () => {
+    const activitySummary = await AsyncStorage.getItem("activitySummary")
+    // console.log("ACTIVITY SUMMARY RISK PAGE:::", JSON.parse(activitySummary))
+    const result = await postRisk()
+    if (!result.error) {
+      console.log("HOIHHIHIHIH:::",result)
+      setTodayRisk(result.data.ok.risks.risk_today)
+      setYesterdayRisk(result.data.ok.risks.risk_yesterday)
     } 
     else {
       // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
@@ -77,34 +92,46 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   }
 
 
-  const formatDate = (day, month, year) => {
-    if (day < 10) {
-      day = '0' + day;
-    }
+  const formatDate = (date) => {
+    // if (day < 10) {
+    //   day = '0' + day;
+    // }
     
-    if (month < 10) {
-        month = `0${month}`;
-    }
+    // if (month < 10) {
+    //     month = `0${month}`;
+    // }
+    // console.log("TYPEOFDATE", typeof date)
+    let dateFormat = date.split('/')
     
-    return `${year}/${month}/${day}`;
+    return `${dateFormat[2]}/${dateFormat[0]}/${dateFormat[1]}`;
   }
 
   useEffect(() => {
+    const today = new Date()
+    // today.toLocaleDateString("en-US",  {timeZone: "Asia/Hong_Kong"})
+    // const yesterday = new Date(today)
+    // yesterday.setDate(yesterday.getDate() - 1)
+
+    const lastYear = new Date("December 31, " + (today.getFullYear() - 1).toString() + " 01:15:00")
+    // console.log("CHECKKKK", lastYear.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}).split(",")[0])
+    // const formatToday = formatDate(today.getDay(), today.getMonth()+1, today.getFullYear())
+    // const formatYesterday = formatDate(yesterday.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}).split(",")[0])
+    const formatLastYear = formatDate(lastYear.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}).split(",")[0])
+
     if (focused) {
+      // console.log("TODAY DATE", today.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
+      // console.log("YESTERDAY DATE", yesterday.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
+      // console.log("LAST DAY YEAR DATE", lastYear.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
       fetchOneYearRisk()
       fetchOneMonthRisk()
+      calculateTodayRisk() 
+      // fetchOneDayRisk(formatYesterday, setYesterdayRisk) // CHANGED TO BE COMBINED, WE RECALCULATE YESTERDAY TO ENSURE MOST UPDATED DATA
+      fetchOneDayRisk(formatLastYear, setLastYearRisk)
     }
-
-    const today = new Date()
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1)
-
-    const formatToday = formatDate(today.getDay(), today.getMonth()+1, today.getFullYear())
-    const formatYesterday = formatDate(yesterday.getDay(), yesterday.getMonth()+1, yesterday.getFullYear())
-    const formatLastYear = formatDate( 31,today.getMonth(), today.getMonth() == 12 ? today.getFullYear() - 1 : today.getFullYear())
     
-    fetchOneDayRisk(formatToday, setTodayRisk)
-    fetchOneDayRisk(formatYesterday, setYesterdayRisk)
+    // fetchOneDayRisk(formatToday, setTodayRisk)
+    calculateTodayRisk()
+    // fetchOneDayRisk(formatYesterday, setYesterdayRisk) 
     fetchOneDayRisk(formatLastYear, setLastYearRisk)
   }, [focused])
   
@@ -123,7 +150,7 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
         </Button>
 
         <Text style={{...styles.heading,fontSize: 20, marginLeft: 20, marginTop: 10}}>Your Risk Summary</Text>
-        <RiskCard today={todayRisk ? (todayRisk * 100).toFixed(2) : 0} yesterday={yesterdayRisk ? (yesterdayRisk * 100).toFixed(2) : 0} lastMonth={lastYearRisk ? (lastYearRisk * 100).toFixed(2) : 0}/>
+        <RiskCard today={todayRisk ? (todayRisk * 100) : 0} yesterday={yesterdayRisk ? (yesterdayRisk * 100) : 0} lastMonth={lastYearRisk ? (lastYearRisk * 100) : 0}/>
 
         <Button radius={8} style={styles.button} onPress={() => navigation.push("All Risk")}>
               <Text style={styles.buttonText}>Show all data</Text>

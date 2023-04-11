@@ -35,9 +35,9 @@ const storeFitbitAccRefToken = async (payload) => {
     } 
 };
 
-const getAuthURL = async () => {
+const getAuthURL = async (uid) => {
     try {
-        const response = await axios.get(`${flaskURL}/fitbit/auth/url`);
+        const response = await axios.get(`${flaskURL}/fitbit/auth/url/${uid}`);
         // console.log('RESP',response)
         return { data: response.data, error: null }
     } catch (error) {
@@ -68,7 +68,7 @@ const getActivities = async (payload) => {
                 'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP ACTIVITIES', response.data)
+        console.log('RESP ACTIVITIES', response.data)
         return { data: response.data, error: null }
     } catch (error) {
         console.log('RESP ACTIVITIES ERROR',error.response)
