@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, Image, Keyboard, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Keyboard, Alert} from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { getPostByID } from "../../utils/api/community.api";
 import { fDate } from '../../utils/formatTime';
@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+        paddingBottom:30
       },
   
       heading: {
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
           alignItems: 'center',
       },
       bottomSheetInput: {
-          width: "85%",
+          width: '85%',
           marginRight: 10,
           padding: 12,
           fontSize: 16,
@@ -244,7 +245,8 @@ const styles = StyleSheet.create({
       },
   
       commentInput: {
-          marginHorizontal: 10,
+          marginHorizontal: 20,
+          marginBottom: 30,
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
@@ -266,7 +268,7 @@ const styles = StyleSheet.create({
   
       commentText: {
           fontSize: 16,
-          width: 260,
+          width: '75%',
       },
   
       userName: {

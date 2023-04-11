@@ -48,11 +48,13 @@ const styles = StyleSheet.create({
     optionText: {
         fontSize: 16,
         fontFamily: 'Poppins-SemiBold',
-        width: 115
+        // width: 115
+        width: '20%',
     },
     
     inputTitleView: {
-        width: 140, 
+        // width: 140, 
+        width: '40%',
         flexDirection: 'row',
         alignItems: 'center',
     },

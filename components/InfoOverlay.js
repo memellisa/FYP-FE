@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     infoText: {
         fontSize: 17,
         fontFamily: 'Poppins-SemiBold',
-        width: 250,
+        width: '80%',
         padding: 5,
         textAlign: 'center'
     },

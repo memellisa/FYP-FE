@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     },
 
     inputTitleView: {
-        width: 140, 
+        width: '40%', 
         alignItems: 'flex-start'
     },
     
@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
-        width: 195,
+        // width: 195,
+        width: '60%',
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
         borderBottomWidth: 1,

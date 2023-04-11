@@ -56,10 +56,10 @@ const calculateAge = (birthday) => {
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
         tempAge--
     }
-    return tempAge
+    return tempAge ? tempAge : 0
 }
 
-const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
+const countBMI = (height, weight) => height && weight ? (weight/(height*height*0.0001)).toFixed(2) : 0
 
 const labelMonth = (month) => {
   switch (month) { 

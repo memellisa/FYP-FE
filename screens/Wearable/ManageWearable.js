@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         // paddingTop:5,
         
         fontFamily: 'Poppins-SemiBold',
-        width: 140
+        width: '40%'
     },
 
     dropdown: {
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
-        width: 190,
+        width: '45%',
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
         borderBottomWidth: 1
@@ -109,8 +109,9 @@ const styles = StyleSheet.create({
 
     button: {
         marginVertical: 10,
-        width: '80%',
-        height: 70,
+        width: '70%',
+        // height: 70,
+        height: '10%',
         alignSelf: 'center',
         justifyContent: 'center',
         borderWidth: 1,

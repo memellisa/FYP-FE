@@ -250,7 +250,6 @@ const styles = StyleSheet.create({
     right: 0,
     padding: 'auto',
     margin: 'auto',
-    // transform: 'translateY(-50%)',
     color: 'gray',
     zIndex: 100,
   },

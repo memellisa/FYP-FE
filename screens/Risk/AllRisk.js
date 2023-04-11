@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     },
 
     titleView: {
-        width: 140, 
+        width: '40%', 
         flexDirection: 'row',
         alignItems: 'center',
     },

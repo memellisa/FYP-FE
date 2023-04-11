@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
 
   button: {
     margin: 10,
-    width: 300,
+    width: '90%',
     borderRadius: 5,
   },
 

@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
     optionText: {
         fontSize: 16,
         fontFamily: 'Poppins-SemiBold',
-        width: 140
+        // width: 140
+        width: '40%',
     },
     centeredView: {
         flex: 1,
@@ -65,7 +66,8 @@ const styles = StyleSheet.create({
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
-        width: 190,
+        // width: 190,
+        width: '45%',
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
         borderBottomWidth: 1,

@@ -16,7 +16,7 @@ const LineChart = ({data, domainX}) =>  {
         theme={VictoryTheme.material}>
         <VictoryLine
             data={data ? data : []} 
-            domain={domain}
+            // domain={domain}
             style={{
                 data: {stroke: "#c43a31" },
             }}

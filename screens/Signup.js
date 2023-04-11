@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 
-import { View, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { Button, Input } from '@rneui/base';
 
 import { Formik } from 'formik'
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
 
   button: {
     margin: 10,
-    width: 300,
+    width: '90%',
     borderRadius: 5,
   }
 });

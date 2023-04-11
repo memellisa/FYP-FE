@@ -176,11 +176,6 @@ export default function Profile({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-    // imageBackground: {
-    //     width: '100%',
-    //     height: 220,
-    // },
-
     screenContainer: {
         // alignItems: 'center',
         // marginTop: -65,
@@ -193,29 +188,15 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         marginTop: 10,
-        // backgroundColor: '#fff',
     },
-
-    // optionContainer: {
-        // paddingLeft: 20,
-        // paddingRight: 20
-    // },
 
     containerSignOut: {
         bottom: 10,
         borderColor: 'red',
         color: 'red',
         alignItems: 'center',
-        
-        // marginTop: -65,
     },
 
-    // avatar: {
-    //     height: 130,
-    //     width: 130,
-    //     borderColor: 'black',
-    //     borderRadius: 80
-    // },
 
     avatarName: {
         width: '100%',
@@ -226,21 +207,14 @@ const styles = StyleSheet.create({
     },  
 
     editProfile: {
-        width: 200,
-        // borderRadius: 'solid 1px black 40',
+        // width: 200,
+        width: '70%',
         borderColor: 'black'
     },
 
-    // touchableFirst: {
-    //     // borderTopWidth: 1,
-    //     paddingVertical: 12,
-    //     marginTop: 32,
-    //     borderColor: '#c4c4c4'
-    // },
-
     button: {
         marginVertical: 5,
-        width: 350,
+        width: '90%',
         alignSelf: 'center',
         borderWidth: 0.4,
         borderRadius: 8,
@@ -261,14 +235,8 @@ const styles = StyleSheet.create({
 
     buttonText: {
         fontSize: 16,
-        // color: 'red',
         alignSelf: 'center',
         fontFamily: 'Poppins-SemiBold',
         paddingVertical: 5
-    },
-  
-    icon: {
-        height: 24,
-        width: 24,
     },
 });

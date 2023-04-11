@@ -19,7 +19,7 @@ const CarrierStatusCard = ({disease, status=true}) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: 350, 
+        width: '85%', 
         marginBottom:5, 
         borderRadius:10, 
         paddingVertical:15, 

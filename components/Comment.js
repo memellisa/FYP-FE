@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
 
     commentText: {
         fontSize: 16,
-        width: 250,
+        // width: 250,
+        width: '80%'
     },
 
     userName: {
