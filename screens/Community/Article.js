@@ -24,7 +24,7 @@ function Article({route}) {
             setArticle(result.data)
         } 
           else {
-            Alert.alert('Something went wrong getting USER. Please try again')
+            // Alert.alert('Something went wrong getting USER. Please try again')
         }
     }
 

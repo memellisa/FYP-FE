@@ -62,7 +62,7 @@ export default function Group ({route, navigation}) {
             setArticleList(result.data.posts)
         } 
           else {
-            Alert.alert('Something went wrong getting USER. Please try again')
+            // Alert.alert('Something went wrong getting USER. Please try again')
         }
     }
 

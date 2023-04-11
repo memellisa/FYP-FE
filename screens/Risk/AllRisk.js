@@ -14,7 +14,7 @@ export default function AllRisk({ route, navigation }) {
           setAllRisk(result)
         } 
         else {
-          Alert.alert('Something went wrong getting USER. Please try again')
+        //   Alert.alert('Something went wrong getting USER. Please try again')
         }
       }
     

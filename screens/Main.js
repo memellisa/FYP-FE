@@ -6,6 +6,9 @@ import Risk from './Risk/Risk';
 import Community from './Community/Community';
 import {  StyleSheet } from 'react-native';
 import { Icon } from '@rneui/base';
+import { Alert } from "react-native"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { signOut } from 'firebase/auth';
 
 import axios from 'axios';
 import { flaskURL } from '../utils/constants';
@@ -23,12 +26,25 @@ const Main = ({ navigation }) => {
             const response = await axios.get(`${flaskURL}/user/verifyData/${user}`);
             let hasData = response.data
             if (hasData) {
+                let responseWearable = await axios.get(`${flaskURL}/user/verifyWearable/${user}`);
+                console.log("WEARABLE", responseWearable.data)
+                if (!responseWearable.data) {
+                    navigation.push("Manage Wearable", {"hideBackButton": true})
+                }
                 return
             } else {
                 navigation.push("Self Input Form")
             }
         } catch(error) {
-            return { data: null, error }
+            // In case there is an error, that means server is not ready
+            signOut(auth)
+            .then(() => {
+                Alert.alert("The server is currently down, please try again later!")
+                AsyncStorage.clear();
+                navigation.navigate("Login"); // CAN MAYBE USE REPLACE TO DELETE PREVIOUS DATA, AFRAID THERE IS BUG
+                console.log('Signed out user because server is not ready!')
+            });
+            return 
         }
     }
 

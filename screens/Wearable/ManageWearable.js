@@ -20,7 +20,9 @@ export default function ManageWearable({ route, navigation }) {
     //     route.params.data = newData
     //     console.log(route.params.data)
     // }, [diet, smokingStatus, alcoholConsumption, bloodPressure])
-
+    if (route.params?.hideBackButton) {
+        navigation.setOptions({ header: () => (<View style={{ height: 55 }}/>) })
+    }
       
     return (
         <SafeAreaProvider>
@@ -29,6 +31,10 @@ export default function ManageWearable({ route, navigation }) {
                 scrollable={true}
                 hasSafeArea={false}
             >
+                {/* {
+                    route.params?.hideBackButton ? navigation.setOptions({ headerLeft: () => null,  headerRight: null }) : ""
+                } */}
+
                 <Text style={styles.heading}>Which wearable would you like to connect to?</Text>
                 
                 <TouchableHighlight  underlayColor="#f3f6f4" style={styles.button} onPress={() => navigation.push("Confirm Auth")}>
