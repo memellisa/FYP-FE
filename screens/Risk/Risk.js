@@ -70,13 +70,32 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   }
 
   const calculateTodayRisk = async () => {
-    const result = await postRisk()
-    if (!result.error) {
-      setTodayRisk(result.data.risks.risk_today)
-      setYesterdayRisk(result.data.risks.risk_yesterday)
+    const today = new Date()
+    // console.log(today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"}))
+    const yesterday = new Date(today)
+    yesterday.setDate(yesterday.getDate() - 1)
+
+    const resultToday = await postRisk({"date": today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"})})
+    if (!resultToday.error) {
+      setTodayRisk(resultToday.data.risk)
     } 
     else {
       // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
+    }
+
+    const yesterdayUpdate = await AsyncStorage.getItem('yesterdayRiskUpdate')
+    if (!(yesterdayUpdate === today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"}))) {
+      const resultYesterday = await postRisk({"date": yesterday.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"})})
+      if (!resultYesterday.error) {
+        setYesterdayRisk(resultYesterday.data.risk)
+        await AsyncStorage.setItem('yesterdayRiskUpdate', today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"}))
+      } 
+      else {
+        // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
+      }
+    }
+    else {
+      console.log("already updated")
     }
   }
 
@@ -127,7 +146,7 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
     }
     
     // fetchOneDayRisk(formatToday, setTodayRisk)
-    calculateTodayRisk()
+    // calculateTodayRisk()
     // fetchOneDayRisk(formatYesterday, setYesterdayRisk) 
     fetchOneDayRisk(formatLastYear, setLastYearRisk)
   }, [focused])
