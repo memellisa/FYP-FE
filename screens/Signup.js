@@ -109,13 +109,13 @@ export default function Signup({navigation}) {
                     />
                 </View>
                 
-                <Button title="Signup" buttonStyle={styles.button} 
+                <Button title="Signup" containerStyle={styles.button} 
                   onPress={handleSubmit}
                   disabled={!isValid || values.email === '' || values.password === '' || values.confirmPassword === ''}
                 />
                 <Button 
                   title="Have an account? Login instead!" 
-                  buttonStyle={styles.button} 
+                  containerStyle={styles.button} 
                   onPress={() => navigation.navigate('Login')}
                 />
               </>
@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
   },
 
   inputView: {
-    width: 320,
-    justifyContent: 'center',
+    width: '85%',
+    justifyContent: 'center'
   },
 
   input: {
@@ -150,9 +150,9 @@ const styles = StyleSheet.create({
 
 
   button: {
-    margin: 10,
-    width: '90%',
+    marginVertical: 10,
+    width: "80%",
     borderRadius: 5,
-  }
+  },
 });
 

@@ -8,8 +8,6 @@ const DropDownField = (text, value, data, setOnChange, handleOnFocus, errorMessa
         <View>
             <View style={styles.optionView}>
                 <View style={styles.inputTitleView}>
-                    {onIconPress ?
-                        <Icon name="help" color="#0F52BA" size='18' onPress={onIconPress}/> : null}
                     <Text style={styles.optionText}>{text}</Text>
                    
                 </View>
@@ -29,6 +27,8 @@ const DropDownField = (text, value, data, setOnChange, handleOnFocus, errorMessa
                         setOnChange(value)
                     }}
                 />
+                {onIconPress ?
+                        <Icon name="help" color="#0F52BA" size='18' onPress={onIconPress}/> : null}
             </View>
             <Text style={styles.errorText}>{errorMessage}</Text>
         </View>
@@ -48,13 +48,11 @@ const styles = StyleSheet.create({
     optionText: {
         fontSize: 16,
         fontFamily: 'Poppins-SemiBold',
-        // width: 115
-        width: '20%',
+        width: '100%',
     },
     
     inputTitleView: {
-        // width: 140, 
-        width: '40%',
+        width: '35%',
         flexDirection: 'row',
         alignItems: 'center',
     },
@@ -68,7 +66,7 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 13,
         fontFamily: 'Poppins-Regular',
-        marginLeft: 170,
+        marginLeft: '40%',
         marginBottom: 0
     },
 

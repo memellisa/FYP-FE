@@ -17,43 +17,13 @@ import { calculateAge, countBMI, getUserData } from '../../utils/functions';
 
 
 export default function Profile({ navigation, route }) {
-    // const data = route.params.data
-    console.log("DATA PARAMS::", route.params)
-
-    // const [image, setImage] = useState(null);
-    // const [personalData, setPersonalData] = useState(null)
     const [userData, setUserData] = useState(null);
 
     const isFocused = useIsFocused()
-
-    const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
-    const [uploading, setUploading] = useState(false)
-  
     useEffect(() => {
         getUserData(setUserData, userData, route?.params?.update)
-        // console.log("FOCUSED")
     }, [isFocused])
 
-
-    // async function getProfilePicture() {
-    //     // const auth = getAuth();
-    //     let payload = JSON.stringify({ 'img': auth.currentUser?.uid })
-    //     let user = auth.currentUser?.uid
-    //     try {
-    //         console.log(payload)
-    //         const response = await axios.get(`${flaskURL}/image/${user}`, {
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-
-    //         console.log("Image URI: " + response.data)
-    //         setProfile(response.data)
-    //     } catch (error) {
-    //         console.log('ERROR',error.response)
-    //         setProfile('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
-    //     } 
-    // }
 
     const logout = () => {
         signOut(auth)
@@ -70,25 +40,17 @@ export default function Profile({ navigation, route }) {
             aspect: [4, 3],
         });
     
-        // console.log({ pickerResult });
-    
         handleImagePicked(pickerResult);
     };
     
     const handleImagePicked = async (pickerResult) => {
         try {
-            setUploading(true)
-
             if (!pickerResult.cancelled) {
                 const resultURL = await uploadImageAsync(pickerResult.uri);
-                setProfile(resultURL)
             }
         } catch (e) {
-            // console.log(e);
             alert("Upload failed, sorry :(");
-        } finally {
-            setUploading(false)
-        }
+        } 
     };
 
     async function uploadImageAsync(uri) {
@@ -102,8 +64,6 @@ export default function Profile({ navigation, route }) {
                 'Content-Type': 'application/json'
                 }
             });
-
-            // console.log("Image URI: " + JSON.stringify(response.data))
             await AsyncStorage.setItem('userData', JSON.stringify(response.data))
             getUserData(setUserData, userData, true)
             return 
@@ -114,7 +74,7 @@ export default function Profile({ navigation, route }) {
 
     return (
         <SafeAreaProvider>
-            <ScrollView style={styles.screenContainer} /* hasSafeArea={false} */ >
+            <ScrollView style={styles.screenContainer} >
                 <View style={styles.container}>
                     <Avatar
                         size={100}
@@ -207,7 +167,6 @@ const styles = StyleSheet.create({
     },  
 
     editProfile: {
-        // width: 200,
         width: '70%',
         borderColor: 'black'
     },

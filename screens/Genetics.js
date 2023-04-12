@@ -26,10 +26,10 @@ export default function Genetics({headerTitle, headerSubtitle}) {
         
         <Text style={{...styles.heading,fontSize: 20, marginLeft: 20, marginTop: 10}}>Disease Risks</Text>
         <View style={{ flexDirection: "row", flexWrap: "wrap-reverse", alignItems: 'center', justifyContent: 'center'}}>
-            <DataCard title="Diabetes" numbers="32.6" units="%" width={160} note="Average: 30.1%"/>
-            <DataCard title="Cancer" numbers="2.2" units="%" width={160} note="Average: 1.1%"/>
-            <DataCard title="CHD" numbers="22.3" units="%" width={160} note="Average: 20.9%"/>
-            <DataCard title="Stroke" numbers="29.6" units="%" width={160} note="Average: 30.3%"/>
+            <DataCard title="Diabetes" numbers="32.6" units="%" width={'42%'} note="Average: 30.1%"/>
+            <DataCard title="Cancer" numbers="2.2" units="%" width={'42%'} note="Average: 1.1%"/>
+            <DataCard title="CHD" numbers="22.3" units="%" width={'42%'} note="Average: 20.9%"/>
+            <DataCard title="Stroke" numbers="29.6" units="%" width={'42%'} note="Average: 30.3%"/>
         </View>
         <StatusBar style="auto" />
       </ScrollView>
@@ -41,20 +41,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   heading: {
     color: 'black',
     fontSize: 25,
-    // width: 250,
     fontWeight: 'bold',
     fontFamily: 'Poppins-SemiBold'
   },
   subheading: {
     color: 'black',
     fontSize: 18,
-    // width: 250,
     fontFamily: 'Poppins-Regular'
   },
 

@@ -1,5 +1,5 @@
 import { Alert, StyleSheet, Text, View, ScrollView } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import NavigationButton from '../../../components/NavigationButton';
 import { putUserInfo } from '../../../utils/api/user.api';
@@ -24,20 +24,11 @@ export default function EditPersonalDetails({ route, navigation }) {
     }
 
     const onPress = async (newData) => {
-        // const tempppp = {
-        //     "firstName": "Jane",
-        //     "lastName":"Doe",
-        //     "dob": "2001/03/04",
-        //     "email": "fyp@hku.hk",
-        //     "img": "test"
-        // }
-        // console.log("NEW DATA:::",newData)
         const result = await putUserInfo({...newData, "img": data.img})
-        console.log(result)
+
         if (!result.error){
             navigation.navigate("Profile", { update: true })
         } else {
-            // console.log(result.error)
             Alert.alert('Something went wrong. Please try again')
         }
     }
@@ -77,13 +68,19 @@ export default function EditPersonalDetails({ route, navigation }) {
                     touched,
                     isValid, }) => (
                     <>
-                    {InfoOverlay(infoVisible, toggleOverlay, infoMsg)}
+                        {InfoOverlay(infoVisible, toggleOverlay, infoMsg)}
                         {
-                            isValid ? navigation.setOptions({ 
-                                        headerBackTitle: '', 
-                                        headerRight: () => <NavigationButton buttonName="Done" onPressHandler={handleSubmit}/>}) 
-                                    : navigation.setOptions({ headerBackTitle: '',  headerRight: null })
-                        }
+                            useEffect(() => {
+                                navigation.setOptions({ 
+                                    headerBackTitle: '', 
+                                    headerRight: () => 
+                                        <NavigationButton 
+                                            buttonName="Done" 
+                                            onPressHandler={handleSubmit}
+                                            disabled={!isValid}/>}) 
+                                    
+                            }, [isValid])
+                    }
 
                         {InputTextField('First Name', values.firstName, handleChange('firstName'), (errors.firstName && touched.firstName) ? errors.firstName : '', handleBlur('firstName'))}
 
@@ -92,11 +89,9 @@ export default function EditPersonalDetails({ route, navigation }) {
                         {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))}
 
                         <View style={styles.optionView}>
-                            <View style={styles.inputTitleView}>
-                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.age)}/>
-                                <Text style={styles.fieldText}>Age</Text>
-                            </View>
+                            <Text style={styles.fieldText}>Age</Text>
                             <Text style={styles.valueText}>{ !isNaN(values.dob) || !isNaN(calculateAge(values.dob)) ? calculateAge(values.dob) : '-'}</Text>
+                            <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.age)}/>
                         </View>
                     </>)}
                 </Formik>
@@ -135,10 +130,10 @@ const styles = StyleSheet.create({
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
-        width: '45%',
+        marginRight: 5,
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
     },
     itemStyle: {
         fontFamily: 'Poppins-Regular',
@@ -146,7 +141,7 @@ const styles = StyleSheet.create({
     },
 
     inputTitleView: {
-        width: '40%', 
+        width: '35%',
         flexDirection: 'row',
         alignItems: 'center',
     },

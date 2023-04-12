@@ -50,15 +50,13 @@ const dummydata = [
     },
 
 ]
-function Group(route, navigation) {
+export default function Group ({route, navigation}) {
     const [articleList, setArticleList] = useState({})
+    const forumName = route.params.forumName
 
-    const leftComponent = <View style={{width:350}}>
-                              <Text style={styles.heading}>{route.route.params.forumName}</Text> 
-                        </View>
 
     const fetchArticleinForum = async () => {
-        const result = await getPostsInForums(route.route.params.forumName)
+        const result = await getPostsInForums(route.params.forumName)
 
         if (!result.error) {
             setArticleList(result.data.posts)
@@ -67,7 +65,14 @@ function Group(route, navigation) {
             Alert.alert('Something went wrong getting USER. Please try again')
         }
     }
-      
+
+    useEffect(() => {
+        navigation.setOptions({ 
+            headerBackTitle: '', 
+            title: forumName
+
+        });
+    }, [navigation])
 
     useEffect(() => {
         fetchArticleinForum()
@@ -77,7 +82,6 @@ function Group(route, navigation) {
     return(
         <SafeAreaProvider>
             <ScrollView style={styles.container} contentContainerStyle={{paddingBottom: 35}}>
-                <Header leftComponent={leftComponent} rightComponent={{}}/>
                 <View style={{alignItems: 'center',}}>
                     {Object.entries(articleList).map((article) => (
                         <ArticleCard
@@ -87,8 +91,8 @@ function Group(route, navigation) {
                             date={fDate(article[1].date)}
                             title={article[1].title}
                             content={article[1].content_summary + "..."}
-                            width={350}
-                            onPress={() => console.log(route.navigation.push("Article", { article_id: article[1].id }))}
+                            width={'90%'}
+                            onPress={() => console.log(navigation.push("Article", { article_id: article[1].id }))}
                     />
                     ))}
                 </View>
@@ -130,5 +134,3 @@ const styles = StyleSheet.create({
         margin:0
     },
 });
-
-export default Group;

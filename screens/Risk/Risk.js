@@ -10,6 +10,7 @@ import { labelMonth, processRiskData } from '../../utils/functions';
 import { getDailyRisk, getMonthlyRisk, getOneRisk, postRisk } from '../../utils/api/risk.api';
 import RiskCard from '../../components/RiskCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MotivationCard from '../../components/MotivationCard';
 
 export default function Risk({headerTitle, headerSubtitle, focused, navigation}) {
   const [monthlyRisk, setMonthlyRisk] = useState()
@@ -61,7 +62,6 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   const fetchOneDayRisk = async (date, setData) => {
     const result = await getOneRisk(date.replaceAll('/', ''))
     if (!result.error) {
-      console.log("ONE DAY RISK:::", date.replaceAll('/', ''), result)
       setData(result)
     } 
     else {
@@ -70,13 +70,10 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   }
 
   const calculateTodayRisk = async () => {
-    const activitySummary = await AsyncStorage.getItem("activitySummary")
-    // console.log("ACTIVITY SUMMARY RISK PAGE:::", JSON.parse(activitySummary))
     const result = await postRisk()
     if (!result.error) {
-      console.log("HOIHHIHIHIH:::",result)
-      setTodayRisk(result.data.ok.risks.risk_today)
-      setYesterdayRisk(result.data.ok.risks.risk_yesterday)
+      setTodayRisk(result.data.risks.risk_today)
+      setYesterdayRisk(result.data.risks.risk_yesterday)
     } 
     else {
       // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
@@ -157,8 +154,7 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
               <Icon style={styles.icon} color='white' name='navigate-next' size={25} />
         </Button>
 
-        {/* <MotivationCard title="Suggestion" text="20 more active minutes can reduce 0.5% more risk" width={350}/> */}
-        {/* <StatusBar style="auto" /> */}
+        <MotivationCard title="Suggestion" text="20 more active minutes can reduce 0.5% more risk" width={350}/>
       </ScrollView>
     </SafeAreaProvider>
   );
@@ -168,20 +164,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   heading: {
     color: 'black',
     fontSize: 25,
-    // width: 250,
     fontWeight: 'bold',
     fontFamily: 'Poppins-SemiBold'
   },
   subheading: {
     color: 'black',
     fontSize: 18,
-    // width: 250,
     fontFamily: 'Poppins-Regular'
   },
   button: {

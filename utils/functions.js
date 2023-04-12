@@ -11,12 +11,9 @@ const getUserData = async (setUserData, userData=null, update=false) => {
           if (result.data.info.firstName){
             try {
               await AsyncStorage.setItem('userData', JSON.stringify(result.data))
-              console.log('USERR SET', JSON.stringify(result.data))
               setUserData(result.data)
             } catch (e) {
               fetchUser()
-              console.log(e)
-              // Alert.alert('Something went wrong. Please try again')
             }
           }
         } 
@@ -26,12 +23,10 @@ const getUserData = async (setUserData, userData=null, update=false) => {
     }
 
     if (update) {
-        console.log("UPDATE")
         fetchUser()
     } else {
         try {
             const fetchedUserData = await AsyncStorage.getItem('userData')
-            console.log('FETCHEDUSERR', (fetchedUserData))
             if (fetchedUserData && fetchedUserData !== "{}"){
               if (!isEqual(JSON.parse(fetchedUserData), userData)){
                 setUserData(JSON.parse(fetchedUserData))
@@ -41,8 +36,6 @@ const getUserData = async (setUserData, userData=null, update=false) => {
             }
         } catch(e) {
             getUserData(setUserData, userData, update)
-            console.log("HERE BRO", e)
-        // error reading value
         }
     }
 }
@@ -103,7 +96,6 @@ const processRiskData =  (data, label, index) => {
           risk: parseFloat((val * 100).toFixed(2))
         }
       )
-      console.log(res)
     } else break
   }
   return res

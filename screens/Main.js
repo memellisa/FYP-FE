@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tab as TabComponent, TabView } from '@rneui/themed';
 import Home from './Home';
-import Genetics from './Genetics';
+// import Genetics from './Genetics';
 import Risk from './Risk/Risk';
 import Community from './Community/Community';
 import {  StyleSheet } from 'react-native';
@@ -42,9 +42,9 @@ const Main = ({ navigation }) => {
                 <TabView.Item style={{width: '100%'}}>
                     <Home headerSubtitle={"Your daily statistics"} navigation={navigation}/>
                 </TabView.Item>
-                <TabView.Item style={{width: '100%'}}>
+                {/* <TabView.Item style={{width: '100%'}}>
                     <Genetics headerTitle={"Genetic Report"} headerSubtitle={"From 23andMe"} navigation={navigation}/>
-                </TabView.Item>
+                </TabView.Item> */}
                 <TabView.Item style={{width: '100%'}}>
                     <Risk headerTitle={"10-Year CHD Risk"} headerSubtitle={""} navigation={navigation} focused={index == 2}/>
                 </TabView.Item>
@@ -64,11 +64,11 @@ const Main = ({ navigation }) => {
                     buttonStyle={styles.buttonStyle}
                     titleStyle={styles.textStyle}
                     icon={<Icon color='#FFFFFF' name='home' size={ iconSize }></Icon>}/>
-                <TabComponent.Item
+                {/* <TabComponent.Item
                     title="Genetics"
                     buttonStyle={styles.buttonStyle}
                     titleStyle={styles.textStyle}
-                    icon={<Icon color='#FFFFFF' name='graph' type='simple-line-icon' size={ iconSize }></Icon>}/>
+                    icon={<Icon color='#FFFFFF' name='graph' type='simple-line-icon' size={ iconSize }></Icon>}/> */}
                 <TabComponent.Item
                     title="Risk"
                     buttonStyle={styles.buttonStyle}

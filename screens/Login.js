@@ -19,12 +19,8 @@ export default function Login({navigation}) {
         unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setLoading(true)
-                // User is signed in, see docs for a list of available properties
-                // https://firebase.google.com/docs/reference/js/firebase.User
                 console.log("LOGGED IN")
                 setTimeout(() => {
-                  // should show the Connected Manage Wearable page instead later
-                  // navigation.navigate("Profile");
                   setLoading(false)
                   navigation.navigate("Main");
                 }, 2000);
@@ -52,8 +48,6 @@ export default function Login({navigation}) {
                 // Log the error
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                // console.log(errorCode)
-                // console.log(errorMessage)
                 if (errorCode === 'auth/invalid-email' || errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password') {
                     Alert.alert('Email or password is incorrect')
                 } else {
@@ -106,21 +100,19 @@ export default function Login({navigation}) {
                     
                 </View>
             
-                <Button title="Login" buttonStyle={styles.button} 
-                    // onPress={() => navigation.replace("Main")}
-                    // onPress={() => {onLogin()}}
-                    // onPress={() => login()}
-                    loading={loading}
-                    onPress={handleSubmit}
-                    disabled={!isValid || values.email === ''}
+                <Button 
+                  title="Login" 
+                  containerStyle={styles.button} 
+                  loading={loading}
+                  onPress={handleSubmit}
+                  disabled={!isValid || values.email === ''}
                 />
                 <Button 
-                    title="Don't have an account? Signup today!" 
-                    buttonStyle={styles.button} 
-                    onPress={() => {
-                      // unsubscribe()
-                      navigation.navigate('Signup')
-                    }}
+                  title="Don't have an account? Signup today!" 
+                  containerStyle={styles.button} 
+                  onPress={() => {
+                    navigation.navigate('Signup')
+                  }}
                 />
 
                 
@@ -128,7 +120,6 @@ export default function Login({navigation}) {
             )}
           </Formik>
           <StatusBar style="auto" />
-          {/* { loading && <LoadingAnimation/> } */}
         </View>
     )
 }
@@ -143,10 +134,7 @@ const styles = StyleSheet.create({
   },
 
   inputView: {
-    width: 320,
-    // padding: 0,
-    // margin: 0
-    // justifyContent: 'center',
+    width: '85%',
   },
 
   input: {
@@ -157,8 +145,8 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    margin: 10,
-    width: '90%',
+    marginVertical: 10,
+    width: "80%",
     borderRadius: 5,
   },
 

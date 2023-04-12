@@ -5,29 +5,32 @@ import { auth } from "../config";
 
 const Comment = ({comment}) => {
     const user_uid = auth.currentUser.uid
+    var key_index = 0
 
     return(
         <View style={styles.postedComment}>
             {comment.map((comm) => {
-                let content = comm
-                return <View style={{flexDirection: "row", marginBottom: 20}}>
-                    <Avatar
-                        size={45}
-                        rounded
-                        source={{uri: content.avatar ? content.avatar : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
-                        containerStyle={{ backgroundColor: '#6733b9' }}
-                    />
-                    <View style={styles.commentContent}>
-                        <Text style={styles.userName}>{user_uid == content.user_id ? "You" : content.name}</Text>
-                        <Card containerStyle={styles.commentContainer}>
-                            <Text style={styles.commentText}>
-                                {content.comment}
-                            </Text>
-                            
-                        </Card>
-                        <Text style={styles.date}>{fDate(content.date)}</Text> 
+                key_index += 1
+                return (
+                    <View  key={key_index} style={{flexDirection: "row", marginBottom: 20}}>
+                        <Avatar
+                            size={45}
+                            rounded
+                            source={{uri: comm.avatar ? comm.avatar : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
+                            containerStyle={{ backgroundColor: '#6733b9' }}
+                        />
+                        <View style={styles.commentContent}>
+                            <Text style={styles.userName}>{user_uid == comm.user_id ? "You" : comm.name}</Text>
+                            <Card containerStyle={styles.commentContainer}>
+                                <Text style={styles.commentText}>
+                                    {comm.comment}
+                                </Text>
+                                
+                            </Card>
+                            <Text style={styles.date}>{fDate(comm.date)}</Text> 
+                        </View>
                     </View>
-                </View>
+                )
             })}
         </View>
     )
@@ -53,7 +56,6 @@ const styles = StyleSheet.create({
 
     commentText: {
         fontSize: 16,
-        // width: 250,
         width: '100%'
     },
 

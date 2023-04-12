@@ -9,7 +9,7 @@ const InfoOverlay = (visible, toggleOverlay, message) => {
                 {message}
             </Text>
             <Button
-                title="OK"
+                title='OK'
                 onPress={toggleOverlay}
             />
         </Overlay>
@@ -20,12 +20,14 @@ const InfoOverlay = (visible, toggleOverlay, message) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#ffff',
-        borderRadius: 10
+        borderRadius: 10,
+        width: '70%',
+
     },
     infoText: {
         fontSize: 17,
         fontFamily: 'Poppins-SemiBold',
-        width: '80%',
+        
         padding: 5,
         textAlign: 'center'
     },

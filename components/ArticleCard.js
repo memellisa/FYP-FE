@@ -50,14 +50,12 @@ const styles = StyleSheet.create({
         color: '#C0C6CC',
         fontSize: 13,
         textAlign: 'right',
-        paddingTop: 10,
-        paddingBottom: 10,
+        paddingVertical: 10,
         paddingEnd: 10,
         fontFamily: 'Poppins-Regular'
     },
     
     image: {
-        // width: 300,
         maxWidth: '95%',
         height: 200,
         marginVertical: 10

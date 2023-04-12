@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Alert, KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { getFormatedDate } from 'react-native-modern-datepicker'
@@ -12,6 +12,8 @@ import { createUser } from '../utils/api/user.api';
 import { bloodData, booleanData, dietData, formInfoMsgs, frequencyData, sexData } from '../utils/constants';
 import { calculateAge, countBMI } from '../utils/functions';
 import InfoOverlay from '../components/InfoOverlay';
+import { useHeaderHeight } from '@react-navigation/elements'
+
 
 export default function SelfInputForm({ route, navigation }) {
 
@@ -20,6 +22,7 @@ export default function SelfInputForm({ route, navigation }) {
     const [openModal, setOpenModal] = useState(false)
     const [infoVisible, setInfoVisible] = useState(false);
     const [infoMsg, setInfoMsg] = useState(false);
+    const height = useHeaderHeight()
 
     const handleOnPress = () => {
         setOpenModal(!openModal)
@@ -73,169 +76,170 @@ export default function SelfInputForm({ route, navigation }) {
 
     return (
         <SafeAreaProvider>
-            <ScrollView
-                    style={styles.screenContainer}
-                    hasSafeArea={false}
-                    keyboardDismissMode="interactive"
-                    automaticallyAdjustKeyboardInsets={true}
-                >
-                <Text style={styles.title}> 
-                    Please fill in the fields below to allow us to better understand you
-                </Text>
+             <KeyboardAvoidingView
+                keyboardVerticalOffset={height+5}
+                behavior="padding"
+                style={styles.screenContainer}
+                enabled>
+                    <ScrollView
+                        hasSafeArea={false}
+                    >
+                    <Text style={styles.title}> 
+                        Please fill in the fields below to allow us to better understand you
+                    </Text>
 
-                <Formik
-                    validateOnMount={true}
-                    validationSchema={userInfoValidationSchema.concat(userHealthValidationSchema)}
-                    initialValues={{ 
-                        firstName:'', 
-                        lastName:'', 
-                        dob:endDate, 
-                        insulin:'',
-                        cholesterol:'', 
-                        diet:'', 
-                        smokingStatus:'', 
-                        alcoholConsumption:'', 
-                        bloodPressure:'', 
-                        sex:'', 
-                        height:'', 
-                        weight:'', 
-                        bloodType:''}}
-                    onSubmit={values => onPressDone(values)}
-                >
-                    {({ handleChange,
-                    handleBlur,
-                    handleSubmit,
-                    values,
-                    errors,
-                    touched,
-                    isValid, }) => (
-                    <>
-                        {InfoOverlay(infoVisible, toggleOverlay, infoMsg)}
+                    <Formik
+                        validateOnMount={true}
+                        validationSchema={userInfoValidationSchema.concat(userHealthValidationSchema)}
+                        initialValues={{ 
+                            firstName:'', 
+                            lastName:'', 
+                            dob:endDate, 
+                            insulin:'',
+                            cholesterol:'', 
+                            diet:'', 
+                            smokingStatus:'', 
+                            alcoholConsumption:'', 
+                            bloodPressure:'', 
+                            sex:'', 
+                            height:'', 
+                            weight:'', 
+                            bloodType:''}}
+                        onSubmit={values => onPressDone(values)}
+                    >
+                        {({ handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        values,
+                        errors,
+                        touched,
+                        isValid, }) => (
+                        <>
+                            {InfoOverlay(infoVisible, toggleOverlay, infoMsg)}
 
-                        {InputTextField(
-                            'First Name', 
-                            values.firstName,
-                            handleChange('firstName'), 
-                            (errors.firstName && touched.firstName) ? errors.firstName : '', 
-                            handleBlur('firstName'))}
+                            {InputTextField(
+                                'First Name', 
+                                values.firstName,
+                                handleChange('firstName'), 
+                                (errors.firstName && touched.firstName) ? errors.firstName : '', 
+                                handleBlur('firstName'))}
 
-                        {InputTextField(
-                            'Last Name', 
-                            values.lastName, 
-                            handleChange('lastName'), 
-                            (errors.lastName && touched.lastName) ? errors.lastName : '', 
-                            handleBlur('lastName'))}
+                            {InputTextField(
+                                'Last Name', 
+                                values.lastName, 
+                                handleChange('lastName'), 
+                                (errors.lastName && touched.lastName) ? errors.lastName : '', 
+                                handleBlur('lastName'))}
 
-                        {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))}
+                            {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))}
 
-                        <View style={styles.optionView}>
-                            <View style={styles.inputTitleView}>
-                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.age)}/>
+                            <View style={styles.optionView}>
                                 <Text style={styles.fieldText}>Age</Text>
+                                <Text style={styles.valueText}>{ !isNaN(values.dob) || !isNaN(calculateAge(values.dob)) ? calculateAge(values.dob) : '-'}</Text>
+                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.age)}/>
                             </View>
-                            <Text style={styles.valueText}>{ !isNaN(values.dob) || !isNaN(calculateAge(values.dob)) ? calculateAge(values.dob) : '-'}</Text>
-                        </View>
 
-                        {DropDownField(
-                            "Diet", 
-                            values.diet, 
-                            dietData, 
-                            handleChange('diet'),  
-                            (val) => touched.diet = val, 
-                            (errors.diet && touched.diet) ? errors.diet : '')}
-                     
-                        {DropDownField(
-                            "Smoking Status", 
-                            values.smokingStatus, 
-                            frequencyData, 
-                            handleChange('smokingStatus'),  
-                            (val) => touched.smokingStatus = val, 
-                            (errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')}
+                            {DropDownField(
+                                "Diet", 
+                                values.diet, 
+                                dietData, 
+                                handleChange('diet'),  
+                                (val) => touched.diet = val, 
+                                (errors.diet && touched.diet) ? errors.diet : '')}
+                        
+                            {DropDownField(
+                                "Smoking Status", 
+                                values.smokingStatus, 
+                                frequencyData, 
+                                handleChange('smokingStatus'),  
+                                (val) => touched.smokingStatus = val, 
+                                (errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')}
 
-                        {DropDownField(
-                            "Alcohol Consumption", 
-                            values.alcoholConsumption, 
-                            frequencyData, 
-                            handleChange('alcoholConsumption'),  
-                            (val) => touched.alcoholConsumption = val, 
-                            (errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')}
+                            {DropDownField(
+                                "Alcohol Consumption", 
+                                values.alcoholConsumption, 
+                                frequencyData, 
+                                handleChange('alcoholConsumption'),  
+                                (val) => touched.alcoholConsumption = val, 
+                                (errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')}
 
-                        {DropDownField(
-                            "Blood Pressure", 
-                            values.bloodPressure, 
-                            booleanData, 
-                            handleChange('bloodPressure'),  
-                            (val) => touched.bloodPressure = val, 
-                            (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '',
-                            () => onIconPress(formInfoMsgs.medication))}
+                            {DropDownField(
+                                "Blood Pressure Medication", 
+                                values.bloodPressure, 
+                                booleanData, 
+                                handleChange('bloodPressure'),  
+                                (val) => touched.bloodPressure = val, 
+                                (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '',
+                                () => onIconPress(formInfoMsgs.medication))}
 
-                        {DropDownField(
-                            "Insulin", 
-                            values.insulin, 
-                            booleanData, 
-                            handleChange('insulin'),  
-                            (val) => touched.insulin = val, 
-                            (errors.insulin && touched.insulin) ? errors.insulin : '',
-                            () => onIconPress(formInfoMsgs.medication))}
+                            {DropDownField(
+                                "Insulin Medication", 
+                                values.insulin, 
+                                booleanData, 
+                                handleChange('insulin'),  
+                                (val) => touched.insulin = val, 
+                                (errors.insulin && touched.insulin) ? errors.insulin : '',
+                                () => onIconPress(formInfoMsgs.medication))}
 
 
-                        {DropDownField(
-                            "Cholesterol", 
-                            values.cholesterol, 
-                            booleanData, 
-                            handleChange('cholesterol'),  
-                            (val) => touched.cholesterol = val, 
-                            (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '',
-                            () => onIconPress(formInfoMsgs.medication))}
+                            {DropDownField(
+                                "Cholesterol Medication", 
+                                values.cholesterol, 
+                                booleanData, 
+                                handleChange('cholesterol'),  
+                                (val) => touched.cholesterol = val, 
+                                (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '',
+                                () => onIconPress(formInfoMsgs.medication))}
 
 
-                        {DropDownField(
-                            "Sex", 
-                            values.sex, 
-                            sexData, 
-                            handleChange('sex'),  
-                            (val) => touched.sex = val, 
-                            (errors.sex && touched.sex) ? errors.sex : '')}
+                            {DropDownField(
+                                "Sex", 
+                                values.sex, 
+                                sexData, 
+                                handleChange('sex'),  
+                                (val) => touched.sex = val, 
+                                (errors.sex && touched.sex) ? errors.sex : '')}
 
-                        {DropDownField(
-                            "Blood Type", 
-                            values.bloodType, 
-                            bloodData, 
-                            handleChange('bloodType'),  
-                            (val) => touched.bloodType = val, 
-                            (errors.bloodType && touched.bloodType) ? errors.bloodType : '')}
+                            {DropDownField(
+                                "Blood Type", 
+                                values.bloodType, 
+                                bloodData, 
+                                handleChange('bloodType'),  
+                                (val) => touched.bloodType = val, 
+                                (errors.bloodType && touched.bloodType) ? errors.bloodType : '')}
 
-                        {InputTextField(
-                            'Height (cm)', 
-                            values.height, 
-                            handleChange('height'), 
-                            (errors.height && touched.height) ? errors.height : '',
-                            handleBlur('height'))}
+                            {InputTextField(
+                                'Height (cm)', 
+                                values.height, 
+                                handleChange('height'), 
+                                (errors.height && touched.height) ? errors.height : '',
+                                handleBlur('height'))}
 
-                        {InputTextField(
-                            'Weight (kg)', 
-                            values.weight, 
-                            handleChange('weight'), 
-                            (errors.weight && touched.weight) ? errors.weight : '', 
-                            handleBlur('weight'))}
-                    
-                        <View style={styles.optionView}>
-                            <View style={styles.inputTitleView}>
-                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.bmi)}/>
+                            {InputTextField(
+                                'Weight (kg)', 
+                                values.weight, 
+                                handleChange('weight'), 
+                                (errors.weight && touched.weight) ? errors.weight : '', 
+                                handleBlur('weight'))}
+                        
+                            <View style={styles.optionView}>
                                 <Text style={styles.fieldText}>BMI</Text>
+                                <Text style={styles.valueText}>{(values.height && values.weight && isFinite(countBMI(values.height, values.weight))) ? countBMI(values.height, values.weight) : '-'}</Text>
+                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.bmi)}/>
                             </View>
-                            <Text style={styles.valueText}>{(values.height && values.weight && isFinite(countBMI(values.height, values.weight))) ? countBMI(values.height, values.weight) : '-'}</Text>
-                        </View>
 
-                        <Button 
-                            title="Done" 
-                            buttonStyle={styles.button} 
-                            onPress={handleSubmit}
-                            disabled={!isValid}
-                        />
-                    </>)}
-                </Formik>
-            </ScrollView>
+                            <Button 
+                                title="Done" 
+                                buttonStyle={styles.button} 
+                                onPress={handleSubmit}
+                                disabled={!isValid}
+                            />
+                        </>)}
+                    </Formik>
+                </ScrollView>
+
+            </KeyboardAvoidingView>
+            
         </SafeAreaProvider>
       );
 }
@@ -269,11 +273,10 @@ const styles = StyleSheet.create({
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
-        width: '45%',
+        marginRight: 5,
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
         borderBottomWidth: 1,
-        marginLeft: 10,
     },
 
     closeModalText: {
@@ -301,11 +304,6 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingHorizontal: 30
     },
-    datePickerStyle: {
-        width: 200,
-        marginTop: 20,
-    },
-
     centeredView: {
         flex: 1,
         justifyContent: 'center',
@@ -333,13 +331,13 @@ const styles = StyleSheet.create({
     button: {
         marginTop: 30,
         marginBottom: 40,
-        width: 180,
+        width: '40%',
         height: 50,
         borderRadius: 5,
         alignSelf: 'center'
     },
     inputTitleView: {
-        width: '40%', 
+        width: '35%',
         flexDirection: 'row',
         alignItems: 'center',
     },

@@ -35,13 +35,9 @@ export default function ManageWearable({ route, navigation }) {
                         <Text style={styles.text}>Fitbit</Text>
                 </TouchableHighlight>
 
-                <TouchableHighlight  underlayColor="#DDDDDD" style={styles.button}>
-                        <Text style={styles.text}>Garmin</Text>
-                </TouchableHighlight>
-
-                <TouchableHighlight  underlayColor="#DDDDDD" style={styles.button}>
-                        <Text style={styles.text}>Apple Watch</Text>
-                </TouchableHighlight>
+                <Text style={styles.subtitle}>
+                    We keep on improving our application and will add more compatible wearables in the future
+                </Text>
 
                 
             </View>
@@ -125,6 +121,15 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         fontFamily: 'Poppins-SemiBold',
         paddingVertical: 5
+    },
+    subtitle: {
+        color: 'grey',
+        fontSize: 15,
+        fontFamily: 'Poppins-Regular',
+        alignSelf: 'center',
+        textAlign: 'center',
+        marginTop: 20,
+        marginHorizontal: '15%'
     },
 
 })

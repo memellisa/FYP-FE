@@ -30,8 +30,6 @@ const Header = ({leftComponent, rightComponent}) => {
 
 const styles = StyleSheet.create({
       headerContainer: {
-        // justifyContent: 'center',
-        // alignItems: 'center',
         width: '100%',
         paddingLeft: 25,
         paddingVertical: 25,

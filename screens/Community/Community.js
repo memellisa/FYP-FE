@@ -26,7 +26,7 @@ export default function Community({navigation, headerTitle, headerSubtitle}) {
     fetchForum()
   }, [])
 
-      const leftComponent = <View style={{width:350}}>
+      const leftComponent = <View style={{width:'480%'}}>
                               <Text style={styles.heading}>{headerTitle}</Text>
                               <Text style={styles.subheading}>{headerSubtitle}</Text>
                             </View>
@@ -44,25 +44,13 @@ export default function Community({navigation, headerTitle, headerSubtitle}) {
                           imgURI={group[1].img_url}
                           title={group[0]}
                           text={group[1].description}
-                          width={350}
+                          width={'95%'}
                           navigation={navigation}
                           onPress={() => navigation.push("Group", { forumName: group[0] })}/>
               })}
               </View> 
           })}
 
-            {/* <CommunityCard 
-              imgURI='https://static01.nyt.com/images/2016/12/14/well/move/14physed-running-photo/14physed-running-photo-superJumbo.jpg'
-              title="Cardio"
-              text="Regular cardio-based physical activity enables the heart to achieve improved blood flow"
-              width={350}
-              navigation={navigation}
-              onPress={() => navigation.push("Group")} />
-            <CommunityCard 
-              imgURI='https://assets.sweat.com/html_body_blocks/images/000/013/890/original/EasyHealthySnacks_en65ab5213130c9862172ac11435f055d9_en38b28edc7b2830a46f6e00bfeceeb1b6.jpg?1596090039https://www.freepik.com/free-photo/outdoor-shot-active-dark-skinned-man-running-morning-has-regular-trainings-dressed-tracksuit-comfortable-sneakers-concentrated-into-distance-sees-finish-far-away_12204561.htm#query=person%20running&position=4&from_view=keyword'
-              title="Healthy Snacking"
-              text="Snacking can help fuel your body - and your brain"
-              width={350} /> */}
           </View>
           <StatusBar style="auto" />
         </ScrollView>

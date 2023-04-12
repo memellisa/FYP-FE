@@ -4,8 +4,7 @@ import { Text, Button } from '@rneui/themed';
 const NavigationButton = ({ buttonName, onPressHandler, disabled=false }) => {
     return (
         <Button
-            // onPress={() => navigation.navigate(name, { data: route.params.data })}
-            onPress={disabled ? ()=>{} : onPressHandler}
+            onPress={disabled ? () => {} : onPressHandler}
             color="#fff"
             style={styles.button}
             >
@@ -18,14 +17,12 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     button:{
-        width: 100,
+        width: '100%',
         padding: 0,
         margin: 0,
-        left: 30
     },
 
     text: {
-        // color: '#0096FF', 
         fontSize: 18,
     },
 

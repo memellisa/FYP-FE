@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { StyleSheet, View, Dimensions } from "react-native";
 import { Bar, VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
 
-const windowWidth = Dimensions.get('window').width;
 
 const BarGraph = ({data}) =>  {
+  const windowWidth = Dimensions.get('window').width;
+
   const findMax = () => {
     var maxSteps = 2000
     for (let i = 0; i < data.length; i++){

@@ -165,7 +165,6 @@ const styles = StyleSheet.create({
     subtitle: {
         color: 'black',
         fontSize: 16,
-        // fontWeight: 'bold',
         fontFamily: 'Poppins-Regular',
         alignSelf: 'center',
         textAlign: 'center',
@@ -174,15 +173,12 @@ const styles = StyleSheet.create({
 
     button: {
         marginVertical: 10,
-        // width: 260,
         width: '75%',
         height: '10%',
         alignSelf: 'center',
         justifyContent: 'center',
-        // borderWidth: 1.5,
         backgroundColor:'#0F52BA',
         borderRadius: 10,
-        // borderColor: '#c4c4c4',
         position: 'absolute',
         bottom:40,
 

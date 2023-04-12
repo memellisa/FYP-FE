@@ -8,8 +8,6 @@ import { Divider } from '@rneui/base';
 export default function AllRisk({ route, navigation }) {
   const [allRisk, setAllRisk] = useState([])
 
-
-
     const fetchAllRisk = async() => {
         const result = await getAllRisk()
         if (!result.error) {
@@ -28,12 +26,11 @@ export default function AllRisk({ route, navigation }) {
 
     for (let i = 0; i < allRisk.length; i++){
         content.push(
-            <View key={i}>
+            <View style={i == allRisk.length - 1 ? {...styles.rowView, marginBottom: 50} : styles.rowView} key={i}>
                 <View style={styles.optionView}>
                     <Text style={styles.fieldText}>{allRisk[i].time}</Text>
                     <Text style={styles.valueText}>{(allRisk[i].result  * 100 ).toFixed(5) + '%'}</Text>
                 </View>
-                <Divider style={{marginHorizontal: 20}}/>
             </View>
         )
     }
@@ -45,10 +42,7 @@ export default function AllRisk({ route, navigation }) {
                 scrollable={true}
                 hasSafeArea={false}
             >
-                
-            {content}
-                
-                
+                {content}
             </ScrollView>
         </SafeAreaProvider>
       );
@@ -60,18 +54,27 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
 
+    rowView: {
+        marginTop: 25,
+        alignItems: 'center',
+        borderBottomColor: 'grey',
+        borderBottomWidth: '0.2',
+        width: '90%',
+        alignSelf: 'center'
+    },
+
     optionView: {
         flexDirection: 'row',
-        marginTop: 25,
-        marginHorizontal: 30,
+        width: '90%',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        
     },
 
     fieldText: {
         fontSize: 17,
         fontFamily: 'Poppins-SemiBold',
-        color: '#0F52BA'
+        color: '#0F52BA',
     },
 
     dropdown: {

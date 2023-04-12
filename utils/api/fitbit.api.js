@@ -13,8 +13,6 @@ const postAccessToken = async (payload) => {
         console.log('RESP ACC TOKEN', response.data)
         return { data: response.data, error: null }
     } catch (error) {
-        // console.log(payload)
-        // console.log('RESP',error.response)
         return { data: null, error }
     } 
 };
@@ -29,8 +27,6 @@ const storeFitbitAccRefToken = async (payload) => {
         console.log('STORE TOKEN RESP:: ', response.data)
         return { data: response.data, error: null }
     } catch (error) {
-        // console.log(payload)
-        // console.log('RESP',error.response)
         return { data: null, error }
     } 
 };
@@ -38,7 +34,6 @@ const storeFitbitAccRefToken = async (payload) => {
 const getAuthURL = async (uid) => {
     try {
         const response = await axios.get(`${flaskURL}/fitbit/auth/url/${uid}`);
-        // console.log('RESP',response)
         return { data: response.data, error: null }
     } catch (error) {
         return { data: null, error }
@@ -53,7 +48,6 @@ const getProfile = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP PROFILE', response)
         return { data: response.data, error: null }
     } catch (error) {
         console.log('RESP PROFILE ERROR',error.response)
@@ -61,17 +55,18 @@ const getProfile = async (payload) => {
     } 
 };
 
-const getActivities = async (payload) => {
+const getActivities = async () => {
     try {
         const response = await axios.get(`${flaskURL}/fitbit/activities/${auth.currentUser.uid}`, {
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-        console.log('RESP ACTIVITIES', response.data)
+
+        if (!response.data.ok) throw 'error' // change later
+        
         return { data: response.data, error: null }
     } catch (error) {
-        console.log('RESP ACTIVITIES ERROR',error.response)
         return { data: null, error }
     } 
 };
@@ -83,7 +78,6 @@ const getWeeklySteps = async (payload) => {
                 'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP WEEKKLY', response.data)
         return { data: response.data.data, error: null }
     } catch (error) {
         console.log('RESP WEEEKLY ERROR',error.response)

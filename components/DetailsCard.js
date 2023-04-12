@@ -81,7 +81,6 @@ const styles = StyleSheet.create({
 
     container: {
         paddingVertical: 5,
-        // width: 350, 
         width: '90%',
         marginBottom:5, 
         borderRadius:10, 
@@ -99,7 +98,6 @@ const styles = StyleSheet.create({
     optionText: {
         fontSize: 15,
         fontFamily: 'Poppins-SemiBold',
-        // width: 140,
         width: '50%',
         marginRight: 10
     },
