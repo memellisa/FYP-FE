@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from 'prop-types';
 import { Dimensions, StyleSheet, View } from "react-native";
 import { VictoryLine, VictoryChart, VictoryTheme, VictoryAxis } from "victory-native";
 
@@ -44,13 +43,5 @@ const styles = StyleSheet.create({
   },
 });
 
-LineChart.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      month: PropTypes.string,
-      risk: PropTypes.number
-    })
-  )
-};
 
 export default LineChart;

@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View, ScrollView, Alert, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import NavigationButton from '../../../components/NavigationButton';
+import SaveButton from '../../../components/SaveButton';
 import { putUserHealth } from '../../../utils/api/user.api';
 import InputTextField from '../../../components/InputTextField';
 import DropDownField from '../../../components/DropdownField';
-import { Formik, useFormikContext } from 'formik';
+import { Formik } from 'formik';
 import { userHealthValidationSchema } from '../../../utils/validation';
 import { bloodData, booleanData, dietData, formInfoMsgs, frequencyData, sexData } from '../../../utils/constants';
 import { countBMI } from '../../../utils/functions';
@@ -34,11 +34,9 @@ export default function EditHealthDetails({ route, navigation }) {
             "smokingStatus": parseInt(newData.smokingStatus),
             "weight": parseFloat(newData.weight)
         })
-        console.log("EDIT HEALTH:::",result)
         if (!result.error){
             navigation.navigate("Profile", { update: true })
         } else {
-            // console.log(result.error)
             Alert.alert('Something went wrong. Please try again')
         }
     }
@@ -55,29 +53,29 @@ export default function EditHealthDetails({ route, navigation }) {
     return (
         <SafeAreaProvider>
            <KeyboardAvoidingView
-                keyboardVerticalOffset={height+5}
-                behavior="padding"
+                keyboardVerticalOffset={Platform.OS === 'ios' ? height : height + 80}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.screenContainer}
                 enabled>
                     <ScrollView
                         hasSafeArea={false}
                     >
 
-                <Formik
-                    validateOnMount={true}
-                    validationSchema={userHealthValidationSchema}
-                    initialValues={{ 
-                        insulin: data.insulin ? '1' : '0', 
-                        cholesterol: data.cholesterol ? '1' : '0', 
-                        diet: data.diet, 
-                        smokingStatus: data.smokingStatus.toString(), 
-                        alcoholConsumption: data.alcoholConsumption.toString(), 
-                        bloodPressure: data.bloodPressure ? '1' : '0', 
-                        sex: data.sex, 
-                        height: data.height,
-                        weight: data.weight, 
-                        bloodType: data.bloodType}}
-                    onSubmit={values => onPress(values)}
+                    <Formik
+                        validateOnMount={true}
+                        validationSchema={userHealthValidationSchema}
+                        initialValues={{ 
+                            insulin: data.insulin ? '1' : '0', 
+                            cholesterol: data.cholesterol ? '1' : '0', 
+                            diet: data.diet, 
+                            smokingStatus: data.smokingStatus.toString(), 
+                            alcoholConsumption: data.alcoholConsumption.toString(), 
+                            bloodPressure: data.bloodPressure ? '1' : '0', 
+                            sex: data.sex, 
+                            height: data.height,
+                            weight: data.weight, 
+                            bloodType: data.bloodType}}
+                        onSubmit={values => onPress(values)}
                     >
                         {({ handleChange,
                         handleBlur,
@@ -87,184 +85,114 @@ export default function EditHealthDetails({ route, navigation }) {
                         touched,
                         isValid, }) => (
                         <>  
-                            <InfoOverlay visible={infoVisible} toggleOverlay={toggleOverlay} message={infoMsg} />
-                            {/* {InfoOverlay(infoVisible, toggleOverlay, infoMsg)} */}
-                            {
-                                useEffect(() => {
-                                    navigation.setOptions({ 
-                                        headerBackTitle: '', 
-                                        headerRight: () => 
-                                            <NavigationButton 
-                                                buttonName="Done" 
-                                                onPressHandler={handleSubmit}
-                                                disabled={!isValid}/>}) 
-                                        
-                                }, [isValid])
-                            }
+                        <InfoOverlay visible={infoVisible} toggleOverlay={toggleOverlay} message={infoMsg} />
 
-                            <DropDownField 
-                                text={"Diet"} 
-                                value={values.diet} 
-                                data={dietData} 
-                                setOnChange={handleChange('diet')} 
-                                handleOnFocus={() => touched.diet = true} 
-                                errorMessage={((errors.diet && touched.diet) ? errors.diet : '')} 
-                                onIconPress={null} />
-                            {/* {DropDownField(
-                                "Diet", 
-                                values.diet, 
-                                dietData, 
-                                handleChange('diet'),  
-                                () => touched.diet = true, (errors.diet && touched.diet) ? errors.diet : '')} */}
+                        {
+                            useEffect(() => {
+                                navigation.setOptions({ 
+                                    headerBackTitle: '', 
+                                    headerRight: () => 
+                                        <SaveButton 
+                                            onPressHandler={handleSubmit}
+                                            disabled={!isValid}/>}) 
+                                    
+                            }, [isValid])
+                        }
 
-                            <DropDownField 
-                                text={"Smoking Status"} 
-                                value={values.smokingStatus} 
-                                data={frequencyData} 
-                                setOnChange={handleChange('smokingStatus')} 
-                                handleOnFocus={() => touched.smokingStatus = true} 
-                                errorMessage={((errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')} 
-                                onIconPress={null} />
-                            {/* {DropDownField(
-                                "Smoking Status", 
-                                values.smokingStatus, 
-                                frequencyData, 
-                                handleChange('smokingStatus'),  
-                                () => touched.smokingStatus = true, (errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')} */}
+                        <DropDownField 
+                            text={"Diet"} 
+                            value={values.diet} 
+                            data={dietData} 
+                            setOnChange={handleChange('diet')} 
+                            handleOnFocus={() => touched.diet = true} 
+                            errorMessage={((errors.diet && touched.diet) ? errors.diet : '')} 
+                            onIconPress={null} />
+                        
+                        <DropDownField 
+                            text={"Smoking Status"} 
+                            value={values.smokingStatus} 
+                            data={frequencyData} 
+                            setOnChange={handleChange('smokingStatus')} 
+                            handleOnFocus={() => touched.smokingStatus = true} 
+                            errorMessage={((errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')} 
+                            onIconPress={null} />
+                        
+                        <DropDownField 
+                            text={"Alcohol Consumption"} 
+                            value={values.alcoholConsumption} 
+                            data={frequencyData} 
+                            setOnChange={handleChange('alcoholConsumption')} 
+                            handleOnFocus={() => touched.alcoholConsumption = true} 
+                            errorMessage={((errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')} 
+                            onIconPress={null} />
+                        
+                        <DropDownField 
+                            text={"Blood Pressure Medication"} 
+                            value={values.bloodPressure} 
+                            data={booleanData} 
+                            setOnChange={handleChange('bloodPressure')} 
+                            handleOnFocus={() => touched.bloodPressure = true} 
+                            errorMessage={((errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '')} 
+                            onIconPress={() => onIconPress(formInfoMsgs.medication)} />
 
-                            <DropDownField 
-                                text={"Alcohol Consumption"} 
-                                value={values.alcoholConsumption} 
-                                data={frequencyData} 
-                                setOnChange={handleChange('alcoholConsumption')} 
-                                handleOnFocus={() => touched.alcoholConsumption = true} 
-                                errorMessage={((errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')} 
-                                onIconPress={null} />
-                            {/* {DropDownField(
-                                "Alcohol Consumption", 
-                                values.alcoholConsumption, 
-                                frequencyData, 
-                                handleChange('alcoholConsumption'),  
-                                () => touched.alcoholConsumption = true, 
-                                (errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')} */}
+                        <DropDownField 
+                            text={"Insulin Medication"} 
+                            value={values.insulin} 
+                            data={booleanData} 
+                            setOnChange={handleChange('insulin')} 
+                            handleOnFocus={(val) => touched.insulin = val} 
+                            errorMessage={((errors.insulin && touched.insulin) ? errors.insulin : '')} 
+                            onIconPress={() => onIconPress(formInfoMsgs.medication)} />
 
-                            <DropDownField 
-                                text={"Blood Pressure Medication"} 
-                                value={values.bloodPressure} 
-                                data={booleanData} 
-                                setOnChange={handleChange('bloodPressure')} 
-                                handleOnFocus={() => touched.bloodPressure = true} 
-                                errorMessage={((errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '')} 
-                                onIconPress={() => onIconPress(formInfoMsgs.medication)} />
-                            {/* {DropDownField(
-                                "Blood Pressure Medication", 
-                                values.bloodPressure, 
-                                booleanData, 
-                                handleChange('bloodPressure'),  
-                                () => touched.bloodPressure = true, 
-                                (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '',
-                                () => onIconPress(formInfoMsgs.medication))} */}
+                        <DropDownField 
+                            text={"Cholesterol Medication"} 
+                            value={values.cholesterol} 
+                            data={booleanData} 
+                            setOnChange={handleChange('cholesterol')} 
+                            handleOnFocus={() => touched.cholesterol = true} 
+                            errorMessage={((errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '')} 
+                            onIconPress={() => onIconPress(formInfoMsgs.medication)} />
 
-                            <DropDownField 
-                                text={"Insulin Medication"} 
-                                value={values.insulin} 
-                                data={booleanData} 
-                                setOnChange={handleChange('insulin')} 
-                                handleOnFocus={(val) => touched.insulin = val} 
-                                errorMessage={((errors.insulin && touched.insulin) ? errors.insulin : '')} 
-                                onIconPress={() => onIconPress(formInfoMsgs.medication)} />
-                            {/* {DropDownField(
-                                "Insulin Medication", 
-                                values.insulin, 
-                                booleanData, 
-                                handleChange('insulin'),  
-                                () => touched.insulin = true, 
-                                (errors.insulin && touched.insulin) ? errors.insulin : '',
-                                () => onIconPress(formInfoMsgs.medication))} */}
+                        <DropDownField 
+                            text={"Sex"} 
+                            value={values.sex} 
+                            data={sexData} 
+                            setOnChange={handleChange('sex')} 
+                            handleOnFocus={() => touched.sex = true} 
+                            errorMessage={((errors.sex && touched.sex) ? errors.sex : '')} 
+                            onIconPress={null} />
+                        
+                        <DropDownField 
+                            text={"Blood Type"} 
+                            value={values.bloodType} 
+                            data={bloodData} 
+                            setOnChange={handleChange('bloodType')} 
+                            handleOnFocus={() => touched.bloodType = true} 
+                            errorMessage={((errors.bloodType && touched.bloodType) ? errors.bloodType : '')} 
+                            onIconPress={null} />
 
-                            <DropDownField 
-                                text={"Cholesterol Medication"} 
-                                value={values.cholesterol} 
-                                data={booleanData} 
-                                setOnChange={handleChange('cholesterol')} 
-                                handleOnFocus={() => touched.cholesterol = true} 
-                                errorMessage={((errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '')} 
-                                onIconPress={() => onIconPress(formInfoMsgs.medication)} />
-                            {/* {DropDownField(
-                                "Cholesterol Medication", 
-                                values.cholesterol, 
-                                booleanData, 
-                                handleChange('cholesterol'),  
-                                () => touched.cholesterol = true, 
-                                (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '',
-                                () => onIconPress(formInfoMsgs.medication))} */}
+                        <InputTextField 
+                            text={"Height (cm)"} 
+                            value={values.height} 
+                            onChangeText={handleChange('height')} 
+                            errorMessage={(errors.height && touched.height) ? errors.height : ''} 
+                            handleBlur={handleBlur('height')} />
+                        
+                        <InputTextField 
+                            text={"Weight (kg)"} 
+                            value={values.weight} 
+                            onChangeText={handleChange('weight')} 
+                            errorMessage={(errors.weight && touched.weight) ? errors.weight : ''} 
+                            handleBlur={handleBlur('weight')} />
 
-                            <DropDownField 
-                                text={"Sex"} 
-                                value={values.sex} 
-                                data={sexData} 
-                                setOnChange={handleChange('sex')} 
-                                handleOnFocus={() => touched.sex = true} 
-                                errorMessage={((errors.sex && touched.sex) ? errors.sex : '')} 
-                                onIconPress={null} />
-                            {/* {DropDownField(
-                                "Sex", 
-                                values.sex, 
-                                sexData, 
-                                handleChange('sex'),  
-                                () => touched.sex = true, 
-                                (errors.sex && touched.sex) ? errors.sex : '')} */}
-                            
-                            <DropDownField 
-                                text={"Blood Type"} 
-                                value={values.bloodType} 
-                                data={bloodData} 
-                                setOnChange={handleChange('bloodType')} 
-                                handleOnFocus={() => touched.bloodType = true} 
-                                errorMessage={((errors.bloodType && touched.bloodType) ? errors.bloodType : '')} 
-                                onIconPress={null} />
-                            {/* {DropDownField(
-                                "Blood Type", 
-                                values.bloodType, 
-                                bloodData, 
-                                handleChange('bloodType'),  
-                                () => touched.bloodType = true, 
-                                (errors.bloodType && touched.bloodType) ? errors.bloodType : '')} */}
+                        <View style={styles.optionView}>
+                            <Text style={styles.fieldText}>BMI</Text>
+                            <Text style={styles.valueText}>{(values.height && values.weight && isFinite(countBMI(values.height, values.weight))) ? countBMI(values.height, values.weight) : '-'}</Text>
+                            <Icon name="help" color="#0F52BA"  onPress={() => onIconPress(formInfoMsgs.bmi)}/>
+                        </View>
 
-                            <InputTextField 
-                                text={"Height (cm)"} 
-                                value={values.height} 
-                                onChangeText={handleChange('height')} 
-                                errorMessage={(errors.height && touched.height) ? errors.height : ''} 
-                                handleBlur={handleBlur('height')} />
-                            {/* {InputTextField(
-                                'Height (cm)', 
-                                values.height, 
-                                handleChange('height'), 
-                                (errors.height && touched.height) ? errors.height : '', 
-                                handleBlur('height'))} */}
-                            
-                            <InputTextField 
-                                text={"Weight (kg)"} 
-                                value={values.weight} 
-                                onChangeText={handleChange('weight')} 
-                                errorMessage={(errors.weight && touched.weight) ? errors.weight : ''} 
-                                handleBlur={handleBlur('weight')} />
-                            {/* {InputTextField(
-                                'Weight (kg)', 
-                                values.weight, 
-                                handleChange('weight'), 
-                                (errors.weight && touched.weight) ? errors.weight : '', 
-                                handleBlur('weight'))} */}
-
-                            <View style={styles.optionView}>
-                                <Text style={styles.fieldText}>BMI</Text>
-                                <Text style={styles.valueText}>{(values.height && values.weight && isFinite(countBMI(values.height, values.weight))) ? countBMI(values.height, values.weight) : '-'}</Text>
-                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.bmi)}/>
-                            </View>
-
-                            <View style={{marginBottom: 50}}/>
-                        </>)}
+                        <View style={{marginBottom: 50}}/>
+                    </>)}
                     </Formik>
                 </ScrollView>
             </KeyboardAvoidingView>

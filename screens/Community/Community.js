@@ -44,7 +44,7 @@ export default function Community({navigation, headerTitle, headerSubtitle}) {
                           imgURI={group[1].img_url}
                           title={group[0]}
                           text={group[1].description}
-                          width={'95%'}
+                          width={'90%'}
                           navigation={navigation}
                           onPress={() => navigation.push("Group", { forumName: group[0] })}/>
               })}

@@ -9,7 +9,6 @@ const RiskCard = ({today, yesterday, lastMonth}) => {
     const renderContent = (title, data, note) => {
         return (
             <>
-                
                 <View style={styles.contentView}>  
                     <View style={styles.content}>
                         <Text style={styles.heading}>{title}</Text>
@@ -24,7 +23,6 @@ const RiskCard = ({today, yesterday, lastMonth}) => {
 
     return (
         <Card containerStyle={styles.container} >
-
             {renderContent('Today:', today, `Exercise more to reduce your risk!`)}
             {renderContent('Yesterday:', yesterday, `Your risk is ${dayDiff > 0 ? 'higher' : 'lower'} by ${Math.abs(dayDiff).toFixed(2)}% than yesterday`)}
             {renderContent('Last Month:', lastMonth, `Your risk is ${monthDiff > 0 ? 'higher' : 'lower'} by ${Math.abs(monthDiff).toFixed(2)}% than last month`)}
@@ -51,7 +49,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-SemiBold',
       },
     contentView: {
-        // alignItems: 'center', 
         marginTop: 20,
         justifyContent: 'center'
     },

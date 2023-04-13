@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, Image } from 'react-native';
-import { Text, Card, Button, Icon } from '@rneui/themed';
+import { View, StyleSheet } from 'react-native';
+import { Text, Card } from '@rneui/themed';
 
 const CarrierStatusCard = ({disease, status=true}) => {
     return (
@@ -10,8 +10,6 @@ const CarrierStatusCard = ({disease, status=true}) => {
                 <Text style={styles.disease}>{disease}</Text>
                 <Text style={{...styles.status, color: status ? 'red' : 'green'}}>{status ? 'Present' : 'Absent'}</Text>
             </View>
-
-            
         </Card>
     </>
     );

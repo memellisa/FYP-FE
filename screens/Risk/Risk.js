@@ -10,18 +10,17 @@ import { labelMonth, processRiskData } from '../../utils/functions';
 import { getDailyRisk, getMonthlyRisk, getOneRisk, postRisk } from '../../utils/api/risk.api';
 import RiskCard from '../../components/RiskCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MotivationCard from '../../components/MotivationCard';
 
 export default function Risk({headerTitle, headerSubtitle, focused, navigation}) {
   const [monthlyRisk, setMonthlyRisk] = useState()
   const [dailyRisk, setDailyRisk] = useState()
   const [todayRisk, setTodayRisk] = useState()
   const [yesterdayRisk, setYesterdayRisk] = useState(0)
-  const [lastYearRisk, setLastYearRisk] = useState(0)
+  const [lastMonthRisk, setlastMonthRisk] = useState(0)
 
   const [currentChart, setCurrentChart] = useState('year')
 
-  const leftComponent = <View style={{width:250}}>
+  const leftComponent = <View style={{width:"300%"}}>
                           <Text style={styles.heading}>{headerTitle}</Text>
                           <Text style={styles.subheading}>{headerSubtitle}</Text>
                         </View>
@@ -30,9 +29,9 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
     return new Date(year, month, 0).getDate();
   }
 
-  const date = new Date();
-  const currentYear = date.getFullYear();
-  const currentMonth = date.getMonth() + 1; 
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1; 
 
   const daysInCurrentMonth = getDaysInMonth(currentYear, currentMonth);
 
@@ -41,7 +40,6 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
     const result = await getMonthlyRisk(today.getFullYear())
     if (!result.error) {
       setMonthlyRisk(processRiskData(result, (val) => labelMonth(val), 12))
-      // console.log(processRiskData(result))
     } 
     else {
       // Alert.alert('Something went wrong getting ONE YEAR. Please try again')
@@ -51,8 +49,7 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   const fetchOneMonthRisk = async() => {
     const result = await getDailyRisk()
     if (!result.error) {
-      setDailyRisk(processRiskData(result, null, 31))
-      // console.log(processRiskData(result))
+      setDailyRisk(processRiskData(result, null, daysInCurrentMonth))
     } 
     else {
       // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
@@ -60,7 +57,7 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   }
 
   const fetchOneDayRisk = async (date, setData) => {
-    const result = await getOneRisk(date.replaceAll('/', ''))
+    const result = await getOneRisk(date)
     if (!result.error) {
       setData(result)
     } 
@@ -69,33 +66,24 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
     }
   }
 
-  const calculateTodayRisk = async () => {
-    const today = new Date()
-    // console.log(today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"}))
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1)
-
-    const resultToday = await postRisk({"date": today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"})})
-    if (!resultToday.error) {
-      setTodayRisk(resultToday.data.risk)
+  const calculateRisk = async (date, setData) => {
+    const result = await postRisk(date)
+    if (!result.error) {
+      setData(result.data.risk)
     } 
     else {
       // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
     }
+  }
 
+
+  const checkYesterdayRisk = async () => {
     const yesterdayUpdate = await AsyncStorage.getItem('yesterdayRiskUpdate')
     if (!(yesterdayUpdate === today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"}))) {
-      const resultYesterday = await postRisk({"date": yesterday.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"})})
-      if (!resultYesterday.error) {
-        setYesterdayRisk(resultYesterday.data.risk)
-        await AsyncStorage.setItem('yesterdayRiskUpdate', today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"}))
-      } 
-      else {
-        // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
-      }
+      return false
     }
     else {
-      console.log("already updated")
+      return true
     }
   }
 
@@ -107,48 +95,35 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
     
   }
 
-
-  const formatDate = (date) => {
-    // if (day < 10) {
-    //   day = '0' + day;
-    // }
-    
-    // if (month < 10) {
-    //     month = `0${month}`;
-    // }
-    // console.log("TYPEOFDATE", typeof date)
-    let dateFormat = date.split('/')
-    
-    return `${dateFormat[2]}/${dateFormat[0]}/${dateFormat[1]}`;
-  }
-
   useEffect(() => {
     const today = new Date()
-    // today.toLocaleDateString("en-US",  {timeZone: "Asia/Hong_Kong"})
-    // const yesterday = new Date(today)
-    // yesterday.setDate(yesterday.getDate() - 1)
+    const lastMonth = today.getMonth()
+    const lastMonthYear = lastMonth == 12 ? today.getFullYear() - 1 : today.getFullYear()
+    const daysInLastMonth = getDaysInMonth(lastMonthYear, lastMonth);
+    const lastMonthFullDate = `${lastMonthYear}${lastMonth < 10 ? "0"+lastMonth : lastMonth}${daysInLastMonth}`
 
-    const lastYear = new Date("December 31, " + (today.getFullYear() - 1).toString() + " 01:15:00")
-    // console.log("CHECKKKK", lastYear.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}).split(",")[0])
-    // const formatToday = formatDate(today.getDay(), today.getMonth()+1, today.getFullYear())
-    // const formatYesterday = formatDate(yesterday.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}).split(",")[0])
-    const formatLastYear = formatDate(lastYear.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}).split(",")[0])
+    const yesterday = new Date(today)
+    yesterday.setDate(yesterday.getDate() - 1)
+    const yesterdayFullDate = `${yesterday.getFullYear()}${yesterday.getMonth()+1 < 10 ? "0"+(yesterday.getMonth()+1) : yesterday.getMonth()+1}${yesterday.getDate()}`
+
 
     if (focused) {
-      // console.log("TODAY DATE", today.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
-      // console.log("YESTERDAY DATE", yesterday.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
-      // console.log("LAST DAY YEAR DATE", lastYear.toLocaleString("en-US",  {timeZone: "Asia/Hong_Kong"}))
       fetchOneYearRisk()
       fetchOneMonthRisk()
-      calculateTodayRisk() 
-      // fetchOneDayRisk(formatYesterday, setYesterdayRisk) // CHANGED TO BE COMBINED, WE RECALCULATE YESTERDAY TO ENSURE MOST UPDATED DATA
-      fetchOneDayRisk(formatLastYear, setLastYearRisk)
+      calculateRisk({"date": today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"})}, setTodayRisk) 
+
+      if (checkYesterdayRisk()) {
+        fetchOneDayRisk(yesterdayFullDate, setYesterdayRisk)
+      } else {
+        async () => {
+          calculateRisk(yesterday, setYesterdayRisk)
+          await AsyncStorage.setItem('yesterdayRiskUpdate', today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"}))
+        }
+        
+      }
+      fetchOneDayRisk(lastMonthFullDate, setlastMonthRisk)
     }
     
-    // fetchOneDayRisk(formatToday, setTodayRisk)
-    // calculateTodayRisk()
-    // fetchOneDayRisk(formatYesterday, setYesterdayRisk) 
-    fetchOneDayRisk(formatLastYear, setLastYearRisk)
   }, [focused])
   
   return (
@@ -161,19 +136,17 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
           : <LineChart data={dailyRisk} domainX={Array.from({length: daysInCurrentMonth}, (_, i) => i + 1)}/>
         }
         
-        <Button radius={8}  style={styles.button} onPress={changeChart}>
+        <Button radius={8}  containerStyle={styles.button} onPress={changeChart}>
               <Text style={styles.buttonText}>{`View one ${currentChart == 'year' ? 'month' : 'year'} trend`}</Text>
         </Button>
 
         <Text style={{...styles.heading,fontSize: 20, marginLeft: 20, marginTop: 10}}>Your Risk Summary</Text>
-        <RiskCard today={todayRisk ? (todayRisk * 100) : 0} yesterday={yesterdayRisk ? (yesterdayRisk * 100) : 0} lastMonth={lastYearRisk ? (lastYearRisk * 100) : 0}/>
+        <RiskCard today={todayRisk ? (todayRisk * 100) : 0} yesterday={yesterdayRisk ? (yesterdayRisk * 100) : 0} lastMonth={lastMonthRisk ? (lastMonthRisk * 100) : 0}/>
 
-        <Button radius={8} style={styles.button} onPress={() => navigation.push("All Risk")}>
+        <Button radius={8} containerStyle={styles.button} onPress={() => navigation.push("All Risk")}>
               <Text style={styles.buttonText}>Show all data</Text>
               <Icon style={styles.icon} color='white' name='navigate-next' size={25} />
         </Button>
-
-        <MotivationCard title="Suggestion" text="20 more active minutes can reduce 0.5% more risk" width={350}/>
       </ScrollView>
     </SafeAreaProvider>
   );

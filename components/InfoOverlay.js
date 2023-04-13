@@ -1,5 +1,5 @@
 import { Overlay } from "@rneui/base"
-import { StyleSheet, Text, Button, View, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, Button } from 'react-native';
 
 
 const InfoOverlay = ({visible, toggleOverlay, message}) => {
@@ -26,8 +26,7 @@ const styles = StyleSheet.create({
     },
     infoText: {
         fontSize: 17,
-        fontFamily: 'Poppins-SemiBold',
-        
+        fontFamily: 'Poppins-Regular',
         padding: 5,
         textAlign: 'center'
     },

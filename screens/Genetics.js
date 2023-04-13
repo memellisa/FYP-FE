@@ -7,7 +7,6 @@ import DataCard from '../components/DataCard';
 import Header from '../components/Header';
 
 export default function Genetics({headerTitle, headerSubtitle}) {
-      // this is just dummy
       const leftComponent = <View style={{width:200}}>
                               <Text style={styles.heading}>{headerTitle}</Text>
                               <Text style={styles.subheading}>{headerSubtitle}</Text>

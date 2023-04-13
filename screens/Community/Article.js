@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, Image, Alert, KeyboardAvoidingView, TextInput} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Alert, KeyboardAvoidingView, TextInput, Platform} from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { getPostByID } from "../../utils/api/community.api";
 import { fDate } from '../../utils/formatTime';
@@ -43,8 +43,8 @@ function Article({route}) {
     return (
         <SafeAreaProvider>
             <KeyboardAvoidingView
-                keyboardVerticalOffset={height}
-                behavior="padding"
+                keyboardVerticalOffset={Platform.OS === 'ios' ? height : height + 60}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.container}
                 enabled>
                 <ScrollView 
@@ -84,7 +84,6 @@ function Article({route}) {
                     <Icon 
                         name="send" 
                         color={comment !== '' ? "#0F52BA" : "grey"}
-                        size='25'  
                         onPress={comment !== '' ?  handlePostComment : null}
                         /> 
                 </View>

@@ -6,7 +6,6 @@ import { Avatar } from '@rneui/themed';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import BarGraph from '../components/BarGraph';
 import DataCard from '../components/DataCard';
-import MotivationCard from '../components/MotivationCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getActivities, getWeeklySteps } from '../utils/api/fitbit.api';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
@@ -27,15 +26,12 @@ const emptyWeeklySteps = [
 ];
 
 
-const Home = ({ headerSubtitle, navigation, route}) => {
-
-    // const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
+const Home = ({ headerSubtitle, navigation, route, focused}) => {
     const [userData, setUserData] = useState(null);
     const [fitbitTokens, setFitbitTokens] = useState(null)
-    const [userActivity, setUserActivity] = useState(null);
+    // const [userActivity, setUserActivity] = useState(null);
     const [summaryActivity, setSummaryActivity] = useState(null);
     const [weeklySteps, setWeeklySteps] = useState(null)
-    const isFocused = useIsFocused()
 
 
     const processSummaryActivity = (data) => {
@@ -98,48 +94,75 @@ const Home = ({ headerSubtitle, navigation, route}) => {
         // error reading value
       }
     }
+
+    const fetchActivities = async() => {
+      const result = await getActivities()
+      if (!result.error){
+        if (!isEqual(result.data.summary, summaryActivity)) {
+          setSummaryActivity(processSummaryActivity(result.data.summary))
+        }
+      } else {
+          // Alert.alert('Something went wrong getting Activities. Please try again')
+      }
+    }
+
+    const fetchWeeklySteps = async() => {
+      const result = await getWeeklySteps()
+      if (!result.error){
+        if (result.data != userData) {
+          setWeeklySteps(result.data)
+        }
+      } else {
+          // Alert.alert('Something went wrong getting weekly steps. Please try again')
+      }
+    }
+
+
     useEffect(() => {
       getFitbitTokens()
       getUserData(setUserData, userData, route?.params?.update)
+      
+    }, [focused])
 
-  }, [isFocused])
+    useEffect(() => {
+      fetchActivities()
+      fetchWeeklySteps()
+    }, [fitbitTokens])
 
-    useFocusEffect( 
-      useCallback(() => {
+    // useFocusEffect( 
+    //   useCallback(() => {
 
-        const fetchActivities = async() => {
-            const result = await getActivities()
-            if (!result.error){
-              let jsonResponse = result.data
-              if (!isEqual(jsonResponse, userActivity)) {
-                setUserActivity(jsonResponse)
-                setSummaryActivity(processSummaryActivity(jsonResponse.summary))
-                await AsyncStorage.setItem('activitySummary', JSON.stringify(processSummaryActivity(jsonResponse.summary)))
-              }
-            } else {
-                // Alert.alert('Something went wrong getting Activities. Please try again')
-            }
-        }
+    //     const fetchActivities = async() => {
+    //         const result = await getActivities()
+            
+    //         if (!result.error){
+    //           if (!isEqual(result.data.summary, summaryActivity)) {
+    //             console.log("SUMMARY",typeof result.data)
+    //             setSummaryActivity(processSummaryActivity(result.data.summary))
+    //           }
+    //         } else {
+    //             // Alert.alert('Something went wrong getting Activities. Please try again')
+    //         }
+    //     }
 
-        const fetchWeeklySteps = async() => {
-          const result = await getWeeklySteps()
-          if (!result.error){
-            if (result.data != userData) {
-              setWeeklySteps(result.data)
-                // setWeeklySteps(emptyWeeklySteps)
-            }
-          } else {
-              // Alert.alert('Something went wrong getting weekly steps. Please try again')
-          }
-        }
+    //     const fetchWeeklySteps = async() => {
+    //       const result = await getWeeklySteps()
+    //       if (!result.error){
+    //         if (result.data != userData) {
+    //           setWeeklySteps(result.data)
+    //         }
+    //       } else {
+    //           // Alert.alert('Something went wrong getting weekly steps. Please try again')
+    //       }
+    //     }
 
-        fetchActivities()
-        fetchWeeklySteps()
+    //     fetchActivities()
+    //     fetchWeeklySteps()
 
-      }, [fitbitTokens])
-    )
+    //   }, [fitbitTokens])
+    // )
 
-    const leftComponent = <View style={{width:'240%'}}>
+    const leftComponent = <View style={{width:'250%'}}>
       <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.info.firstName}</Text>
       <Text style={styles.subheading}>{headerSubtitle}</Text>
     </View>
@@ -170,7 +193,6 @@ const Home = ({ headerSubtitle, navigation, route}) => {
           <View>
             <BarGraph data={weeklySteps ? weeklySteps : emptyWeeklySteps}/>
           </View>
-          <MotivationCard title="Keep the progress!" text="You have 47% more steps than last week!" width={"90%"}/>
           <StatusBar style="auto" />
         </ScrollView>
       </SafeAreaProvider>

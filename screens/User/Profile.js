@@ -18,7 +18,6 @@ import { calculateAge, countBMI, getUserData } from '../../utils/functions';
 
 
 export default function Profile({ navigation, route }) {
-    navigation.setOptions({headerLeft: ()=> (<HeaderBackButton onPress={()=>{navigation.navigate('Main')}}/>)})
 
     const [userData, setUserData] = useState(null);
 
@@ -119,15 +118,15 @@ export default function Profile({ navigation, route }) {
                         "bmi": countBMI(userData?.health.height, userData?.health.weight)
                     }}/>
 
-                <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Manage Wearable")}>
+                <Button radius={8} color="#fff" containerStyle={styles.button} onPress={() => navigation.push("Manage Wearable")}>
                         <Text style={styles.buttonText}>Manage Wearable</Text>
                 </Button>
 
-                <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Change Password")}>
+                <Button radius={8} color="#fff" containerStyle={styles.button} onPress={() => navigation.push("Change Password")}>
                         <Text style={styles.buttonText}>Change Password</Text>
                 </Button>
 
-                <Button radius={8} color="#fff" style={{...styles.button, marginBottom: 30}} onPress={logout} >
+                <Button radius={8} color="#fff" containerStyle={{...styles.button, marginBottom: 30}} onPress={logout} >
                         <Text style={{...styles.buttonText, color: 'red'}}>Sign Out</Text>
                 </Button>
         </ScrollView>
@@ -140,10 +139,7 @@ export default function Profile({ navigation, route }) {
 
 const styles = StyleSheet.create({
     screenContainer: {
-        // alignItems: 'center',
-        // marginTop: -65,
         flex: 1,
-        // backgroundColor: '#fff',
         backgroundColor: '#f2f2f6',
 
     },

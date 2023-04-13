@@ -10,7 +10,6 @@ const postAccessToken = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        console.log('RESP ACC TOKEN', response.data)
         return { data: response.data, error: null }
     } catch (error) {
         return { data: null, error }
@@ -24,7 +23,6 @@ const storeFitbitAccRefToken = async (payload) => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log('STORE TOKEN RESP:: ', response.data)
         return { data: response.data, error: null }
     } catch (error) {
         return { data: null, error }
@@ -50,7 +48,6 @@ const getProfile = async (payload) => {
         });
         return { data: response.data, error: null }
     } catch (error) {
-        console.log('RESP PROFILE ERROR',error.response)
         return { data: null, error }
     } 
 };
@@ -62,16 +59,13 @@ const getActivities = async () => {
                 'Content-Type': 'application/json'
             }
         });
-
-        if (!response.data.ok) throw 'error' // change later
-        
-        return { data: response.data, error: null }
+        return { data: JSON.parse(response.data), error: null }
     } catch (error) {
         return { data: null, error }
     } 
 };
 
-const getWeeklySteps = async (payload) => {
+const getWeeklySteps = async () => {
     try {
         const response = await axios.get(`${flaskURL}/fitbit/weeklySteps/${auth.currentUser.uid}`, {
             headers: {
@@ -80,7 +74,6 @@ const getWeeklySteps = async (payload) => {
         });
         return { data: response.data.data, error: null }
     } catch (error) {
-        console.log('RESP WEEEKLY ERROR',error.response)
         return { data: null, error }
     } 
 };

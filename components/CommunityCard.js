@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
     container: {
         marginBottom:10, 
         borderRadius:10,
-        alignItems:'center'
+        alignItems:'center',
+        alignSelf: 'center'
     },
 
     title: {

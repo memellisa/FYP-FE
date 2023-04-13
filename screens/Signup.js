@@ -109,7 +109,9 @@ export default function Signup({navigation}) {
                     />
                 </View>
                 
-                <Button title="Signup" containerStyle={styles.button} 
+                <Button 
+                  title="Signup" 
+                  containerStyle={styles.button} 
                   onPress={handleSubmit}
                   disabled={!isValid || values.email === '' || values.password === '' || values.confirmPassword === ''}
                 />

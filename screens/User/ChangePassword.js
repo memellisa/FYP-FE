@@ -6,7 +6,7 @@ import { auth } from "../../config";
 import { updatePassword, signOut, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { changePasswordValidationScheme } from '../../utils/validation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import NavigationButton from "../../components/NavigationButton";
+import SaveButton from "../../components/SaveButton";
 
 const ChangePassword = ({navigation}) => {
     const changePassword = (values) => {
@@ -66,8 +66,7 @@ const ChangePassword = ({navigation}) => {
                                 navigation.setOptions({ 
                                     headerBackTitle: '', 
                                     headerRight: () => 
-                                        <NavigationButton 
-                                            buttonName="Done" 
+                                        <SaveButton 
                                             onPressHandler={handleSubmit}
                                             disabled={!isValid}/>}) 
                                     

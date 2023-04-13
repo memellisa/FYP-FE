@@ -28,7 +28,7 @@ const DropDownField = ({text, value, data, setOnChange, handleOnFocus, errorMess
                     }}
                 />
                 {onIconPress ?
-                        <Icon name="help" color="#0F52BA" size='18' onPress={onIconPress}/> : null}
+                        <Icon name="help" color="#0F52BA"  onPress={onIconPress}/> : null}
             </View>
             <Text style={styles.errorText}>{errorMessage}</Text>
         </View>

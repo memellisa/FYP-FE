@@ -56,13 +56,13 @@ const Main = ({ navigation }) => {
         <>
             <TabView value={index} onChange={setIndex} disableSwipe={true} disableTransition={true}>
                 <TabView.Item style={{width: '100%'}}>
-                    <Home headerSubtitle={"Your daily statistics"} navigation={navigation}/>
+                    <Home headerSubtitle={"Your daily statistics"} navigation={navigation} focused={index == 0}/>
                 </TabView.Item>
                 {/* <TabView.Item style={{width: '100%'}}>
                     <Genetics headerTitle={"Genetic Report"} headerSubtitle={"From 23andMe"} navigation={navigation}/>
                 </TabView.Item> */}
                 <TabView.Item style={{width: '100%'}}>
-                    <Risk headerTitle={"10-Year CHD Risk"} headerSubtitle={""} navigation={navigation} focused={index == 2}/>
+                    <Risk headerTitle={"10-Year CHD Risk"} headerSubtitle={""} navigation={navigation} focused={index == 1}/>
                 </TabView.Item>
                 <TabView.Item style={{width: '100%'}}>
                     <Community headerTitle={"Welcome to Community"} headerSubtitle={"Your home for fitness related news, local events, connecting with friends, and discovering groups"} navigation={navigation}/>
