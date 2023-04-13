@@ -5,7 +5,7 @@ import { getFormatedDate } from 'react-native-modern-datepicker'
 const today = new Date()
 const endDate = getFormatedDate(today.setDate(today.getDate()), 'YYYY/MM/DD')
 
-const DatePickerField = (text, openModal, handleOnPress, date, handleChangeDate) => {
+const DatePickerField = ({text, openModal, handleOnPress, date, handleChangeDate}) => {
     return (
     <View style={styles.optionView}>
         <Text style={styles.title}>{text}</Text>

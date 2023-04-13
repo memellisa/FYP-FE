@@ -68,7 +68,9 @@ export default function EditPersonalDetails({ route, navigation }) {
                     touched,
                     isValid, }) => (
                     <>
-                        {InfoOverlay(infoVisible, toggleOverlay, infoMsg)}
+                        <InfoOverlay visible={infoVisible} toggleOverlay={toggleOverlay} message={infoMsg} />
+                        {/* {InfoOverlay(infoVisible, toggleOverlay, infoMsg)} */}
+                        
                         {
                             useEffect(() => {
                                 navigation.setOptions({ 
@@ -81,12 +83,24 @@ export default function EditPersonalDetails({ route, navigation }) {
                                     
                             }, [isValid])
                     }
+                        <InputTextField 
+                                text={"First Name"} 
+                                value={values.firstName} 
+                                onChangeText={handleChange('firstName')} 
+                                errorMessage={(errors.firstName && touched.firstName) ? errors.firstName : ''} 
+                                handleBlur={handleBlur('firstName')} />
+                        {/* {InputTextField('First Name', values.firstName, handleChange('firstName'), (errors.firstName && touched.firstName) ? errors.firstName : '', handleBlur('firstName'))} */}
+                        
+                        <InputTextField 
+                                text={"Last Name"} 
+                                value={values.lastName} 
+                                onChangeText={handleChange('lastName')} 
+                                errorMessage={(errors.lastName && touched.lastName) ? errors.lastName : ''} 
+                                handleBlur={handleBlur('lastName')} />
+                        {/* {InputTextField('Last Name', values.lastName, handleChange('lastName'), (errors.lastName && touched.lastName) ? errors.lastName : '', handleBlur('lastName'))} */}
 
-                        {InputTextField('First Name', values.firstName, handleChange('firstName'), (errors.firstName && touched.firstName) ? errors.firstName : '', handleBlur('firstName'))}
-
-                        {InputTextField('Last Name', values.lastName, handleChange('lastName'), (errors.lastName && touched.lastName) ? errors.lastName : '', handleBlur('lastName'))}
-
-                        {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))}
+                        <DatePickerField text={"Date of Birth"} openModal={openModal} handleOnPress={handleOnPress} date={values.dob} handleChangeDate={handleChange('dob')} />
+                        {/* {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))} */}
 
                         <View style={styles.optionView}>
                             <Text style={styles.fieldText}>Age</Text>

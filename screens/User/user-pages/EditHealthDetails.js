@@ -86,8 +86,9 @@ export default function EditHealthDetails({ route, navigation }) {
                         errors,
                         touched,
                         isValid, }) => (
-                        <>
-                            {InfoOverlay(infoVisible, toggleOverlay, infoMsg)}
+                        <>  
+                            <InfoOverlay visible={infoVisible} toggleOverlay={toggleOverlay} message={infoMsg} />
+                            {/* {InfoOverlay(infoVisible, toggleOverlay, infoMsg)} */}
                             {
                                 useEffect(() => {
                                     navigation.setOptions({ 
@@ -101,84 +102,160 @@ export default function EditHealthDetails({ route, navigation }) {
                                 }, [isValid])
                             }
 
-                            {DropDownField(
+                            <DropDownField 
+                                text={"Diet"} 
+                                value={values.diet} 
+                                data={dietData} 
+                                setOnChange={handleChange('diet')} 
+                                handleOnFocus={() => touched.diet = true} 
+                                errorMessage={((errors.diet && touched.diet) ? errors.diet : '')} 
+                                onIconPress={null} />
+                            {/* {DropDownField(
                                 "Diet", 
                                 values.diet, 
                                 dietData, 
                                 handleChange('diet'),  
-                                () => touched.diet = true, (errors.diet && touched.diet) ? errors.diet : '')}
-                        
-                            {DropDownField(
+                                () => touched.diet = true, (errors.diet && touched.diet) ? errors.diet : '')} */}
+
+                            <DropDownField 
+                                text={"Smoking Status"} 
+                                value={values.smokingStatus} 
+                                data={frequencyData} 
+                                setOnChange={handleChange('smokingStatus')} 
+                                handleOnFocus={() => touched.smokingStatus = true} 
+                                errorMessage={((errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')} 
+                                onIconPress={null} />
+                            {/* {DropDownField(
                                 "Smoking Status", 
                                 values.smokingStatus, 
                                 frequencyData, 
                                 handleChange('smokingStatus'),  
-                                () => touched.smokingStatus = true, (errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')}
+                                () => touched.smokingStatus = true, (errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')} */}
 
-                            {DropDownField(
+                            <DropDownField 
+                                text={"Alcohol Consumption"} 
+                                value={values.alcoholConsumption} 
+                                data={frequencyData} 
+                                setOnChange={handleChange('alcoholConsumption')} 
+                                handleOnFocus={() => touched.alcoholConsumption = true} 
+                                errorMessage={((errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')} 
+                                onIconPress={null} />
+                            {/* {DropDownField(
                                 "Alcohol Consumption", 
                                 values.alcoholConsumption, 
                                 frequencyData, 
                                 handleChange('alcoholConsumption'),  
                                 () => touched.alcoholConsumption = true, 
-                                (errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')}
+                                (errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')} */}
 
-                            {DropDownField(
+                            <DropDownField 
+                                text={"Blood Pressure Medication"} 
+                                value={values.bloodPressure} 
+                                data={booleanData} 
+                                setOnChange={handleChange('bloodPressure')} 
+                                handleOnFocus={() => touched.bloodPressure = true} 
+                                errorMessage={((errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '')} 
+                                onIconPress={() => onIconPress(formInfoMsgs.medication)} />
+                            {/* {DropDownField(
                                 "Blood Pressure Medication", 
                                 values.bloodPressure, 
                                 booleanData, 
                                 handleChange('bloodPressure'),  
                                 () => touched.bloodPressure = true, 
                                 (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '',
-                                () => onIconPress(formInfoMsgs.medication))}
+                                () => onIconPress(formInfoMsgs.medication))} */}
 
-                            {DropDownField(
+                            <DropDownField 
+                                text={"Insulin Medication"} 
+                                value={values.insulin} 
+                                data={booleanData} 
+                                setOnChange={handleChange('insulin')} 
+                                handleOnFocus={(val) => touched.insulin = val} 
+                                errorMessage={((errors.insulin && touched.insulin) ? errors.insulin : '')} 
+                                onIconPress={() => onIconPress(formInfoMsgs.medication)} />
+                            {/* {DropDownField(
                                 "Insulin Medication", 
                                 values.insulin, 
                                 booleanData, 
                                 handleChange('insulin'),  
                                 () => touched.insulin = true, 
                                 (errors.insulin && touched.insulin) ? errors.insulin : '',
-                                () => onIconPress(formInfoMsgs.medication))}
+                                () => onIconPress(formInfoMsgs.medication))} */}
 
-                            {DropDownField(
+                            <DropDownField 
+                                text={"Cholesterol Medication"} 
+                                value={values.cholesterol} 
+                                data={booleanData} 
+                                setOnChange={handleChange('cholesterol')} 
+                                handleOnFocus={() => touched.cholesterol = true} 
+                                errorMessage={((errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '')} 
+                                onIconPress={() => onIconPress(formInfoMsgs.medication)} />
+                            {/* {DropDownField(
                                 "Cholesterol Medication", 
                                 values.cholesterol, 
                                 booleanData, 
                                 handleChange('cholesterol'),  
                                 () => touched.cholesterol = true, 
                                 (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '',
-                                () => onIconPress(formInfoMsgs.medication))}
+                                () => onIconPress(formInfoMsgs.medication))} */}
 
-                            {DropDownField(
+                            <DropDownField 
+                                text={"Sex"} 
+                                value={values.sex} 
+                                data={sexData} 
+                                setOnChange={handleChange('sex')} 
+                                handleOnFocus={() => touched.sex = true} 
+                                errorMessage={((errors.sex && touched.sex) ? errors.sex : '')} 
+                                onIconPress={null} />
+                            {/* {DropDownField(
                                 "Sex", 
                                 values.sex, 
                                 sexData, 
                                 handleChange('sex'),  
                                 () => touched.sex = true, 
-                                (errors.sex && touched.sex) ? errors.sex : '')}
-
-                            {DropDownField(
+                                (errors.sex && touched.sex) ? errors.sex : '')} */}
+                            
+                            <DropDownField 
+                                text={"Blood Type"} 
+                                value={values.bloodType} 
+                                data={bloodData} 
+                                setOnChange={handleChange('bloodType')} 
+                                handleOnFocus={() => touched.bloodType = true} 
+                                errorMessage={((errors.bloodType && touched.bloodType) ? errors.bloodType : '')} 
+                                onIconPress={null} />
+                            {/* {DropDownField(
                                 "Blood Type", 
                                 values.bloodType, 
                                 bloodData, 
                                 handleChange('bloodType'),  
                                 () => touched.bloodType = true, 
-                                (errors.bloodType && touched.bloodType) ? errors.bloodType : '')}
+                                (errors.bloodType && touched.bloodType) ? errors.bloodType : '')} */}
 
-                            {InputTextField(
+                            <InputTextField 
+                                text={"Height (cm)"} 
+                                value={values.height} 
+                                onChangeText={handleChange('height')} 
+                                errorMessage={(errors.height && touched.height) ? errors.height : ''} 
+                                handleBlur={handleBlur('height')} />
+                            {/* {InputTextField(
                                 'Height (cm)', 
                                 values.height, 
                                 handleChange('height'), 
                                 (errors.height && touched.height) ? errors.height : '', 
-                                handleBlur('height'))}
-
-                            {InputTextField(
+                                handleBlur('height'))} */}
+                            
+                            <InputTextField 
+                                text={"Weight (kg)"} 
+                                value={values.weight} 
+                                onChangeText={handleChange('weight')} 
+                                errorMessage={(errors.weight && touched.weight) ? errors.weight : ''} 
+                                handleBlur={handleBlur('weight')} />
+                            {/* {InputTextField(
                                 'Weight (kg)', 
                                 values.weight, 
                                 handleChange('weight'), 
                                 (errors.weight && touched.weight) ? errors.weight : '', 
-                                handleBlur('weight'))}
+                                handleBlur('weight'))} */}
 
                             <View style={styles.optionView}>
                                 <Text style={styles.fieldText}>BMI</Text>

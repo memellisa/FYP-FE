@@ -2,7 +2,7 @@ import { Overlay } from "@rneui/base"
 import { StyleSheet, Text, Button, View, ScrollView, Alert } from 'react-native';
 
 
-const InfoOverlay = (visible, toggleOverlay, message) => {
+const InfoOverlay = ({visible, toggleOverlay, message}) => {
     return (
         <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={styles.container}  >
             <Text style={styles.infoText}>

@@ -75,12 +75,7 @@ export default function ConfirmAuth({ route, navigation }) {
         }
         
         WebBrowser.dismissBrowser()
-
-        
-        
-      };
-
-
+    };
       
     return (
         <SafeAreaProvider>

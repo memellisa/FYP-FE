@@ -2,7 +2,7 @@ import { Icon } from '@rneui/base';
 import { StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
-const DropDownField = (text, value, data, setOnChange, handleOnFocus, errorMessage, onIconPress=null) => {
+const DropDownField = ({text, value, data, setOnChange, handleOnFocus, errorMessage, onIconPress=null}) => {
 
     return(
         <View>

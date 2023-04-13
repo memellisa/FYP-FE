@@ -1,7 +1,7 @@
 import { Icon } from '@rneui/base';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
-const InputTextField = (text, value, onChangeText, errorMessage, handleBlur) => {
+const InputTextField = ({text, value, onChangeText, errorMessage, handleBlur}) => {
     const isNumber = text === 'Height (cm)' || text === 'Weight (kg)'
     return (
         <View>
