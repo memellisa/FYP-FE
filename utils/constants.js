@@ -29,6 +29,12 @@ const bloodData = [
     { label: 'O-', value: 'O-' },
 ]
 
+const frequencyDataSmoking = [
+    { label: 'Never', value: '0' },
+    { label: 'Previous', value: '1' },
+    { label: 'Current', value: '2' },
+];
+
 const frequencyData = [
     { label: 'Never', value: '0' },
     { label: 'Previous', value: '1' },
@@ -49,4 +55,4 @@ const formInfoMsgs = {
     medication: "Select 'Yes' if you are regularly taking any related medication, and 'No' otherwise"
 }
 
-export { dietData, sexData, bloodData, frequencyData, booleanData, flaskURL, formInfoMsgs }
+export { dietData, sexData, bloodData, frequencyData, booleanData, flaskURL, formInfoMsgs, frequencyDataSmoking }

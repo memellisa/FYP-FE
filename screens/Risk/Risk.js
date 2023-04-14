@@ -150,11 +150,12 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   const checkLastUpdate = async () => {
     const lastUpdate = await AsyncStorage.getItem("todayRiskUpdate")
 
-    if (!lastUpdate || new Date() - new Date(lastUpdate) > 10*60*1000) {
+    if (!todayRisk || !lastUpdate || new Date() - new Date(lastUpdate) > 10*60*1000) {
       setEnableRiskCalculate(true)
     }
     else {
       setEnableRiskCalculate(false)
+      console.log("RISK NOT 10 MINS")
     }
   }
 

@@ -105,7 +105,7 @@ const Home = ({ headerSubtitle, navigation, route, focused}) => {
     const fetchFitbitData = async () => {
       const lastUpdate = await AsyncStorage.getItem("lastUpdate")
 
-      if (!lastUpdate || new Date() - new Date(lastUpdate) > 10*60*1000) {
+      if (!summaryActivity || !weeklySteps || !lastUpdate || new Date() - new Date(lastUpdate) > 10*60*1000) {
         fetchActivities()
         fetchWeeklySteps()
         await AsyncStorage.setItem("lastUpdate", (new Date()).toString())

@@ -6,7 +6,7 @@ import InputTextField from '../../../components/InputTextField';
 import DropDownField from '../../../components/DropdownField';
 import { Formik } from 'formik';
 import { userHealthValidationSchema } from '../../../utils/validation';
-import { bloodData, booleanData, dietData, formInfoMsgs, frequencyData, sexData } from '../../../utils/constants';
+import { bloodData, booleanData, dietData, formInfoMsgs, frequencyData, sexData, frequencyDataSmoking } from '../../../utils/constants';
 import { countBMI } from '../../../utils/functions';
 import { Icon } from '@rneui/base';
 import InfoOverlay from '../../../components/InfoOverlay';
@@ -111,7 +111,7 @@ export default function EditHealthDetails({ route, navigation }) {
                         <DropDownField 
                             text={"Smoking Status"} 
                             value={values.smokingStatus} 
-                            data={frequencyData} 
+                            data={frequencyDataSmoking} 
                             setOnChange={handleChange('smokingStatus')} 
                             handleOnFocus={() => touched.smokingStatus = true} 
                             errorMessage={((errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')} 
