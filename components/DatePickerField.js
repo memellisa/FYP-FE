@@ -5,10 +5,10 @@ import { getFormatedDate } from 'react-native-modern-datepicker'
 const today = new Date()
 const endDate = getFormatedDate(today.setDate(today.getDate()), 'YYYY/MM/DD')
 
-const DatePickerField = (text, openModal, handleOnPress, date, handleChangeDate) => {
+const DatePickerField = ({text, openModal, handleOnPress, date, handleChangeDate}) => {
     return (
     <View style={styles.optionView}>
-        <Text style={styles.optionText}>{text}</Text>
+        <Text style={styles.title}>{text}</Text>
         <TouchableOpacity onPress={handleOnPress}>
             <Text style={styles.valueText}>{date} </Text>
         </TouchableOpacity>
@@ -19,22 +19,22 @@ const DatePickerField = (text, openModal, handleOnPress, date, handleChangeDate)
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                <DatePicker
-                    mode='calendar'
-                    selected={date}
-                    onDateChange={handleChangeDate}
-                    maximumDate={endDate}
-                    options={{
-                        textHeaderColor: '#0F52BA',
-                        textDefaultColor: '#0F52BA',
-                        selectedTextColor: '#fff',
-                        mainColor: '#0F52BA',
-                        textSecondaryColor: '#0F52BA',
-                      }}>
-                </DatePicker>
-                <TouchableOpacity onPress={handleOnPress}>
-                    <Text style={styles.closeModalText}>{'Done'}</Text>
-                </TouchableOpacity>
+                    <DatePicker
+                        mode='calendar'
+                        selected={date}
+                        onDateChange={handleChangeDate}
+                        maximumDate={endDate}
+                        options={{
+                            textHeaderColor: '#0F52BA',
+                            textDefaultColor: '#0F52BA',
+                            selectedTextColor: '#fff',
+                            mainColor: '#0F52BA',
+                            textSecondaryColor: '#0F52BA',
+                        }}>
+                    </DatePicker>
+                    <TouchableOpacity onPress={handleOnPress}>
+                        <Text style={styles.closeModalText}>{'Done'}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </Modal>
@@ -50,10 +50,10 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
 
-    optionText: {
+    title: {
         fontSize: 16,
         fontFamily: 'Poppins-SemiBold',
-        width: 140
+        width: '35%',
     },
     centeredView: {
         flex: 1,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
-        width: 190,
+        width: '100%',
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
         borderBottomWidth: 1,

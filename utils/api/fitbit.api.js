@@ -10,11 +10,8 @@ const postAccessToken = async (payload) => {
             'Content-Type': 'application/json'
             }
         });
-        console.log('RESP ACC TOKEN', response.data)
         return { data: response.data, error: null }
     } catch (error) {
-        // console.log(payload)
-        // console.log('RESP',error.response)
         return { data: null, error }
     } 
 };
@@ -26,11 +23,8 @@ const storeFitbitAccRefToken = async (payload) => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log('STORE TOKEN RESP:: ', response.data)
         return { data: response.data, error: null }
     } catch (error) {
-        // console.log(payload)
-        // console.log('RESP',error.response)
         return { data: null, error }
     } 
 };
@@ -38,7 +32,6 @@ const storeFitbitAccRefToken = async (payload) => {
 const getAuthURL = async (uid) => {
     try {
         const response = await axios.get(`${flaskURL}/fitbit/auth/url/${uid}`);
-        // console.log('RESP',response)
         return { data: response.data, error: null }
     } catch (error) {
         return { data: null, error }
@@ -46,51 +39,32 @@ const getAuthURL = async (uid) => {
 };
 
 
-const getProfile = async (payload) => {
-    try {
-        const response = await axios.post(`${flaskURL}/fitbit/user`, payload, {
-            headers: {
-            'Content-Type': 'application/json'
-            }
-        });
-        // console.log('RESP PROFILE', response)
-        return { data: response.data, error: null }
-    } catch (error) {
-        console.log('RESP PROFILE ERROR',error.response)
-        return { data: null, error }
-    } 
-};
-
-const getActivities = async (payload) => {
+const getActivities = async () => {
     try {
         const response = await axios.get(`${flaskURL}/fitbit/activities/${auth.currentUser.uid}`, {
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-        console.log('RESP ACTIVITIES', response.data)
-        return { data: response.data, error: null }
+        return { data: JSON.parse(response.data), error: null }
     } catch (error) {
-        console.log('RESP ACTIVITIES ERROR',error.response)
         return { data: null, error }
     } 
 };
 
-const getWeeklySteps = async (payload) => {
+const getWeeklySteps = async () => {
     try {
         const response = await axios.get(`${flaskURL}/fitbit/weeklySteps/${auth.currentUser.uid}`, {
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP WEEKKLY', response.data)
         return { data: response.data.data, error: null }
     } catch (error) {
-        console.log('RESP WEEEKLY ERROR',error.response)
         return { data: null, error }
     } 
 };
 
 
 
-export { postAccessToken, getAuthURL, getProfile, getActivities, getWeeklySteps, storeFitbitAccRefToken }
+export { postAccessToken, getAuthURL, getActivities, getWeeklySteps, storeFitbitAccRefToken }

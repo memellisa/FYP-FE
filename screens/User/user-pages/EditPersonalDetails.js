@@ -1,7 +1,7 @@
-import { Alert, StyleSheet, Text, View, ScrollView } from 'react-native';
-import { useState } from 'react';
+import { Alert, StyleSheet, Text, View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import NavigationButton from '../../../components/NavigationButton';
+import SaveButton from '../../../components/SaveButton';
 import { putUserInfo } from '../../../utils/api/user.api';
 import DatePickerField from '../../../components/DatePickerField';
 import InputTextField from '../../../components/InputTextField';
@@ -11,6 +11,7 @@ import { calculateAge } from '../../../utils/functions';
 import { Icon } from '@rneui/base';
 import { formInfoMsgs } from '../../../utils/constants';
 import InfoOverlay from '../../../components/InfoOverlay';
+import { useHeaderHeight } from '@react-navigation/elements'
 
 
 export default function EditPersonalDetails({ route, navigation }) {
@@ -18,26 +19,18 @@ export default function EditPersonalDetails({ route, navigation }) {
     const [openModal, setOpenModal] = useState(false)
     const [infoVisible, setInfoVisible] = useState(false);
     const [infoMsg, setInfoMsg] = useState(false);
+    const height = useHeaderHeight()
 
     const handleOnPress = () => {
         setOpenModal(!openModal)
     }
 
     const onPress = async (newData) => {
-        // const tempppp = {
-        //     "firstName": "Jane",
-        //     "lastName":"Doe",
-        //     "dob": "2001/03/04",
-        //     "email": "fyp@hku.hk",
-        //     "img": "test"
-        // }
-        // console.log("NEW DATA:::",newData)
         const result = await putUserInfo({...newData, "img": data.img})
-        console.log(result)
+
         if (!result.error){
             navigation.navigate("Profile", { update: true })
         } else {
-            // console.log(result.error)
             Alert.alert('Something went wrong. Please try again')
         }
     }
@@ -55,53 +48,69 @@ export default function EditPersonalDetails({ route, navigation }) {
 
     return (
         <SafeAreaProvider>
-            <ScrollView
+            <KeyboardAvoidingView
+                keyboardVerticalOffset={Platform.OS === 'ios' ? height : height + 60}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.screenContainer}
-                scrollable={true}
-                hasSafeArea={false}
-            >
-                <Formik
-                    validateOnMount={true}
-                    validationSchema={userInfoValidationSchema}
-                    initialValues={{ 
-                        firstName: data.firstName, 
-                        lastName: data.lastName, 
-                        dob: data.dob}}
-                    onSubmit={values => onPress(values)}
-                >
-                    {({ handleChange,
-                    handleBlur,
-                    handleSubmit,
-                    values,
-                    errors,
-                    touched,
-                    isValid, }) => (
-                    <>
-                    {InfoOverlay(infoVisible, toggleOverlay, infoMsg)}
-                        {
-                            isValid ? navigation.setOptions({ 
-                                        headerBackTitle: '', 
-                                        headerRight: () => <NavigationButton buttonName="Done" onPressHandler={handleSubmit}/>}) 
-                                    : navigation.setOptions({ headerBackTitle: '',  headerRight: null })
-                        }
+                enabled>
+                    <ScrollView
+                        hasSafeArea={false}
+                    >
+                        <Formik
+                            validateOnMount={true}
+                            validationSchema={userInfoValidationSchema}
+                            initialValues={{ 
+                                firstName: data.firstName, 
+                                lastName: data.lastName, 
+                                dob: data.dob}}
+                            onSubmit={values => onPress(values)}
+                        >
+                            {({ handleChange,
+                            handleBlur,
+                            handleSubmit,
+                            values,
+                            errors,
+                            touched,
+                            isValid, }) => (
+                            <>
+                                <InfoOverlay visible={infoVisible} toggleOverlay={toggleOverlay} message={infoMsg} />
+                                
+                                {
+                                    useEffect(() => {
+                                        navigation.setOptions({ 
+                                            headerBackTitle: '', 
+                                            headerRight: () => 
+                                                <SaveButton 
+                                                    onPressHandler={handleSubmit}
+                                                    disabled={!isValid}/>}) 
+                                            
+                                    }, [isValid])
+                            }
+                                <InputTextField 
+                                        text={"First Name"} 
+                                        value={values.firstName} 
+                                        onChangeText={handleChange('firstName')} 
+                                        errorMessage={(errors.firstName && touched.firstName) ? errors.firstName : ''} 
+                                        handleBlur={handleBlur('firstName')} />
+                                
+                                <InputTextField 
+                                        text={"Last Name"} 
+                                        value={values.lastName} 
+                                        onChangeText={handleChange('lastName')} 
+                                        errorMessage={(errors.lastName && touched.lastName) ? errors.lastName : ''} 
+                                        handleBlur={handleBlur('lastName')} />
 
-                        {InputTextField('First Name', values.firstName, handleChange('firstName'), (errors.firstName && touched.firstName) ? errors.firstName : '', handleBlur('firstName'))}
+                                <DatePickerField text={"Date of Birth"} openModal={openModal} handleOnPress={handleOnPress} date={values.dob} handleChangeDate={handleChange('dob')} />
 
-                        {InputTextField('Last Name', values.lastName, handleChange('lastName'), (errors.lastName && touched.lastName) ? errors.lastName : '', handleBlur('lastName'))}
-
-                        {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))}
-
-                        <View style={styles.optionView}>
-                            <View style={styles.inputTitleView}>
-                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.age)}/>
-                                <Text style={styles.fieldText}>Age</Text>
-                            </View>
-                            <Text style={styles.valueText}>{ !isNaN(values.dob) || !isNaN(calculateAge(values.dob)) ? calculateAge(values.dob) : '-'}</Text>
-                        </View>
-                    </>)}
-                </Formik>
-                
-            </ScrollView>
+                                <View style={styles.optionView}>
+                                    <Text style={styles.fieldText}>Age</Text>
+                                    <Text style={styles.valueText}>{ !isNaN(values.dob) || !isNaN(calculateAge(values.dob)) ? calculateAge(values.dob) : '-'}</Text>
+                                    <Icon name="help" color="#0F52BA" onPress={() => onIconPress(formInfoMsgs.age)}/>
+                                </View>
+                            </>)}
+                        </Formik>
+                    </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaProvider>
       );
 }
@@ -122,7 +131,7 @@ const styles = StyleSheet.create({
     fieldText: {
         fontSize: 16,
         fontFamily: 'Poppins-SemiBold',
-        width: 140
+        width: '40%'
     },
 
     dropdown: {
@@ -135,10 +144,10 @@ const styles = StyleSheet.create({
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
-        width: 190,
+        marginRight: 5,
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
     },
     itemStyle: {
         fontFamily: 'Poppins-Regular',
@@ -146,7 +155,7 @@ const styles = StyleSheet.create({
     },
 
     inputTitleView: {
-        width: 140, 
+        width: '35%',
         flexDirection: 'row',
         alignItems: 'center',
     },

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, Card } from '@rneui/themed';
 import Emoji from './Emoji';
-//  
+
 const MotivationCard = ({ title, text, width}) => {
     return (
     <>  

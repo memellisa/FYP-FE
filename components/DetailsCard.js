@@ -4,7 +4,7 @@ import { Text, Card, Button, Icon } from '@rneui/themed';
 import NavigateButton from './NavigateButton';
 import labels from '../utils/labels';
 
-const DetailsCard = ({title, data, navigation, route, dataToShow}) => {
+const DetailsCard = ({title, data, navigation, dataToShow}) => {
 
     const renderBool = (val) => {
         return val ? 'Yes' : 'No'
@@ -20,12 +20,14 @@ const DetailsCard = ({title, data, navigation, route, dataToShow}) => {
                 return 'Occasionally'
             case 3:
                 return 'Frequent'
+            default:
+                return '-'
         } 
     }
 
     const renderSex = (val) => {
-        return val === "F" ? "Female" : "Male"
-    }
+        return val === "F" ? "Female" : val === "M" ? "Male" : '-'
+    } 
 
     const jsonToArray = (dataToShow) => {
         const arr = []; 
@@ -36,7 +38,7 @@ const DetailsCard = ({title, data, navigation, route, dataToShow}) => {
                 arr.push([labels[i], renderSex(dataToShow[i])])
             else 
                 arr.push([labels[i], typeof dataToShow[i] == "boolean" ? renderBool(dataToShow[i]) :
-                                    typeof dataToShow[i] == "number" ? dataToShow[i] :
+                                    typeof dataToShow[i] == "number" && dataToShow[i] ? dataToShow[i] :
                                     dataToShow[i] ? dataToShow[i] : '-' ])
         }
         return arr
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
 
     container: {
         paddingVertical: 5,
-        width: 350, 
+        width: '90%',
         marginBottom:5, 
         borderRadius:10, 
         alignSelf: 'center',
@@ -96,7 +98,7 @@ const styles = StyleSheet.create({
     optionText: {
         fontSize: 15,
         fontFamily: 'Poppins-SemiBold',
-        width: 140,
+        width: '50%',
         marginRight: 10
     },
 

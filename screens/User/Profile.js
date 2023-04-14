@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import { Icon } from 'react-native-elements'
 import { Avatar, Button } from '@rneui/base'
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -17,43 +16,14 @@ import { calculateAge, countBMI, getUserData } from '../../utils/functions';
 
 
 export default function Profile({ navigation, route }) {
-    // const data = route.params.data
-    console.log("DATA PARAMS::", route.params)
 
-    // const [image, setImage] = useState(null);
-    // const [personalData, setPersonalData] = useState(null)
     const [userData, setUserData] = useState(null);
 
     const isFocused = useIsFocused()
-
-    const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
-    const [uploading, setUploading] = useState(false)
-  
     useEffect(() => {
         getUserData(setUserData, userData, route?.params?.update)
-        // console.log("FOCUSED")
     }, [isFocused])
 
-
-    // async function getProfilePicture() {
-    //     // const auth = getAuth();
-    //     let payload = JSON.stringify({ 'img': auth.currentUser?.uid })
-    //     let user = auth.currentUser?.uid
-    //     try {
-    //         console.log(payload)
-    //         const response = await axios.get(`${flaskURL}/image/${user}`, {
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-
-    //         console.log("Image URI: " + response.data)
-    //         setProfile(response.data)
-    //     } catch (error) {
-    //         console.log('ERROR',error.response)
-    //         setProfile('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
-    //     } 
-    // }
 
     const logout = () => {
         signOut(auth)
@@ -70,25 +40,17 @@ export default function Profile({ navigation, route }) {
             aspect: [4, 3],
         });
     
-        // console.log({ pickerResult });
-    
         handleImagePicked(pickerResult);
     };
     
     const handleImagePicked = async (pickerResult) => {
         try {
-            setUploading(true)
-
             if (!pickerResult.cancelled) {
                 const resultURL = await uploadImageAsync(pickerResult.uri);
-                setProfile(resultURL)
             }
         } catch (e) {
-            // console.log(e);
             alert("Upload failed, sorry :(");
-        } finally {
-            setUploading(false)
-        }
+        } 
     };
 
     async function uploadImageAsync(uri) {
@@ -102,8 +64,6 @@ export default function Profile({ navigation, route }) {
                 'Content-Type': 'application/json'
                 }
             });
-
-            // console.log("Image URI: " + JSON.stringify(response.data))
             await AsyncStorage.setItem('userData', JSON.stringify(response.data))
             getUserData(setUserData, userData, true)
             return 
@@ -114,7 +74,7 @@ export default function Profile({ navigation, route }) {
 
     return (
         <SafeAreaProvider>
-            <ScrollView style={styles.screenContainer} /* hasSafeArea={false} */ >
+            <ScrollView style={styles.screenContainer} >
                 <View style={styles.container}>
                     <Avatar
                         size={100}
@@ -156,15 +116,15 @@ export default function Profile({ navigation, route }) {
                         "bmi": countBMI(userData?.health.height, userData?.health.weight)
                     }}/>
 
-                <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Manage Wearable")}>
+                <Button radius={8} color="#fff" containerStyle={styles.button} onPress={() => navigation.push("Manage Wearable")}>
                         <Text style={styles.buttonText}>Manage Wearable</Text>
                 </Button>
 
-                <Button radius={8} color="#fff" style={styles.button} onPress={() => navigation.push("Change Password")}>
+                <Button radius={8} color="#fff" containerStyle={styles.button} onPress={() => navigation.push("Change Password")}>
                         <Text style={styles.buttonText}>Change Password</Text>
                 </Button>
 
-                <Button radius={8} color="#fff" style={{...styles.button, marginBottom: 30}} onPress={logout} >
+                <Button radius={8} color="#fff" containerStyle={{...styles.button, marginBottom: 30}} onPress={logout} >
                         <Text style={{...styles.buttonText, color: 'red'}}>Sign Out</Text>
                 </Button>
         </ScrollView>
@@ -176,16 +136,8 @@ export default function Profile({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-    // imageBackground: {
-    //     width: '100%',
-    //     height: 220,
-    // },
-
     screenContainer: {
-        // alignItems: 'center',
-        // marginTop: -65,
         flex: 1,
-        // backgroundColor: '#fff',
         backgroundColor: '#f2f2f6',
 
     },
@@ -193,29 +145,15 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         marginTop: 10,
-        // backgroundColor: '#fff',
     },
-
-    // optionContainer: {
-        // paddingLeft: 20,
-        // paddingRight: 20
-    // },
 
     containerSignOut: {
         bottom: 10,
         borderColor: 'red',
         color: 'red',
         alignItems: 'center',
-        
-        // marginTop: -65,
     },
 
-    // avatar: {
-    //     height: 130,
-    //     width: 130,
-    //     borderColor: 'black',
-    //     borderRadius: 80
-    // },
 
     avatarName: {
         width: '100%',
@@ -226,21 +164,13 @@ const styles = StyleSheet.create({
     },  
 
     editProfile: {
-        width: 200,
-        // borderRadius: 'solid 1px black 40',
+        width: '70%',
         borderColor: 'black'
     },
 
-    // touchableFirst: {
-    //     // borderTopWidth: 1,
-    //     paddingVertical: 12,
-    //     marginTop: 32,
-    //     borderColor: '#c4c4c4'
-    // },
-
     button: {
         marginVertical: 5,
-        width: 350,
+        width: '90%',
         alignSelf: 'center',
         borderWidth: 0.4,
         borderRadius: 8,
@@ -261,14 +191,8 @@ const styles = StyleSheet.create({
 
     buttonText: {
         fontSize: 16,
-        // color: 'red',
         alignSelf: 'center',
         fontFamily: 'Poppins-SemiBold',
         paddingVertical: 5
-    },
-  
-    icon: {
-        height: 24,
-        width: 24,
     },
 });

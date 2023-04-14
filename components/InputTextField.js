@@ -1,7 +1,7 @@
 import { Icon } from '@rneui/base';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
-const InputTextField = (text, value, onChangeText, errorMessage, handleBlur) => {
+const InputTextField = ({text, value, onChangeText, errorMessage, handleBlur}) => {
     const isNumber = text === 'Height (cm)' || text === 'Weight (kg)'
     return (
         <View>
@@ -43,13 +43,14 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 13,
         fontFamily: 'Poppins-Regular',
-        marginLeft: 170,
+        marginLeft: '40%',
         marginBottom: 0
     },
 
     inputTitleView: {
-        width: 140, 
-        alignItems: 'flex-start'
+        width: '35%',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     
     itemStyle: {
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
-        width: 195,
+        width: '57%',
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
         borderBottomWidth: 1,

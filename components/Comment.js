@@ -1,50 +1,36 @@
-import { Avatar, Card, Icon } from "@rneui/base"
-import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Image, Keyboard } from 'react-native';
+import { Avatar, Card } from "@rneui/base"
+import { View, Text, StyleSheet } from 'react-native';
 import { fDate } from "../utils/formatTime";
 import { auth } from "../config";
 
 const Comment = ({comment}) => {
     const user_uid = auth.currentUser.uid
-    
-    const [like, setLike] = useState(false) // later fetch from db
-    const handleLikeClicked = () => {
-        setLike(!like)
-    }
+    var key_index = 0
 
     return(
         <View style={styles.postedComment}>
             {comment.map((comm) => {
-                // console.log("COMM", comm)
-                let content = comm
-                return <View style={{flexDirection: "row", marginBottom: 20}}>
-                    <Avatar
-                        size={45}
-                        rounded
-                        source={{uri: content.avatar ? content.avatar : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
-                        containerStyle={{ backgroundColor: '#6733b9' }}
-                    />
-                    <View>
-                        <Text style={styles.userName}>{user_uid == content.user_id ? "You" : content.name}</Text>
+                key_index += 1
+                return (
+                    <View  key={key_index} style={{flexDirection: "row", marginBottom: 20}}>
+                        <Avatar
+                            size={45}
+                            rounded
+                            source={{uri: comm.avatar ? comm.avatar : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
+                            containerStyle={{ backgroundColor: '#6733b9' }}
+                        />
                         <View style={styles.commentContent}>
+                            <Text style={styles.userName}>{user_uid == comm.user_id ? "You" : comm.name}</Text>
                             <Card containerStyle={styles.commentContainer}>
-                                {/* <Text style={styles.commentText}>{comment.content}</Text> */}
                                 <Text style={styles.commentText}>
-                                    {content.comment}
+                                    {comm.comment}
                                 </Text>
                                 
                             </Card>
-                            {/* <Icon
-                                name={like ? "favorite" : "favorite-border" }
-                                color={like ? "red" : "#0F52BA"} 
-                                size='22'  
-                                containerStyle={styles.icon} 
-                                onPress={handleLikeClicked}/>  */}
-                                    {/* add numb of likes*/}
+                            <Text style={styles.date}>{fDate(comm.date)}</Text> 
                         </View>
-                        <Text style={styles.commentLikes}>{fDate(content.date)}</Text> 
                     </View>
-                </View>
+                )
             })}
         </View>
     )
@@ -53,17 +39,16 @@ const Comment = ({comment}) => {
 const styles = StyleSheet.create({
 
     postedComment:{
-
         justifyContent: 'center',
         alignItems: 'flex-start',
-        marginTop: 30,
-        // marginBottom: 170
+        marginLeft: 30,
     },
 
     commentContainer: {
         marginTop: 5,
         marginRight: 5,
         padding: 10,
+        width: '85%',
         borderBottomRightRadius: 15,
         borderTopRightRadius: 15,
         borderBottomLeftRadius: 15
@@ -71,7 +56,7 @@ const styles = StyleSheet.create({
 
     commentText: {
         fontSize: 16,
-        width: 250,
+        width: '100%'
     },
 
     userName: {
@@ -82,12 +67,11 @@ const styles = StyleSheet.create({
     },
 
     commentContent: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
+        flexDirection: 'column',
+        width: '95%'
     },
     
-    commentLikes: {
+    date: {
         color: 'grey',
         fontSize: 13,
         paddingLeft: 20,

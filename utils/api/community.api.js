@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { flaskURL } from "../constants";
-import { auth } from "../../config";
+
 
 const getAllForumFromDB = async () => {
     try {
@@ -10,11 +10,9 @@ const getAllForumFromDB = async () => {
                 'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP',response)
+
         return { data: response.data, error: null }
     } catch (error) {
-        // console.log(payload)
-        // console.log('RESP',error.response)
         return { data: null, error }
     } 
 };
@@ -27,11 +25,8 @@ const getPostsInForums = async (name) => {
             'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP',response)
         return { data: response.data, error: null }
     } catch (error) {
-        // console.log(payload)
-        // console.log('RESP',error.response)
         return { data: null, error }
     } 
 };
@@ -44,11 +39,8 @@ const getPostByID = async (postID) => {
                 'Content-Type': 'application/json'
             }
         });
-        // console.log('RESP',response)
         return { data: response.data, error: null }
     } catch (error) {
-        // console.log(payload)
-        // console.log('RESP',error.response)
         return { data: null, error }
     } 
 };
@@ -63,8 +55,6 @@ const postComment = async (postID, uid, comment) => {
         });
         return { data: response.data, error: null }
     } catch (error) {
-        // console.log(payload)
-        // console.log('RESP',error.response)
         return { data: null, error }
     }
 }

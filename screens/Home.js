@@ -6,7 +6,6 @@ import { Avatar } from '@rneui/themed';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import BarGraph from '../components/BarGraph';
 import DataCard from '../components/DataCard';
-import MotivationCard from '../components/MotivationCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getActivities, getWeeklySteps } from '../utils/api/fitbit.api';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
@@ -27,16 +26,11 @@ const emptyWeeklySteps = [
 ];
 
 
-const Home = ({ headerSubtitle, navigation, route}) => {
-
-    // const [profile, setProfile] = useState('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
+const Home = ({ headerSubtitle, navigation, route, focused}) => {
     const [userData, setUserData] = useState(null);
-    const [fitbitTokens, setFitbitTokens] = useState(null)
-    const [userActivity, setUserActivity] = useState(null);
     const [summaryActivity, setSummaryActivity] = useState(null);
     const [weeklySteps, setWeeklySteps] = useState(null)
     const isFocused = useIsFocused()
-
 
     const processSummaryActivity = (data) => {
       var totalDistance = 0
@@ -81,104 +75,56 @@ const Home = ({ headerSubtitle, navigation, route}) => {
           unit: ['h', 'm']
         },
       }
-      console.log("SUMMARY PROCESSED", summary)
       return summary
     }
 
-    const getFitbitTokens = async () => {
-      try {
-        const fetchedFitbitTokens = await AsyncStorage.getItem('fitbitTokens')
-        // console.log("TOKENS", fitbitTokens)
-        if (fetchedFitbitTokens && fetchedFitbitTokens !== "{}"){
-          if (fitbitTokens !== fetchedFitbitTokens) {
-            setFitbitTokens(fetchedFitbitTokens)
-          }
+    const fetchActivities = async() => {
+      const result = await getActivities()
+      if (!result.error){
+        if (!isEqual(result.data.summary, summaryActivity)) {
+          setSummaryActivity(processSummaryActivity(result.data.summary))
         }
-        // return fitbitTokens === null ? null : JSON.parse(fitbitTokens) ;
-      } catch(e) {
-        // console.log(e)
-        // error reading value
+      } else {
+          // Alert.alert('Something went wrong getting Activities. Please try again')
       }
     }
-    useEffect(() => {
-      getFitbitTokens()
-      getUserData(setUserData, userData, route?.params?.update)
-      // console.log("FOCUSED")
-  }, [isFocused])
 
-    useFocusEffect( 
-      useCallback(() => {
-        // const fetchProfile = async() => {
-        //   if (tokens && tokens !== "{}"){
-        //     const result = await getProfile(JSON.parse(tokens) )
-        //     // console.log("PROFILE:::",JSON.stringify(result))
-        //     if (!result.error){
-        //       let jsonResponse = JSON.parse(result.data)
-        //       if (jsonResponse != userData) {
-        //         setUserData(jsonResponse.user)
-        //       }
-        //     } else {
-        //         Alert.alert('Something went wrong. Please try again')
-        //     }
-        // }}
+    
 
-        const fetchActivities = async() => {
-            const result = await getActivities()
-            console.log("ACTIVITY:::",JSON.stringify(result))
-            if (!result.error){
-              let jsonResponse = JSON.parse(result.data)
-              if (!isEqual(jsonResponse, userActivity)) {
-                setUserActivity(jsonResponse)
-                setSummaryActivity(processSummaryActivity(jsonResponse.summary))
-                await AsyncStorage.setItem('activitySummary', JSON.stringify(processSummaryActivity(jsonResponse.summary)))
-              }
-            } else {
-                // Alert.alert('Something went wrong getting Activities. Please try again')
-            }
+    const fetchWeeklySteps = async() => {
+      const result = await getWeeklySteps()
+      if (!result.error){
+        if (result.data != userData) {
+          setWeeklySteps(result.data)
         }
+      } else {
+          // Alert.alert('Something went wrong getting weekly steps. Please try again')
+      }
+    }
 
-        const fetchWeeklySteps = async() => {
-          const result = await getWeeklySteps()
-          console.log("STEPS:::",JSON.stringify(result.data))
-          if (!result.error){
-            if (result.data != userData) {
-              setWeeklySteps(result.data)
-                // setWeeklySteps(emptyWeeklySteps)
-            }
-          } else {
-              // Alert.alert('Something went wrong getting weekly steps. Please try again')
-          }
-        }
+    const fetchFitbitData = async () => {
+      const lastUpdate = await AsyncStorage.getItem("lastUpdate")
 
-        // const fetchProfilePicture  = async() => {
-        //   let payload = JSON.stringify({ 'user': auth.currentUser?.uid })
-        //   let user = auth.currentUser?.uid
-        //   try {
-        //       console.log(payload)
-        //       const response = await axios.get(`${flaskURL}/image/${user}`, {
-        //           headers: {
-        //               'Content-Type': 'application/json'
-        //           }
-        //       });
-
-        //       console.log("Image URI: " + response.data)
-        //       setProfile(response.data)
-        //   } catch (error) {
-        //       console.log('ERROR',error)
-        //       setProfile('https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png')
-        //   } 
-        // }
-
-        // fetchProfile()
+      if (!lastUpdate || new Date() - new Date(lastUpdate) > 10*60*1000) {
         fetchActivities()
         fetchWeeklySteps()
-        // fetchProfilePicture()
-      }, [fitbitTokens])
-    )
-    
-    const leftComponent = <View style={{width:180}}>
-    <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.info.firstName}</Text>
-    <Text style={styles.subheading}>{headerSubtitle}</Text>
+        await AsyncStorage.setItem("lastUpdate", (new Date()).toString())
+      }
+      else {
+        console.log("Not 10 minutes yet ")
+      }
+    }
+
+    useEffect(() => {
+      getUserData(setUserData, userData, route?.params?.update)
+      fetchFitbitData()
+    }, [focused, isFocused])
+
+
+
+    const leftComponent = <View style={{width:'250%'}}>
+      <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.info.firstName}</Text>
+      <Text style={styles.subheading}>{headerSubtitle}</Text>
     </View>
     return (
       <SafeAreaProvider>
@@ -193,33 +139,20 @@ const Home = ({ headerSubtitle, navigation, route}) => {
             />
           }/>
           <View style={{ flexDirection: "row", flexWrap: "wrap-reverse", alignItems: 'center', justifyContent: 'center'}}>
-            <DataCard title="Active Calories" numbers={summaryActivity ? summaryActivity.activityCalories.value : 0} units={summaryActivity ? summaryActivity.activityCalories.unit : 'cals'} width={200}/>
+            <DataCard title="Active Calories" numbers={summaryActivity ? summaryActivity.activityCalories.value : 0} units={summaryActivity ? summaryActivity.activityCalories.unit : 'cals'} width={'50%'}/>
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap-reverse", alignItems: 'center', justifyContent: 'center'}}>
-            <DataCard title="Steps" numbers={summaryActivity ? summaryActivity.steps.value : 0} units={summaryActivity ? summaryActivity.steps.unit : 'steps'} width={160}/>
-            <DataCard title="Calories" numbers={summaryActivity ? summaryActivity.calories.value : 0} units={summaryActivity ? summaryActivity.calories.unit : 'cals'} width={160}/>
-            <DataCard title="Distance" numbers={summaryActivity ? summaryActivity.distance.value : 0} units={summaryActivity ? summaryActivity.distance.unit : 'km'} width={160}/>
-            {/* <DataCard title="Floors" numbers="11" width={160}/> */}
-            <DataCard title="Activity" numbers={summaryActivity ? summaryActivity.activity.value : ['0', '0']} units={summaryActivity ? summaryActivity.activity.unit : ['h', 'm']} width={160}/>
+            <DataCard title="Steps" numbers={summaryActivity ? summaryActivity.steps.value : 0} units={summaryActivity ? summaryActivity.steps.unit : 'steps'} width={'40%'}/>
+            <DataCard title="Calories" numbers={summaryActivity ? summaryActivity.calories.value : 0} units={summaryActivity ? summaryActivity.calories.unit : 'cals'} width={'40%'}/>
+            <DataCard title="Distance" numbers={summaryActivity ? summaryActivity.distance.value : 0} units={summaryActivity ? summaryActivity.distance.unit : 'km'} width={'40%'}/>
+
+            <DataCard title="Activity" numbers={summaryActivity ? summaryActivity.activity.value : ['0', '0']} units={summaryActivity ? summaryActivity.activity.unit : ['h', 'm']} width={'40%'}/>
           </View>
           
           <Text style={{...styles.heading,fontSize: 20, marginLeft: 20, marginTop: 10}}>Weekly Log Steps</Text>
           <View>
-            {/* <View style={{...styles.warningGraph}}>
-              <Icon
-                name='warning'
-                type='entypo'
-                color='#517fa4'
-                style={{left: -0}}
-                size='40'
-              />
-              <Text style={{textAlign: 'center', color: 'gray'}}>
-                Something is wrong with the server, try reconnecting your smartwatch from the profile in a few moment
-              </Text>
-            </View> */}
             <BarGraph data={weeklySteps ? weeklySteps : emptyWeeklySteps}/>
           </View>
-          <MotivationCard title="Keep the progress!" text="You have 47% more steps than last week!" width={350}/>
           <StatusBar style="auto" />
         </ScrollView>
       </SafeAreaProvider>
@@ -231,8 +164,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   heading: {
     color: 'black',
@@ -250,7 +181,6 @@ const styles = StyleSheet.create({
     right: 0,
     padding: 'auto',
     margin: 'auto',
-    // transform: 'translateY(-50%)',
     color: 'gray',
     zIndex: 100,
   },
@@ -258,7 +188,6 @@ const styles = StyleSheet.create({
   subheading: {
     color: 'black',
     fontSize: 18,
-    // width: 250,
     fontFamily: 'Poppins-Regular'
   },
 

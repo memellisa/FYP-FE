@@ -2,42 +2,27 @@ import { Alert, StyleSheet, Text, View, ScrollView } from 'react-native';
 import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { getAllRisk } from '../../utils/api/risk.api';
-import { Divider } from '@rneui/base';
+
 
 
 export default function AllRisk({ route, navigation }) {
   const [allRisk, setAllRisk] = useState([])
 
-
-
     const fetchAllRisk = async() => {
         const result = await getAllRisk()
+        
         if (!result.error) {
           setAllRisk(result)
         } 
         else {
-          Alert.alert('Something went wrong getting USER. Please try again')
+        //   Alert.alert('Something went wrong getting USER. Please try again')
         }
       }
     
     useEffect(() => {
         fetchAllRisk()
     }, [])
-
-    var content = []
-
-    for (let i = 0; i < allRisk.length; i++){
-        content.push(
-            <View key={i}>
-                <View style={styles.optionView}>
-                    <Text style={styles.fieldText}>{allRisk[i].time}</Text>
-                    <Text style={styles.valueText}>{(allRisk[i].result  * 100 ).toFixed(5) + '%'}</Text>
-                </View>
-                <Divider style={{marginHorizontal: 20}}/>
-            </View>
-        )
-    }
-
+    
     return (
         <SafeAreaProvider>
             <ScrollView
@@ -45,10 +30,14 @@ export default function AllRisk({ route, navigation }) {
                 scrollable={true}
                 hasSafeArea={false}
             >
-                
-            {content}
-                
-                
+                {allRisk.map((obj, i) => 
+                    <View style={i == allRisk.length - 1 ? {...styles.rowView, marginBottom: 50} : styles.rowView} key={i}>
+                        <View style={styles.optionView}>
+                            <Text style={styles.fieldText}>{obj.time}</Text>
+                            <Text style={styles.valueText}>{(obj.result  * 100 ).toFixed(5) + '%'}</Text>
+                        </View>
+                    </View>
+                )}
             </ScrollView>
         </SafeAreaProvider>
       );
@@ -60,18 +49,27 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
 
+    rowView: {
+        marginTop: 25,
+        alignItems: 'center',
+        borderBottomColor: 'grey',
+        borderBottomWidth: 0.2,
+        width: '90%',
+        alignSelf: 'center'
+    },
+
     optionView: {
         flexDirection: 'row',
-        marginTop: 25,
-        marginHorizontal: 30,
+        width: '90%',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        
     },
 
     fieldText: {
         fontSize: 17,
         fontFamily: 'Poppins-SemiBold',
-        color: '#0F52BA'
+        color: '#0F52BA',
     },
 
     dropdown: {
@@ -91,7 +89,7 @@ const styles = StyleSheet.create({
     },
 
     titleView: {
-        width: 140, 
+        width: '40%', 
         flexDirection: 'row',
         alignItems: 'center',
     },

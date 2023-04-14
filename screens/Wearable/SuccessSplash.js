@@ -4,8 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const SuccessSplash = ({ route, navigation }) => {
     setTimeout(() => {
-        // should show the Connected Manage Wearable page instead later
-        navigation.navigate("Profile");
+        navigation.navigate("Main");
       }, 3000);
 
     return (
@@ -25,9 +24,7 @@ const SuccessSplash = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
     screenContainer: {
-        // paddingHorizontal: 35,
         justifyContent: 'center',
-        // marginTop: -65,
         flex: 1,
         backgroundColor: '#fff',
     },

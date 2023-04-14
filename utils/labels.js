@@ -6,15 +6,15 @@ const labels = {
     diet: "Diet",
     smokingStatus: "Smoking Status",
     alcoholConsumption: "Alcohol Consumption/L",
-    bloodPressure: "Blood Pressure",
+    bloodPressure: "Blood Pressure Medication",
     age: "Age",
     sex: "Sex",
     height: "Height (cm)",
     weight: "Weight (kg)",
     bloodType: "Blood Type",
     bmi: "BMI",
-    insulin: "Insulin",
-    cholesterol: "Cholesterol",
+    insulin: "Insulin Medication",
+    cholesterol: "Cholesterol Medication",
 
 }
 

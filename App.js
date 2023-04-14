@@ -20,6 +20,8 @@ import Group from './screens/Community/Group';
 import Article from './screens/Community/Article';
 import AllRisk from './screens/Risk/AllRisk';
 import ChangePassword from './screens/User/ChangePassword';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
 const Stack = createNativeStackNavigator();
  
@@ -43,6 +45,7 @@ export default RootNavigator = () => {
       <SafeAreaProvider>
         <NavigationContainer> 
           <Stack.Navigator screenOptions={{ animation: 'none'}} >
+          
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
             <Stack.Screen name="Main" component={Main} options={{ 
@@ -50,17 +53,17 @@ export default RootNavigator = () => {
               (<View style={{ height: 35 }}/>)
             }} 
             />
-            <Stack.Screen name="Profile" component={Profile} options={{headerBackTitle: ''}} />
+            <Stack.Screen name="Profile" component={Profile} options={{headerBackTitle: '' }} />
             
             <Stack.Screen name="Edit Personal Details" component={EditPersonalDetails}/>
             <Stack.Screen name="Edit Health Details" component={EditHealthDetails}/>
-            <Stack.Screen name="Change Password" component={ChangePassword} options={{ headerShown: true }} />
+            <Stack.Screen name="Change Password" component={ChangePassword}/>
 
             <Stack.Screen name="Manage Wearable" component={ManageWearable} options={{headerBackTitle: ''}} />
             <Stack.Screen name="Confirm Auth" component={ConfirmAuth} options={{headerBackTitle: '', title: '' }} />
             <Stack.Screen name="Success Splash" component={SuccessSplash} options={{ headerShown: false }} />
             <Stack.Screen name="Create Account Splash" component={AccountCreateSplash} options={{ headerShown: false }} />
-            <Stack.Screen name="Group" component={Group} options={{ headerShown: true }} />
+            <Stack.Screen name="Group" component={Group}/>
             <Stack.Screen name="Article" component={Article} options={{ headerShown: true }} />
 
             <Stack.Screen name="All Risk" component={AllRisk} options={{ headerBackTitle: '' }} />

@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 
-import { View, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { Button, Input } from '@rneui/base';
 
 import { Formik } from 'formik'
@@ -19,7 +19,7 @@ export default function Signup({navigation}) {
       return
     }
     let payload = JSON.stringify({ 'email': values.email, 'password': values.password })
-    try {
+    try {// CHANGE AUTH to /USER/
         const response = await axios.post(`${flaskURL}/auth/signup`, payload,{
             headers: {
                 'Content-Type': 'application/json'
@@ -109,13 +109,15 @@ export default function Signup({navigation}) {
                     />
                 </View>
                 
-                <Button title="Signup" buttonStyle={styles.button} 
+                <Button 
+                  title="Signup" 
+                  containerStyle={styles.button} 
                   onPress={handleSubmit}
                   disabled={!isValid || values.email === '' || values.password === '' || values.confirmPassword === ''}
                 />
                 <Button 
                   title="Have an account? Login instead!" 
-                  buttonStyle={styles.button} 
+                  containerStyle={styles.button} 
                   onPress={() => navigation.navigate('Login')}
                 />
               </>
@@ -137,8 +139,8 @@ const styles = StyleSheet.create({
   },
 
   inputView: {
-    width: 320,
-    justifyContent: 'center',
+    width: '85%',
+    justifyContent: 'center'
   },
 
   input: {
@@ -150,9 +152,9 @@ const styles = StyleSheet.create({
 
 
   button: {
-    margin: 10,
-    width: 300,
+    marginVertical: 10,
+    width: "80%",
     borderRadius: 5,
-  }
+  },
 });
 

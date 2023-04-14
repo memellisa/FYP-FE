@@ -11,27 +11,22 @@ const getUserData = async (setUserData, userData=null, update=false) => {
           if (result.data.info.firstName){
             try {
               await AsyncStorage.setItem('userData', JSON.stringify(result.data))
-              console.log('USERR SET', JSON.stringify(result.data))
               setUserData(result.data)
             } catch (e) {
               fetchUser()
-              console.log(e)
-              // Alert.alert('Something went wrong. Please try again')
             }
           }
         } 
         else {
-          Alert.alert('Something went wrong getting USER. Please try again')
+          // Alert.alert('Something went wrong getting USER. Please try again')
         }
     }
 
     if (update) {
-        console.log("UPDATE")
         fetchUser()
     } else {
         try {
             const fetchedUserData = await AsyncStorage.getItem('userData')
-            console.log('FETCHEDUSERR', (fetchedUserData))
             if (fetchedUserData && fetchedUserData !== "{}"){
               if (!isEqual(JSON.parse(fetchedUserData), userData)){
                 setUserData(JSON.parse(fetchedUserData))
@@ -41,8 +36,6 @@ const getUserData = async (setUserData, userData=null, update=false) => {
             }
         } catch(e) {
             getUserData(setUserData, userData, update)
-            console.log("HERE BRO", e)
-        // error reading value
         }
     }
 }
@@ -56,10 +49,10 @@ const calculateAge = (birthday) => {
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
         tempAge--
     }
-    return tempAge
+    return tempAge ? tempAge : 0
 }
 
-const countBMI = (height, weight) => (weight/(height*height*0.0001)).toFixed(2)
+const countBMI = (height, weight) => height && weight ? (weight/(height*height*0.0001)).toFixed(2) : 0
 
 const labelMonth = (month) => {
   switch (month) { 
@@ -103,8 +96,7 @@ const processRiskData =  (data, label, index) => {
           risk: parseFloat((val * 100).toFixed(2))
         }
       )
-      console.log(res)
-    } else break
+    } 
   }
   return res
 }

@@ -1,11 +1,11 @@
 import React from "react";
-import PropTypes from 'prop-types';
 import { StyleSheet, View, Dimensions } from "react-native";
-import { Bar, VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
+import { VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
 
-const windowWidth = Dimensions.get('window').width;
 
 const BarGraph = ({data}) =>  {
+  const windowWidth = Dimensions.get('window').width;
+
   const findMax = () => {
     var maxSteps = 2000
     for (let i = 0; i < data.length; i++){
@@ -79,26 +79,12 @@ const BarGraph = ({data}) =>  {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // height:220,
-    // justifyContent: "center",
     alignItems: "center",
-    // paddingStart:50,
-    // backgroundColor: "#f0f59f",
     marginBottom: 10
   },
   data: {
      fill: "#0047AB" 
   },
 });
-
-BarGraph.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      day: PropTypes.string,
-      steps: PropTypes.number
-    })
-  )
-};
 
 export default BarGraph;

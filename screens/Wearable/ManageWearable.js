@@ -1,26 +1,17 @@
 // import { TouchableHighlight, Divider } from '@rneui/base'
-import { Image, ImageBackground, StyleSheet, Text, View, ScrollView, TextInput, TouchableHighlight } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import * as WebBrowser from 'expo-web-browser';
 
 
-// TODO: detect whether there is already a wearable connected to the account or not
 export default function ManageWearable({ route, navigation }) {
-    // const data = route.params.data
+    useEffect(() => {
+        if (route.params?.hideBackButton) {
+            navigation.setOptions({ header: () => (<View style={{ height: 55 }}/>) })
+        }
 
-    // const [diet, setDiet] = useState(data.diet)
-    // const [smokingStatus, setSmokingStatus] = useState(data.smoking_status)
-    // const [alcoholConsumption, setAlcoholConsumption] = useState(data.alcohol_consumption.toString())
-    // const [bloodPressure, setBloodPressure] = useState(data.blood_pressure)
-
-    // useEffect(() => {
-    //     const newData = {diet: diet, smoking_status: smokingStatus, alcohol_consumption: alcoholConsumption, blood_pressure: bloodPressure}
-    //     route.params.data = newData
-    //     console.log(route.params.data)
-    // }, [diet, smokingStatus, alcoholConsumption, bloodPressure])
-
+    }, [route, navigation])
+    
       
     return (
         <SafeAreaProvider>
@@ -29,19 +20,16 @@ export default function ManageWearable({ route, navigation }) {
                 scrollable={true}
                 hasSafeArea={false}
             >
+
                 <Text style={styles.heading}>Which wearable would you like to connect to?</Text>
                 
                 <TouchableHighlight  underlayColor="#f3f6f4" style={styles.button} onPress={() => navigation.push("Confirm Auth")}>
                         <Text style={styles.text}>Fitbit</Text>
                 </TouchableHighlight>
 
-                <TouchableHighlight  underlayColor="#DDDDDD" style={styles.button}>
-                        <Text style={styles.text}>Garmin</Text>
-                </TouchableHighlight>
-
-                <TouchableHighlight  underlayColor="#DDDDDD" style={styles.button}>
-                        <Text style={styles.text}>Apple Watch</Text>
-                </TouchableHighlight>
+                <Text style={styles.subtitle}>
+                    We keep on improving our application and will add more compatible wearables in the future
+                </Text>
 
                 
             </View>
@@ -52,28 +40,21 @@ export default function ManageWearable({ route, navigation }) {
 
 const styles = StyleSheet.create({
     screenContainer: {
-        // paddingHorizontal: 35,
-        // justifyContent: 'center',
-        // marginTop: -65,
         flex: 1,
         backgroundColor: '#fff',
     },
 
     optionView: {
-        // position: 'relative',
         flexDirection: 'row',
         marginTop: 25,
         marginHorizontal: 30,
-        // paddingHorizontal: 20,
         alignItems: 'center'
     },
 
     optionText: {
         fontSize: 16,
-        // paddingTop:5,
-        
         fontFamily: 'Poppins-SemiBold',
-        width: 140
+        width: '40%'
     },
 
     dropdown: {
@@ -86,7 +67,7 @@ const styles = StyleSheet.create({
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
-        width: 190,
+        width: '45%',
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
         borderBottomWidth: 1
@@ -109,8 +90,8 @@ const styles = StyleSheet.create({
 
     button: {
         marginVertical: 10,
-        width: '80%',
-        height: 70,
+        width: '60%',
+        height: '8%',
         alignSelf: 'center',
         justifyContent: 'center',
         borderWidth: 1,
@@ -123,7 +104,15 @@ const styles = StyleSheet.create({
         fontSize: 20,
         alignSelf: 'center',
         fontFamily: 'Poppins-SemiBold',
-        paddingVertical: 5
+    },
+    subtitle: {
+        color: 'grey',
+        fontSize: 15,
+        fontFamily: 'Poppins-Regular',
+        alignSelf: 'center',
+        textAlign: 'center',
+        marginTop: 20,
+        marginHorizontal: '15%'
     },
 
 })

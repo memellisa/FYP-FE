@@ -1,15 +1,15 @@
 import { Overlay } from "@rneui/base"
-import { StyleSheet, Text, Button, View, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, Button } from 'react-native';
 
 
-const InfoOverlay = (visible, toggleOverlay, message) => {
+const InfoOverlay = ({visible, toggleOverlay, message}) => {
     return (
         <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={styles.container}  >
             <Text style={styles.infoText}>
                 {message}
             </Text>
             <Button
-                title="OK"
+                title='OK'
                 onPress={toggleOverlay}
             />
         </Overlay>
@@ -20,12 +20,13 @@ const InfoOverlay = (visible, toggleOverlay, message) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#ffff',
-        borderRadius: 10
+        borderRadius: 10,
+        width: '70%',
+
     },
     infoText: {
         fontSize: 17,
-        fontFamily: 'Poppins-SemiBold',
-        width: 250,
+        fontFamily: 'Poppins-Regular',
         padding: 5,
         textAlign: 'center'
     },

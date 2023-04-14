@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
     container: {
         marginBottom:10, 
         borderRadius:10,
-        alignItems:'center'
+        alignItems:'center',
+        alignSelf: 'center'
     },
 
     title: {
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     },
     
     image: {
-        width: 300,
+        maxWidth: '95%',
         height: 200,
         marginVertical: 10
     },

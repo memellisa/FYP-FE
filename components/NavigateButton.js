@@ -7,7 +7,7 @@ const NavigateButton = ({navigation, nav, name, data}) => {
         <Button
             onPress={() => navigation.navigate(nav, { data: data })}
             color="#fff"
-            style={styles.button}
+            containerStyle={styles.button}
             >
             <Text style={styles.text}>{name}</Text>
             <Icon name='navigate-next' size={25} color="#0096FF"/>
@@ -21,10 +21,7 @@ const styles = StyleSheet.create({
     },
 
     button:{
-        width: 60,
-        padding: 0,
-        margin: 0,
-        left: 10
+        width: '20%',
     },
 
     text: {

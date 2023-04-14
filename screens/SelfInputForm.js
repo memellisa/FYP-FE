@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Alert, KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { getFormatedDate } from 'react-native-modern-datepicker'
@@ -12,6 +12,11 @@ import { createUser } from '../utils/api/user.api';
 import { bloodData, booleanData, dietData, formInfoMsgs, frequencyData, sexData } from '../utils/constants';
 import { calculateAge, countBMI } from '../utils/functions';
 import InfoOverlay from '../components/InfoOverlay';
+import { useHeaderHeight } from '@react-navigation/elements'
+
+import axios from 'axios';
+import { flaskURL } from '../utils/constants';
+import { auth } from '../config';
 
 export default function SelfInputForm({ route, navigation }) {
 
@@ -20,6 +25,7 @@ export default function SelfInputForm({ route, navigation }) {
     const [openModal, setOpenModal] = useState(false)
     const [infoVisible, setInfoVisible] = useState(false);
     const [infoMsg, setInfoMsg] = useState(false);
+    const height = useHeaderHeight()
 
     const handleOnPress = () => {
         setOpenModal(!openModal)
@@ -50,12 +56,17 @@ export default function SelfInputForm({ route, navigation }) {
     }
 
     const sendData = async (newData) => {
-        // console.log("NEW DATA:::",newData)
         const result = await createUser(newData)
-        // console.log("EDIT HEALTH:::",result)
         if (!result.error){
-            // console.log('CREATED USERR', JSON.stringify(result.data))
-            navigation.navigate('Main')
+            let user = auth.currentUser?.uid
+            let responseWearable = await axios.get(`${flaskURL}/user/verifyWearable/${user}`);
+            console.log("WEARABLE", responseWearable.data)
+            if (!responseWearable.data) {
+                navigation.push("Manage Wearable", {"hideBackButton": true})
+            }
+            else {
+                navigation.navigate('Main')
+            }
         } else {
             // console.log(result.error)
             Alert.alert('Something went wrong. Please try again')
@@ -73,169 +84,173 @@ export default function SelfInputForm({ route, navigation }) {
 
     return (
         <SafeAreaProvider>
-            <ScrollView
-                    style={styles.screenContainer}
-                    hasSafeArea={false}
-                    keyboardDismissMode="interactive"
-                    automaticallyAdjustKeyboardInsets={true}
-                >
-                <Text style={styles.title}> 
-                    Please fill in the fields below to allow us to better understand you
-                </Text>
+             <KeyboardAvoidingView
+                keyboardVerticalOffset={Platform.OS === 'ios' ? height : height + 60}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={styles.screenContainer}
+                enabled>
+                    <ScrollView
+                        hasSafeArea={false}
+                    >
+                    <Text style={styles.title}> 
+                        Please fill in the fields below to allow us to better understand you
+                    </Text>
 
-                <Formik
-                    validateOnMount={true}
-                    validationSchema={userInfoValidationSchema.concat(userHealthValidationSchema)}
-                    initialValues={{ 
-                        firstName:'', 
-                        lastName:'', 
-                        dob:endDate, 
-                        insulin:'',
-                        cholesterol:'', 
-                        diet:'', 
-                        smokingStatus:'', 
-                        alcoholConsumption:'', 
-                        bloodPressure:'', 
-                        sex:'', 
-                        height:'', 
-                        weight:'', 
-                        bloodType:''}}
-                    onSubmit={values => onPressDone(values)}
-                >
-                    {({ handleChange,
-                    handleBlur,
-                    handleSubmit,
-                    values,
-                    errors,
-                    touched,
-                    isValid, }) => (
-                    <>
-                        {InfoOverlay(infoVisible, toggleOverlay, infoMsg)}
+                    <Formik
+                        validateOnMount={true}
+                        validationSchema={userInfoValidationSchema.concat(userHealthValidationSchema)}
+                        initialValues={{ 
+                            firstName:'', 
+                            lastName:'', 
+                            dob:endDate, 
+                            insulin:'',
+                            cholesterol:'', 
+                            diet:'', 
+                            smokingStatus:'', 
+                            alcoholConsumption:'', 
+                            bloodPressure:'', 
+                            sex:'', 
+                            height:'', 
+                            weight:'', 
+                            bloodType:''}}
+                        onSubmit={values => onPressDone(values)}
+                    >
+                        {({ handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        values,
+                        errors,
+                        touched,
+                        isValid, }) => (
+                        <>
+                            <InfoOverlay visible={infoVisible} toggleOverlay={toggleOverlay} message={infoMsg} />
+                            
+                            <InputTextField 
+                                text={"First Name"} 
+                                value={values.firstName} 
+                                onChangeText={handleChange('firstName')} 
+                                errorMessage={(errors.firstName && touched.firstName) ? errors.firstName : ''} 
+                                handleBlur={handleBlur('firstName')} />
 
-                        {InputTextField(
-                            'First Name', 
-                            values.firstName,
-                            handleChange('firstName'), 
-                            (errors.firstName && touched.firstName) ? errors.firstName : '', 
-                            handleBlur('firstName'))}
+                            <InputTextField 
+                                text={"Last Name"} 
+                                value={values.lastName} 
+                                onChangeText={handleChange('lastName')} 
+                                errorMessage={(errors.lastName && touched.lastName) ? errors.lastName : ''} 
+                                handleBlur={handleBlur('lastName')} />
+                            
+                            <DatePickerField text={"Date of Birth"} openModal={openModal} handleOnPress={handleOnPress} date={values.dob} handleChangeDate={handleChange('dob')} />
 
-                        {InputTextField(
-                            'Last Name', 
-                            values.lastName, 
-                            handleChange('lastName'), 
-                            (errors.lastName && touched.lastName) ? errors.lastName : '', 
-                            handleBlur('lastName'))}
-
-                        {DatePickerField('Date of Birth', openModal, handleOnPress, values.dob, handleChange('dob'))}
-
-                        <View style={styles.optionView}>
-                            <View style={styles.inputTitleView}>
-                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.age)}/>
+                            <View style={styles.optionView}>
                                 <Text style={styles.fieldText}>Age</Text>
+                                <Text style={styles.valueText}>{ !isNaN(values.dob) || !isNaN(calculateAge(values.dob)) ? calculateAge(values.dob) : '-'}</Text>
+                                <Icon name="help" color="#0F52BA" onPress={() => onIconPress(formInfoMsgs.age)}/>
                             </View>
-                            <Text style={styles.valueText}>{ !isNaN(values.dob) || !isNaN(calculateAge(values.dob)) ? calculateAge(values.dob) : '-'}</Text>
-                        </View>
+                            
+                            <DropDownField 
+                                text={"Diet"} 
+                                value={values.diet} 
+                                data={dietData} 
+                                setOnChange={handleChange('diet')} 
+                                handleOnFocus={(val) => touched.diet = val} 
+                                errorMessage={((errors.diet && touched.diet) ? errors.diet : '')} 
+                                onIconPress={null} />
 
-                        {DropDownField(
-                            "Diet", 
-                            values.diet, 
-                            dietData, 
-                            handleChange('diet'),  
-                            (val) => touched.diet = val, 
-                            (errors.diet && touched.diet) ? errors.diet : '')}
-                     
-                        {DropDownField(
-                            "Smoking Status", 
-                            values.smokingStatus, 
-                            frequencyData, 
-                            handleChange('smokingStatus'),  
-                            (val) => touched.smokingStatus = val, 
-                            (errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')}
+                            <DropDownField 
+                                text={"Smoking Status"} 
+                                value={values.smokingStatus} 
+                                data={frequencyData} 
+                                setOnChange={handleChange('smokingStatus')} 
+                                handleOnFocus={(val) => touched.smokingStatus = val} 
+                                errorMessage={((errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')} 
+                                onIconPress={null} />
 
-                        {DropDownField(
-                            "Alcohol Consumption", 
-                            values.alcoholConsumption, 
-                            frequencyData, 
-                            handleChange('alcoholConsumption'),  
-                            (val) => touched.alcoholConsumption = val, 
-                            (errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')}
+                            <DropDownField 
+                                text={"Alcohol Consumption"} 
+                                value={values.alcoholConsumption} 
+                                data={frequencyData} 
+                                setOnChange={handleChange('alcoholConsumption')} 
+                                handleOnFocus={(val) => touched.alcoholConsumption = val} 
+                                errorMessage={((errors.alcoholConsumption && touched.alcoholConsumption) ? errors.alcoholConsumption : '')} 
+                                onIconPress={null} />
 
-                        {DropDownField(
-                            "Blood Pressure", 
-                            values.bloodPressure, 
-                            booleanData, 
-                            handleChange('bloodPressure'),  
-                            (val) => touched.bloodPressure = val, 
-                            (errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '',
-                            () => onIconPress(formInfoMsgs.medication))}
+                            <DropDownField 
+                                text={"Blood Pressure Medication"} 
+                                value={values.bloodPressure} 
+                                data={booleanData} 
+                                setOnChange={handleChange('bloodPressure')} 
+                                handleOnFocus={(val) => touched.bloodPressure = val} 
+                                errorMessage={((errors.bloodPressure && touched.bloodPressure) ? errors.bloodPressure : '')} 
+                                onIconPress={() => onIconPress(formInfoMsgs.medication)} />
+                            
+                            <DropDownField 
+                                text={"Insulin Medication"} 
+                                value={values.insulin} 
+                                data={booleanData} 
+                                setOnChange={handleChange('insulin')} 
+                                handleOnFocus={(val) => touched.insulin = val} 
+                                errorMessage={((errors.insulin && touched.insulin) ? errors.insulin : '')} 
+                                onIconPress={() => onIconPress(formInfoMsgs.medication)} />
 
-                        {DropDownField(
-                            "Insulin", 
-                            values.insulin, 
-                            booleanData, 
-                            handleChange('insulin'),  
-                            (val) => touched.insulin = val, 
-                            (errors.insulin && touched.insulin) ? errors.insulin : '',
-                            () => onIconPress(formInfoMsgs.medication))}
+                            <DropDownField 
+                                text={"Cholesterol Medication"} 
+                                value={values.cholesterol} 
+                                data={booleanData} 
+                                setOnChange={handleChange('cholesterol')} 
+                                handleOnFocus={(val) => touched.cholesterol = val} 
+                                errorMessage={((errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '')} 
+                                onIconPress={() => onIconPress(formInfoMsgs.medication)} />
 
+                            <DropDownField 
+                                text={"Sex"} 
+                                value={values.sex} 
+                                data={sexData} 
+                                setOnChange={handleChange('sex')} 
+                                handleOnFocus={(val) => touched.sex = val} 
+                                errorMessage={((errors.sex && touched.sex) ? errors.sex : '')} 
+                                onIconPress={null} />
 
-                        {DropDownField(
-                            "Cholesterol", 
-                            values.cholesterol, 
-                            booleanData, 
-                            handleChange('cholesterol'),  
-                            (val) => touched.cholesterol = val, 
-                            (errors.cholesterol && touched.cholesterol) ? errors.cholesterol : '',
-                            () => onIconPress(formInfoMsgs.medication))}
+                            <DropDownField 
+                                text={"Blood Type"} 
+                                value={values.bloodType} 
+                                data={bloodData} 
+                                setOnChange={handleChange('bloodType')} 
+                                handleOnFocus={(val) => touched.bloodType = val} 
+                                errorMessage={((errors.bloodType && touched.bloodType) ? errors.bloodType : '')} 
+                                onIconPress={null} />
 
+                            <InputTextField 
+                                text={"Height (cm)"} 
+                                value={values.height} 
+                                onChangeText={handleChange('height')} 
+                                errorMessage={(errors.height && touched.height) ? errors.height : ''} 
+                                handleBlur={handleBlur('height')} />
 
-                        {DropDownField(
-                            "Sex", 
-                            values.sex, 
-                            sexData, 
-                            handleChange('sex'),  
-                            (val) => touched.sex = val, 
-                            (errors.sex && touched.sex) ? errors.sex : '')}
-
-                        {DropDownField(
-                            "Blood Type", 
-                            values.bloodType, 
-                            bloodData, 
-                            handleChange('bloodType'),  
-                            (val) => touched.bloodType = val, 
-                            (errors.bloodType && touched.bloodType) ? errors.bloodType : '')}
-
-                        {InputTextField(
-                            'Height (cm)', 
-                            values.height, 
-                            handleChange('height'), 
-                            (errors.height && touched.height) ? errors.height : '',
-                            handleBlur('height'))}
-
-                        {InputTextField(
-                            'Weight (kg)', 
-                            values.weight, 
-                            handleChange('weight'), 
-                            (errors.weight && touched.weight) ? errors.weight : '', 
-                            handleBlur('weight'))}
-                    
-                        <View style={styles.optionView}>
-                            <View style={styles.inputTitleView}>
-                                <Icon name="help" color="#0F52BA" size='18' onPress={() => onIconPress(formInfoMsgs.bmi)}/>
+                            <InputTextField 
+                                text={"Weight (kg)"} 
+                                value={values.weight} 
+                                onChangeText={handleChange('weight')} 
+                                errorMessage={(errors.weight && touched.weight) ? errors.weight : ''} 
+                                handleBlur={handleBlur('weight')} />
+                        
+                            <View style={styles.optionView}>
                                 <Text style={styles.fieldText}>BMI</Text>
+                                <Text style={styles.valueText}>{(values.height && values.weight && isFinite(countBMI(values.height, values.weight))) ? countBMI(values.height, values.weight) : '-'}</Text>
+                                <Icon name="help" color="#0F52BA" onPress={() => onIconPress(formInfoMsgs.bmi)}/>
                             </View>
-                            <Text style={styles.valueText}>{(values.height && values.weight && isFinite(countBMI(values.height, values.weight))) ? countBMI(values.height, values.weight) : '-'}</Text>
-                        </View>
 
-                        <Button 
-                            title="Done" 
-                            buttonStyle={styles.button} 
-                            onPress={handleSubmit}
-                            disabled={!isValid}
-                        />
-                    </>)}
-                </Formik>
-            </ScrollView>
+                            <Button 
+                                title="Done" 
+                                buttonStyle={styles.button} 
+                                onPress={handleSubmit}
+                                disabled={!isValid}
+                            />
+                        </>)}
+                    </Formik>
+                </ScrollView>
+
+            </KeyboardAvoidingView>
+            
         </SafeAreaProvider>
       );
 }
@@ -256,7 +271,7 @@ const styles = StyleSheet.create({
     fieldText: {
         fontSize: 16,
         fontFamily: 'Poppins-SemiBold',
-        width: 140
+        width: '40%'
     },
 
     dropdown: {
@@ -269,11 +284,10 @@ const styles = StyleSheet.create({
     valueText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
-        width: 190,
+        marginRight: 5,
         flexWrap: 'wrap',
         borderBottomColor: '#D3D3D3',
         borderBottomWidth: 1,
-        marginLeft: 10,
     },
 
     closeModalText: {
@@ -301,11 +315,6 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingHorizontal: 30
     },
-    datePickerStyle: {
-        width: 200,
-        marginTop: 20,
-    },
-
     centeredView: {
         flex: 1,
         justifyContent: 'center',
@@ -333,13 +342,13 @@ const styles = StyleSheet.create({
     button: {
         marginTop: 30,
         marginBottom: 40,
-        width: 180,
+        width: '40%',
         height: 50,
         borderRadius: 5,
         alignSelf: 'center'
     },
     inputTitleView: {
-        width: 140, 
+        width: '35%',
         flexDirection: 'row',
         alignItems: 'center',
     },
