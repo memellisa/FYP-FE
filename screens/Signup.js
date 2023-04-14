@@ -19,7 +19,7 @@ export default function Signup({navigation}) {
       return
     }
     let payload = JSON.stringify({ 'email': values.email, 'password': values.password })
-    try {// CHANGE AUTH to /USER/
+    try {// CHANGE AUTH to /USER/ ACCORDING TO JUSTIN
         const response = await axios.post(`${flaskURL}/auth/signup`, payload,{
             headers: {
                 'Content-Type': 'application/json'
