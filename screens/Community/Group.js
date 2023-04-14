@@ -46,7 +46,7 @@ export default function Group ({route, navigation}) {
                             title={article[1].title}
                             content={article[1].content_summary + "..."}
                             width={'90%'}
-                            onPress={() => console.log(navigation.push("Article", { article_id: article[1].id }))}
+                            onPress={() => navigation.push("Article", { article_id: article[1].id })}
                     />
                     ))}
                 </View>

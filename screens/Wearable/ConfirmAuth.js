@@ -6,13 +6,9 @@ import * as Linking from 'expo-linking';
 import { getAuthURL, postAccessToken, storeFitbitAccRefToken } from '../../utils/api/fitbit.api';
 import { auth } from '../../config';
 
-
-// TODO: detect whether there is already a wearable connected to the account or not
 export default function ConfirmAuth({ route, navigation }) {
     const [authCode, setAuthCode] = useState('')
     const [pressed, setPressed] = useState(false)
-
-    // useEffect(() => {const res = getAuthURL() }, [])
 
 
     
@@ -20,15 +16,11 @@ export default function ConfirmAuth({ route, navigation }) {
         if (authCode !== ''){
             (async () => {
                 const result = await postAccessToken(JSON.stringify({ 'authCode': authCode, 'uid': auth.currentUser.uid }))
-                console.log('Fitbit Connected')
-                // console.log(result.data.access_token)
                 let jsonResult = JSON.parse(result.data)
-                console.log(jsonResult.access_token)
                 if (!result.error){
                     try {
                         const fitbitTokens = JSON.stringify({"accessToken": jsonResult.access_token, "refreshToken": jsonResult.refresh_token})
-                        const result = await storeFitbitAccRefToken(JSON.stringify({"accessToken": jsonResult.access_token, "refreshToken": jsonResult.refresh_token}))
-                        // await AsyncStorage.setItem('fitbitTokens', fitbitTokens)
+                        const result = await storeFitbitAccRefToken(fitbitTokens)
                         if (result.data != "Success store token") {
                             Alert.alert('Error trying to store access token in database, please login again to Fitbit')
                         }
@@ -59,18 +51,12 @@ export default function ConfirmAuth({ route, navigation }) {
     const handlePressButtonAsync = async () => {
         const res = await getAuthURL(auth.currentUser.uid)
 
-        console.log( res )
         if (res.error) return
-        // let response = await WebBrowser.openAuthSessionAsync(
-        //             "https://www.fitbit.com/oauth2/authorize?client_id=23959L&response_type=code&code_challenge=jdJbKAkrq4qYt5sy5DRKAnvIAt-Ntmwhbr2itg6Nb-8&code_challenge_method=S256&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight",
-        //             Linking.createURL()
-        //             )
         let response = await WebBrowser.openAuthSessionAsync(res.data, Linking.createURL())
         
         if (response && response.type == 'success'){
             const url = response.url
             const aCode = url.split('code=')[1].replace('#_=_','')
-            console.log("AUTH CODE::",aCode)
             setAuthCode(aCode.split('code=')[0])
         }
         
@@ -91,7 +77,6 @@ export default function ConfirmAuth({ route, navigation }) {
                         Activity recorded on Fitbit will count towards your Coronary Heart Disease risk calculation. 
                         Click Connect below to sign in to your Fitbit account and authorize access
                     </Text>
-                    {/* <Text>{authCode}</Text> */}
                 </View>
 
 

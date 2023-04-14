@@ -13,14 +13,6 @@ const LineChart = ({data, domainX}) =>  {
         padding={{left: 47, right: 50, bottom: 60, top: 5}}
         height={300}  
         theme={VictoryTheme.material}>
-        <VictoryLine
-            data={data ? data : []} 
-            style={{
-                data: {stroke: "#c43a31" },
-            }}
-            x="time" 
-            y="risk" 
-            />
             <VictoryAxis
               style={{
                 tickLabels: {fontSize: 9, padding: 5}
@@ -29,6 +21,14 @@ const LineChart = ({data, domainX}) =>  {
               tickFormat={(t) => typeof t == 'string' || t % 5 == 0 || t == 1 ? t : ''}
             />
             <VictoryAxis dependentAxis/>
+            <VictoryLine
+              data={data ? data : []} 
+              style={{
+                  data: {stroke: "#c43a31", strokeWidth: 3 },
+              }}
+              x="time" 
+              y="risk" 
+            />
         </VictoryChart>
     </View>
   );

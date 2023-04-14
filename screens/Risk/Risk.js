@@ -1,15 +1,67 @@
 import React, { useEffect, useState } from 'react';
 
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Button, Icon } from '@rneui/base'
+import { Button, Card, Icon } from '@rneui/base'
 
 import LineChart from '../../components/LineChart';
 import Header from '../../components/Header';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { labelMonth, processRiskData } from '../../utils/functions';
 import { getDailyRisk, getMonthlyRisk, getOneRisk, postRisk } from '../../utils/api/risk.api';
-import RiskCard from '../../components/RiskCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DateTime } from 'luxon'
+
+const RiskCard = ({today, yesterday, lastMonth, enableIcon, handleIconPress}) => {
+  const dayDiff = today-yesterday
+  const monthDiff = today-lastMonth
+
+  const renderContent = (title, data, note) => {
+      return (
+          <>
+              <View style={styles.RCcontentView}>  
+                  <View style={styles.RCcontent}>
+                      <Text style={styles.RCheading}>{title}</Text>
+                        
+                      <Text style={styles.RCnumber}>{data ? data.toFixed(2) + '%' : '-'}</Text>
+                      {
+                          title=='Today:' ?
+                          <Button 
+                            radius={'sm'}
+                            onPress={handleIconPress}
+                            disabled={!enableIcon}
+                            color='white'
+                            
+                          >
+                            <Text style={{...styles.iconText, color: enableIcon ? '#0F52BA' : 'grey',}}> Refresh  </Text>
+                            <Icon 
+                              name="refresh" 
+                              color={enableIcon ? "#0F52BA" : 'grey'}
+                              /> 
+
+                          </Button>
+                            
+                            : null
+                        }
+                  </View>
+                  {note && (<Text style={styles.RCnote}>{note}</Text>)}
+                  
+              </View>
+          </>
+      )
+  }
+
+  return (
+      <Card containerStyle={styles.RCcontainer} >
+          {renderContent('Today:', today, '')}
+
+          {yesterday ? renderContent('Yesterday:', yesterday, `Your risk is ${dayDiff > 0 ? 'higher' : 'lower'} by ${Math.abs(dayDiff).toFixed(2)}% than yesterday`) 
+          : renderContent('Yesterday:', null, `No data available from yesterday`)}
+
+          {lastMonth ? renderContent('Last Month:', lastMonth, `Your risk is ${monthDiff > 0 ? 'higher' : 'lower'} by ${Math.abs(monthDiff).toFixed(2)}% than last month`) 
+          : renderContent('Last Month:', null, `No data available from last month`)}
+      </Card>
+  );
+};
 
 export default function Risk({headerTitle, headerSubtitle, focused, navigation}) {
   const [monthlyRisk, setMonthlyRisk] = useState()
@@ -17,27 +69,23 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   const [todayRisk, setTodayRisk] = useState()
   const [yesterdayRisk, setYesterdayRisk] = useState(0)
   const [lastMonthRisk, setlastMonthRisk] = useState(0)
+  const [enableRiskCalculate, setEnableRiskCalculate] = useState(true)
 
   const [currentChart, setCurrentChart] = useState('year')
 
-  const leftComponent = <View style={{width:"300%"}}>
+  const leftComponent = <View style={{width:"310%"}}>
                           <Text style={styles.heading}>{headerTitle}</Text>
                           <Text style={styles.subheading}>{headerSubtitle}</Text>
                         </View>
 
-  const getDaysInMonth = (year, month) => {
-    return new Date(year, month, 0).getDate();
-  }
+  const today = DateTime.now().setLocale('zh')
+  const currentYear = today.year;
+  const currentMonth = today.month; 
 
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth() + 1; 
-
-  const daysInCurrentMonth = getDaysInMonth(currentYear, currentMonth);
+  const daysInCurrentMonth = DateTime.local(currentYear, currentMonth).daysInMonth;
 
   const fetchOneYearRisk = async() => {
-    const today = new Date()
-    const result = await getMonthlyRisk(today.getFullYear())
+    const result = await getMonthlyRisk(today.year)
     if (!result.error) {
       setMonthlyRisk(processRiskData(result, (val) => labelMonth(val), 12))
     } 
@@ -79,12 +127,10 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
 
   const checkYesterdayRisk = async () => {
     const yesterdayUpdate = await AsyncStorage.getItem('yesterdayRiskUpdate')
-    if (!(yesterdayUpdate === today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"}))) {
+    if (!(yesterdayUpdate === today.toFormat("yyyy-MM-dd"))) {
       return false
     }
-    else {
-      return true
-    }
+    return true
   }
 
   const changeChart = async () => {
@@ -95,32 +141,51 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
     
   }
 
+  const fetchTodayRisk = async () => {
+      calculateRisk({"date": today.toFormat("yyyy-MM-dd")}, setTodayRisk)
+      await AsyncStorage.setItem("todayRiskUpdate", (new Date()).toString())
+      checkLastUpdate()
+  }
+
+  const checkLastUpdate = async () => {
+    const lastUpdate = await AsyncStorage.getItem("todayRiskUpdate")
+
+    if (!lastUpdate || new Date() - new Date(lastUpdate) > 10*60*1000) {
+      setEnableRiskCalculate(true)
+    }
+    else {
+      setEnableRiskCalculate(false)
+    }
+  }
+
   useEffect(() => {
-    const today = new Date()
-    const lastMonth = today.getMonth()
-    const lastMonthYear = lastMonth == 12 ? today.getFullYear() - 1 : today.getFullYear()
-    const daysInLastMonth = getDaysInMonth(lastMonthYear, lastMonth);
+    const today = DateTime.now().setLocale('zh')
+    const lastMonth = today.month === 1 ? 12 : today.month - 1
+    const lastMonthYear = lastMonth == 12 ? today.year - 1 : today.year
+    const daysInLastMonth = DateTime.local(lastMonthYear, lastMonth).daysInMonth
+    
     const lastMonthFullDate = `${lastMonthYear}${lastMonth < 10 ? "0"+lastMonth : lastMonth}${daysInLastMonth}`
 
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1)
-    const yesterdayFullDate = `${yesterday.getFullYear()}${yesterday.getMonth()+1 < 10 ? "0"+(yesterday.getMonth()+1) : yesterday.getMonth()+1}${yesterday.getDate()}`
-
+    const yesterday = DateTime.now().minus({days: 1}).setLocale('zh')
+    const yesterdayFullDate = `${yesterday.year}${yesterday.month < 10 ? "0"+(yesterday.month) : yesterday.month}${yesterday.day}`
 
     if (focused) {
       fetchOneYearRisk()
       fetchOneMonthRisk()
-      calculateRisk({"date": today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"})}, setTodayRisk) 
-
-      if (checkYesterdayRisk()) {
-        fetchOneDayRisk(yesterdayFullDate, setYesterdayRisk)
-      } else {
-        async () => {
-          calculateRisk(yesterday, setYesterdayRisk)
-          await AsyncStorage.setItem('yesterdayRiskUpdate', today.toLocaleDateString('sv',  {timeZone: "Asia/Hong_Kong"}))
+      
+      checkLastUpdate()
+      
+      checkYesterdayRisk().then(
+        (response) => {
+          if (response) {
+            fetchOneDayRisk(yesterdayFullDate, setYesterdayRisk)
+          }
+          else {
+            calculateRisk({"date": yesterday.toFormat("yyyy-MM-dd")}, setYesterdayRisk)
+            AsyncStorage.setItem('yesterdayRiskUpdate', today.toFormat("yyyy-MM-dd"))
+          }
         }
-        
-      }
+      )
       fetchOneDayRisk(lastMonthFullDate, setlastMonthRisk)
     }
     
@@ -141,7 +206,12 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
         </Button>
 
         <Text style={{...styles.heading,fontSize: 20, marginLeft: 20, marginTop: 10}}>Your Risk Summary</Text>
-        <RiskCard today={todayRisk ? (todayRisk * 100) : 0} yesterday={yesterdayRisk ? (yesterdayRisk * 100) : 0} lastMonth={lastMonthRisk ? (lastMonthRisk * 100) : 0}/>
+        <RiskCard 
+          today={todayRisk ? (todayRisk * 100) : 0} 
+          yesterday={yesterdayRisk ? (yesterdayRisk * 100) : 0} 
+          lastMonth={lastMonthRisk ? (lastMonthRisk * 100) : 0} 
+          enableIcon={enableRiskCalculate} 
+          handleIconPress={fetchTodayRisk}/>
 
         <Button radius={8} containerStyle={styles.button} onPress={() => navigation.push("All Risk")}>
               <Text style={styles.buttonText}>Show all data</Text>
@@ -182,6 +252,53 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-SemiBold',
     paddingVertical: 5
   },
+
+  RCcontainer: {
+        marginBottom:10, 
+        paddingTop: 0,
+        paddingLeft: 20,
+        borderRadius:10,
+    },
+
+    RCtitle: {
+        fontSize: 18
+    },
+
+    RCheading: {
+        color: '#0F52BA',
+        fontSize: 22,
+        fontWeight: 'bold',
+        fontFamily: 'Poppins-SemiBold',
+      },
+    RCcontentView: {
+        marginTop: 10,
+        justifyContent: 'center'
+    },
+
+    RCcontent: {
+        flexDirection: "row", 
+        alignItems: 'center', 
+        
+    },
+
+    RCnumber: {
+        fontSize: 21,
+        paddingHorizontal: 15,
+        fontFamily: 'Poppins-SemiBold',
+        alignSelf: 'center'
+    },
+    RCnote: {
+        fontSize: 15,
+        color: '#808080',
+        fontFamily: 'Poppins-Regular',
+        marginLeft: 10,
+        marginVertical: 10
+    },
+
+    iconText: {
+      fontFamily: 'Poppins-Regular',
+      fontSize: 17,
+    }
 
 });
 

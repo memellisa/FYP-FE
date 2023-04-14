@@ -96,7 +96,7 @@ const processRiskData =  (data, label, index) => {
           risk: parseFloat((val * 100).toFixed(2))
         }
       )
-    } else break
+    } 
   }
   return res
 }

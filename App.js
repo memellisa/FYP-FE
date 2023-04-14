@@ -20,6 +20,8 @@ import Group from './screens/Community/Group';
 import Article from './screens/Community/Article';
 import AllRisk from './screens/Risk/AllRisk';
 import ChangePassword from './screens/User/ChangePassword';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
 const Stack = createNativeStackNavigator();
  

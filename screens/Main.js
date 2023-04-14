@@ -27,7 +27,6 @@ const Main = ({ navigation }) => {
             let hasData = response.data
             if (hasData) {
                 let responseWearable = await axios.get(`${flaskURL}/user/verifyWearable/${user}`);
-                console.log("WEARABLE", responseWearable.data)
                 if (!responseWearable.data) {
                     navigation.push("Manage Wearable", {"hideBackButton": true})
                 }

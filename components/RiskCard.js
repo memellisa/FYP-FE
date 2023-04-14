@@ -31,46 +31,46 @@ const RiskCard = ({today, yesterday, lastMonth}) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
+    RCcontainer: {
         marginBottom:10, 
         paddingTop: 0,
         paddingLeft: 20,
         borderRadius:10,
     },
 
-    title: {
+    RCtitle: {
         fontSize: 18
     },
 
-    heading: {
+    RCheading: {
         color: '#0F52BA',
         fontSize: 22,
         fontWeight: 'bold',
         fontFamily: 'Poppins-SemiBold',
       },
-    contentView: {
+    RCcontentView: {
         marginTop: 20,
         justifyContent: 'center'
     },
 
-    content: {
+    RCcontent: {
         flexDirection: "row", 
         alignItems: 'center', 
         
     },
 
-    number: {
+    RCnumber: {
         fontSize: 21,
         paddingHorizontal: 15,
         fontFamily: 'Poppins-SemiBold',
         alignSelf: 'center'
     },
-    unit: {
+    RCunit: {
         color: '#c4c4c4',
         fontSize: 18,
         fontFamily: 'Poppins-Regular'
     },
-    note: {
+    RCnote: {
         fontSize: 15,
         color: '#808080',
         fontFamily: 'Poppins-Regular',

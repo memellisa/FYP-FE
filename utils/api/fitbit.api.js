@@ -39,19 +39,6 @@ const getAuthURL = async (uid) => {
 };
 
 
-const getProfile = async (payload) => {
-    try {
-        const response = await axios.post(`${flaskURL}/fitbit/user`, payload, {
-            headers: {
-            'Content-Type': 'application/json'
-            }
-        });
-        return { data: response.data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    } 
-};
-
 const getActivities = async () => {
     try {
         const response = await axios.get(`${flaskURL}/fitbit/activities/${auth.currentUser.uid}`, {
@@ -80,4 +67,4 @@ const getWeeklySteps = async () => {
 
 
 
-export { postAccessToken, getAuthURL, getProfile, getActivities, getWeeklySteps, storeFitbitAccRefToken }
+export { postAccessToken, getAuthURL, getActivities, getWeeklySteps, storeFitbitAccRefToken }

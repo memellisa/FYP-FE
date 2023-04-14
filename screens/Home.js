@@ -28,11 +28,9 @@ const emptyWeeklySteps = [
 
 const Home = ({ headerSubtitle, navigation, route, focused}) => {
     const [userData, setUserData] = useState(null);
-    const [fitbitTokens, setFitbitTokens] = useState(null)
-    // const [userActivity, setUserActivity] = useState(null);
     const [summaryActivity, setSummaryActivity] = useState(null);
     const [weeklySteps, setWeeklySteps] = useState(null)
-
+    const isFocused = useIsFocused()
 
     const processSummaryActivity = (data) => {
       var totalDistance = 0
@@ -80,21 +78,6 @@ const Home = ({ headerSubtitle, navigation, route, focused}) => {
       return summary
     }
 
-    const getFitbitTokens = async () => {
-      try {
-        const fetchedFitbitTokens = await AsyncStorage.getItem('fitbitTokens')
-
-        if (fetchedFitbitTokens && fetchedFitbitTokens !== "{}"){
-          if (fitbitTokens !== fetchedFitbitTokens) {
-            setFitbitTokens(fetchedFitbitTokens)
-          }
-        }
-      } catch(e) {
-        // console.log(e)
-        // error reading value
-      }
-    }
-
     const fetchActivities = async() => {
       const result = await getActivities()
       if (!result.error){
@@ -105,6 +88,8 @@ const Home = ({ headerSubtitle, navigation, route, focused}) => {
           // Alert.alert('Something went wrong getting Activities. Please try again')
       }
     }
+
+    
 
     const fetchWeeklySteps = async() => {
       const result = await getWeeklySteps()
@@ -117,50 +102,25 @@ const Home = ({ headerSubtitle, navigation, route, focused}) => {
       }
     }
 
+    const fetchFitbitData = async () => {
+      const lastUpdate = await AsyncStorage.getItem("lastUpdate")
+
+      if (!lastUpdate || new Date() - new Date(lastUpdate) > 10*60*1000) {
+        fetchActivities()
+        fetchWeeklySteps()
+        await AsyncStorage.setItem("lastUpdate", (new Date()).toString())
+      }
+      else {
+        console.log("Not 10 minutes yet ")
+      }
+    }
 
     useEffect(() => {
-      getFitbitTokens()
       getUserData(setUserData, userData, route?.params?.update)
-      
-    }, [focused])
+      fetchFitbitData()
+    }, [focused, isFocused])
 
-    useEffect(() => {
-      fetchActivities()
-      fetchWeeklySteps()
-    }, [fitbitTokens])
 
-    // useFocusEffect( 
-    //   useCallback(() => {
-
-    //     const fetchActivities = async() => {
-    //         const result = await getActivities()
-            
-    //         if (!result.error){
-    //           if (!isEqual(result.data.summary, summaryActivity)) {
-    //             console.log("SUMMARY",typeof result.data)
-    //             setSummaryActivity(processSummaryActivity(result.data.summary))
-    //           }
-    //         } else {
-    //             // Alert.alert('Something went wrong getting Activities. Please try again')
-    //         }
-    //     }
-
-    //     const fetchWeeklySteps = async() => {
-    //       const result = await getWeeklySteps()
-    //       if (!result.error){
-    //         if (result.data != userData) {
-    //           setWeeklySteps(result.data)
-    //         }
-    //       } else {
-    //           // Alert.alert('Something went wrong getting weekly steps. Please try again')
-    //       }
-    //     }
-
-    //     fetchActivities()
-    //     fetchWeeklySteps()
-
-    //   }, [fitbitTokens])
-    // )
 
     const leftComponent = <View style={{width:'250%'}}>
       <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.info.firstName}</Text>

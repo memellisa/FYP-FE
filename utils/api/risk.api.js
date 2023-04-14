@@ -2,8 +2,6 @@ import axios from 'axios';
 import { auth } from "../../config"
 import { flaskURL } from "../constants";
 
-
-
 const postRisk = async (payload) => {
     try {
         const user = auth.currentUser.uid
@@ -46,33 +44,6 @@ const getOneRisk = async (date) => {
     } 
 };
 
-
-const getRiskDaily = async () => {
-    try {
-        const user = auth.currentUser.uid
-        const response = await axios.get(`${flaskURL}/risk/daily/${user}`);
-        return { data: response.data, error: null }
-    } catch (error) {
-        return { data: null, error }
-    } 
-};
-
-
-const getRiskWeekly = async () => {
-    
-    try {
-        const user = auth.currentUser.uid
-        const response = await axios.get(`${flaskURL}/risk/weekly/${user}`,{
-            headers: {
-            'Content-Type': 'application/json'
-            }
-        })
-        return response.data
-    } catch (error) {
-        return { data: null, error }
-    } 
-};
-
 const getMonthlyRisk = async (year) => {
     
     try {
@@ -89,7 +60,7 @@ const getMonthlyRisk = async (year) => {
 };
 
 
-const getDailyRisk = async (year) => {
+const getDailyRisk = async () => {
     
     try {
         const user = auth.currentUser.uid
@@ -104,4 +75,4 @@ const getDailyRisk = async (year) => {
     } 
 };
 
-export { postRisk, getRiskDaily, getRiskWeekly, getMonthlyRisk, getAllRisk, getOneRisk, getDailyRisk }
+export { postRisk, getMonthlyRisk, getAllRisk, getOneRisk, getDailyRisk }

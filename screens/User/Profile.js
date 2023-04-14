@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// import { Icon } from 'react-native-elements'
 import { Avatar, Button } from '@rneui/base'
-import { HeaderBackButton } from '@react-navigation/elements'
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import DetailsCard from '../../components/DetailsCard';
