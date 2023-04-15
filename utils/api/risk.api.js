@@ -38,7 +38,8 @@ const getOneRisk = async (date) => {
             'Content-Type': 'application/json'
             }
         })
-        return response.data 
+        if (typeof response.data == 'string' && response.data.startsWith("An Error Occured:")) throw new Error
+        return { data: response.data , error: null }
     } catch (error) {
         return { data: null, error }
     } 

@@ -25,9 +25,7 @@ const Comment = ({comment}) => {
     const renderAllUserComment = async () => {
         let temp = []
         await Promise.all(comment.map(async (comm) => {
-            console.log("COMMMMM", comm)
             const result = await getUserByUID(comm.user_id);
-            console.log("RESSSSS", result)
             if (!result.error){
                 temp.push({"avatar": result.data.info.img, "name": result.data.info.firstName + " " + result.data.info.lastName})
             } else {
@@ -46,13 +44,11 @@ const Comment = ({comment}) => {
     return(
         <View style={styles.postedComment}>
             {arrayComponent.map((comp, idx) => {
-                // console.log("ARR COMP", arrayComponent)
-                console.log("COMP", comp, comment[idx].comment)
                 return (<View  key={idx} style={{flexDirection: "row", marginBottom: 20}}>
                     <Avatar
                         size={45}
                         rounded
-                        source={{uri: comp.avatar ? comp.avatar : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
+                        source={{uri: comp.avatar ? comp.avatar : "https://st3.depositphotos.com/1767687/16607/v/600/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg" }}
                         containerStyle={{ backgroundColor: '#6733b9' }}
                     />
                     <View style={styles.commentContent}>

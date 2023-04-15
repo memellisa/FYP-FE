@@ -104,13 +104,13 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
     }
   }
 
-  const fetchOneDayRisk = async (date, setData) => {
+  const fetchOneDayRisk = async (date) => {
     const result = await getOneRisk(date)
     if (!result.error) {
-      setData(result)
+      return result.data
     } 
     else {
-      // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
+      return null
     }
   }
 
@@ -144,7 +144,6 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   const fetchTodayRisk = async () => {
       calculateRisk({"date": today.toFormat("yyyy-MM-dd")}, setTodayRisk)
       await AsyncStorage.setItem("todayRiskUpdate", (new Date()).toString())
-      checkLastUpdate()
   }
 
   const checkLastUpdate = async () => {
@@ -158,6 +157,10 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
       console.log("RISK NOT 10 MINS")
     }
   }
+
+  useEffect(() => {
+    checkLastUpdate()
+  }, [todayRisk])
 
   useEffect(() => {
     const today = DateTime.now().setLocale('zh')
@@ -177,17 +180,23 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
       checkLastUpdate()
       
       checkYesterdayRisk().then(
-        (response) => {
-          if (response) {
-            fetchOneDayRisk(yesterdayFullDate, setYesterdayRisk)
-          }
-          else {
-            calculateRisk({"date": yesterday.toFormat("yyyy-MM-dd")}, setYesterdayRisk)
-            AsyncStorage.setItem('yesterdayRiskUpdate', today.toFormat("yyyy-MM-dd"))
-          }
+        (updated) => {
+          fetchOneDayRisk(yesterdayFullDate).then(
+            (res) => {
+              if (res){
+                if (updated || !yesterdayRisk){
+                  setYesterdayRisk(res)
+                } else {
+                  calculateRisk({"date": yesterday.toFormat("yyyy-MM-dd")}, setYesterdayRisk)
+                  AsyncStorage.setItem('yesterdayRiskUpdate', today.toFormat("yyyy-MM-dd"))
+                }
+              }
+            }
+          )
         }
       )
-      fetchOneDayRisk(lastMonthFullDate, setlastMonthRisk)
+      fetchOneDayRisk(lastMonthFullDate, setlastMonthRisk).then((res) => setlastMonthRisk(res))
+     
     }
     
   }, [focused])
