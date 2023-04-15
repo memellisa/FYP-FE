@@ -28,6 +28,16 @@ const getUser = async () => {
     } 
 };
 
+const getUserByUID = async (uid) => {
+    try {
+        const user = auth.currentUser.uid
+        const response = await axios.get(`${flaskURL}/user/${uid}`);
+        return { data: response.data, error: null }
+    } catch (error) {
+        return { data: null, error }
+    } 
+};
+
 const putUserInfo = async (data) => {
     try {
         const user = auth.currentUser.uid
@@ -48,4 +58,4 @@ const putUserHealth = async (data) => {
     } 
 };
 
-export { createUser, getUser, putUserInfo, putUserHealth }
+export { createUser, getUser, putUserInfo, putUserHealth, getUserByUID }

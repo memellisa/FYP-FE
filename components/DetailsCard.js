@@ -10,6 +10,19 @@ const DetailsCard = ({title, data, navigation, dataToShow}) => {
         return val ? 'Yes' : 'No'
     }
 
+    const renderFrequencySmoking = (val) => {
+        switch(val){
+            case 0:
+                return 'Never'
+            case 1:
+                return 'Previous'
+            case 2:
+                return 'Current'
+            default:
+                return '-'
+        } 
+    }
+
     const renderFrequency = (val) => {
         switch(val){
             case 0:
@@ -32,8 +45,10 @@ const DetailsCard = ({title, data, navigation, dataToShow}) => {
     const jsonToArray = (dataToShow) => {
         const arr = []; 
         for(let i in dataToShow) {
-            if (i === "alcoholConsumption" || i === "smokingStatus") 
+            if (i === "alcoholConsumption") 
                 arr.push([labels[i], renderFrequency(dataToShow[i])])
+            else if (i === "smokingStatus") 
+            arr.push([labels[i], renderFrequencySmoking(dataToShow[i])])
             else if (i === "sex")
                 arr.push([labels[i], renderSex(dataToShow[i])])
             else 

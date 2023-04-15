@@ -79,7 +79,7 @@ export default function Profile({ navigation, route }) {
                     <Avatar
                         size={100}
                         rounded
-                        source={{uri: userData?.info.img ? userData.info.img : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
+                        source={{uri: userData?.info.img ? userData.info.img : "https://st3.depositphotos.com/1767687/16607/v/600/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg" }}
                     />
                     <Button radius={8} color="#f2f2f6" onPress={pickImage}>
                         <Text style={{color:'#0095FE'}}>Edit image</Text>

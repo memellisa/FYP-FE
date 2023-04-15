@@ -2,35 +2,66 @@ import { Avatar, Card } from "@rneui/base"
 import { View, Text, StyleSheet } from 'react-native';
 import { fDate } from "../utils/formatTime";
 import { auth } from "../config";
+import { useEffect, useState } from "react";
+import { getUserByUID } from "../utils/api/user.api";
+import { te } from "date-fns/locale";
 
 const Comment = ({comment}) => {
     const user_uid = auth.currentUser.uid
     var key_index = 0
 
+    const [arrayComponent, setArrayComponent] = useState([])
+
+    const getAvatarAndName = async (uid) => {
+        const result = await getUserByUID(uid);
+        if (!result.error){
+            return {"avatar": result.data.info.img, "name": result.data.info.firstName + " " + result.data.info.lastName}
+        } else {
+        // Alert.alert('Something went wrong getting Activities. Please try again')
+            return {"avatar": "", "name": ""}
+        }
+    }
+
+    const renderAllUserComment = async () => {
+        let temp = []
+        await Promise.all(comment.map(async (comm) => {
+            const result = await getUserByUID(comm.user_id);
+            if (!result.error){
+                temp.push({"avatar": result.data.info.img, "name": result.data.info.firstName + " " + result.data.info.lastName})
+            } else {
+            // Alert.alert('Something went wrong getting Activities. Please try again')
+                temp.push({"avatar": "", "name": ""})
+            }
+        }))
+        setArrayComponent(temp)
+    }
+
+
+    useEffect(() => {
+        renderAllUserComment();
+    }, [])
+
     return(
         <View style={styles.postedComment}>
-            {comment.map((comm) => {
-                key_index += 1
-                return (
-                    <View  key={key_index} style={{flexDirection: "row", marginBottom: 20}}>
-                        <Avatar
-                            size={45}
-                            rounded
-                            source={{uri: comm.avatar ? comm.avatar : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
-                            containerStyle={{ backgroundColor: '#6733b9' }}
-                        />
-                        <View style={styles.commentContent}>
-                            <Text style={styles.userName}>{user_uid == comm.user_id ? "You" : comm.name}</Text>
-                            <Card containerStyle={styles.commentContainer}>
-                                <Text style={styles.commentText}>
-                                    {comm.comment}
-                                </Text>
-                                
-                            </Card>
-                            <Text style={styles.date}>{fDate(comm.date)}</Text> 
-                        </View>
+            {arrayComponent.map((comp, idx) => {
+                return (<View  key={idx} style={{flexDirection: "row", marginBottom: 20}}>
+                    <Avatar
+                        size={45}
+                        rounded
+                        source={{uri: comp.avatar ? comp.avatar : "https://st3.depositphotos.com/1767687/16607/v/600/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg" }}
+                        containerStyle={{ backgroundColor: '#6733b9' }}
+                    />
+                    <View style={styles.commentContent}>
+                        <Text style={styles.userName}>{user_uid == comment[idx].user_id ? "You" : comp.name}</Text>
+                        <Card containerStyle={styles.commentContainer}>
+                            <Text style={styles.commentText}>
+                                {comment[idx].comment}
+                            </Text>
+                            
+                        </Card>
+                        <Text style={styles.date}>{fDate(comment[idx].date)}</Text> 
                     </View>
-                )
+                </View>)
             })}
         </View>
     )

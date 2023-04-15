@@ -105,7 +105,7 @@ const Home = ({ headerSubtitle, navigation, route, focused}) => {
     const fetchFitbitData = async () => {
       const lastUpdate = await AsyncStorage.getItem("lastUpdate")
 
-      if (!lastUpdate || new Date() - new Date(lastUpdate) > 10*60*1000) {
+      if (!summaryActivity || !weeklySteps || !lastUpdate || new Date() - new Date(lastUpdate) > 10*60*1000) {
         fetchActivities()
         fetchWeeklySteps()
         await AsyncStorage.setItem("lastUpdate", (new Date()).toString())
@@ -133,7 +133,7 @@ const Home = ({ headerSubtitle, navigation, route, focused}) => {
             <Avatar
               size={64}
               rounded
-              source={{uri: userData?.info.img ? userData?.info.img : "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png" }}
+              source={{uri: userData?.info.img ? userData?.info.img : "https://st3.depositphotos.com/1767687/16607/v/600/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg" }}
               onPress={() => navigation.push("Profile")}
               containerStyle={{ backgroundColor: '#6733b9' }}
             />

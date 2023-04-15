@@ -9,7 +9,7 @@ import { Button, Icon } from '@rneui/base';
 import { Formik } from 'formik';
 import { userHealthValidationSchema, userInfoValidationSchema } from '../utils/validation';
 import { createUser } from '../utils/api/user.api';
-import { bloodData, booleanData, dietData, formInfoMsgs, frequencyData, sexData } from '../utils/constants';
+import { bloodData, booleanData, dietData, formInfoMsgs, frequencyData, sexData, frequencyDataSmoking } from '../utils/constants';
 import { calculateAge, countBMI } from '../utils/functions';
 import InfoOverlay from '../components/InfoOverlay';
 import { useHeaderHeight } from '@react-navigation/elements'
@@ -159,7 +159,7 @@ export default function SelfInputForm({ route, navigation }) {
                             <DropDownField 
                                 text={"Smoking Status"} 
                                 value={values.smokingStatus} 
-                                data={frequencyData} 
+                                data={frequencyDataSmoking} 
                                 setOnChange={handleChange('smokingStatus')} 
                                 handleOnFocus={(val) => touched.smokingStatus = val} 
                                 errorMessage={((errors.smokingStatus && touched.smokingStatus) ? errors.smokingStatus : '')} 
