@@ -47,8 +47,8 @@ const getPostByID = async (postID) => {
 
 const postComment = async (postID, uid, comment) => {
     try {
-        let payload = {"post_id": postID, "user_id": uid, "comment": comment}
-        const response = await axios.post(`${flaskURL}/community/post/comment`, payload, {
+        let payload = {"user_id": uid, "content": comment}
+        const response = await axios.post(`${flaskURL}/community/post/${postID}`, payload, {
             headers: {
             'Content-Type': 'application/json'
             }

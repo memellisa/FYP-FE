@@ -12,16 +12,6 @@ const Comment = ({comment}) => {
 
     const [arrayComponent, setArrayComponent] = useState([])
 
-    const getAvatarAndName = async (uid) => {
-        const result = await getUserByUID(uid);
-        if (!result.error){
-            return {"avatar": result.data.info.img, "name": result.data.info.firstName + " " + result.data.info.lastName}
-        } else {
-        // Alert.alert('Something went wrong getting Activities. Please try again')
-            return {"avatar": "", "name": ""}
-        }
-    }
-
     const renderAllUserComment = async () => {
         let temp = []
         await Promise.all(comment.map(async (comm) => {
@@ -39,7 +29,7 @@ const Comment = ({comment}) => {
 
     useEffect(() => {
         renderAllUserComment();
-    }, [])
+    }, [comment])
 
     return(
         <View style={styles.postedComment}>
@@ -55,7 +45,7 @@ const Comment = ({comment}) => {
                         <Text style={styles.userName}>{user_uid == comment[idx].user_id ? "You" : comp.name}</Text>
                         <Card containerStyle={styles.commentContainer}>
                             <Text style={styles.commentText}>
-                                {comment[idx].comment}
+                                {comment[idx].content}
                             </Text>
                             
                         </Card>

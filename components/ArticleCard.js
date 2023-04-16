@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, Pressable } from 'react-native';
 import { Text, Card } from '@rneui/themed';
 
 
-const ArticleCard = ({ imgURI, author, title, date, content, width, onPress}) => {
+const ArticleCard = ({ imgURI, author, title, date, width, onPress}) => {
     return (
     <>  
         <Pressable onPress={onPress} >
@@ -18,7 +18,6 @@ const ArticleCard = ({ imgURI, author, title, date, content, width, onPress}) =>
                         {"\n"}
                         {date}
                     </Text>
-                    <Text style={styles.text}>{content}</Text>
                 </View>
             </Card>
         </Pressable>
