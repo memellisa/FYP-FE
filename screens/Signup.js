@@ -20,13 +20,12 @@ export default function Signup({navigation}) {
     }
     let payload = JSON.stringify({ 'email': values.email, 'password': values.password })
     try {// CHANGE AUTH to /USER/ ACCORDING TO JUSTIN
-        const response = await axios.post(`${flaskURL}/auth/signup`, payload,{
+        const response = await axios.post(`${flaskURL}/user`, payload,{
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-
-        if (response.data == "Account successfully created") {
+        if (response.status == 200) {
           // alert("Account successfully created, you wil be logged in now")
           // Login directly if successful in creating account 
           signInWithEmailAndPassword(auth, values.email, values.password)
@@ -36,7 +35,7 @@ export default function Signup({navigation}) {
               setTimeout(() => {
                 // should show the Connected Manage Wearable page instead later
                 // navigation.navigate("Profile");
-                navigation.navigate("Self Input Form", {data: values})
+                navigation.navigate("Self Input Form")
               }, 3000);
 
 

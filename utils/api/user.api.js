@@ -2,10 +2,10 @@ import axios from 'axios';
 import { auth } from "../../config"
 import { flaskURL } from "../constants";
 
-const createUser = async (payload) => {
+const createUser = async (data) => {
     try {
         const user = auth.currentUser.uid
-        const response = await axios.post(`${flaskURL}/user/${user}`, payload, {
+        const response = await axios.post(`${flaskURL}/user/${user}`, data, {
             headers: {
             'Content-Type': 'application/json'
             }
@@ -58,4 +58,4 @@ const putUserHealth = async (data) => {
     } 
 };
 
-export { createUser, getUser, putUserInfo, putUserHealth, getUserByUID }
+export { putUser, getUser, putUserInfo, putUserHealth, getUserByUID }

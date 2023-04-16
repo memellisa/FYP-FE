@@ -7,7 +7,7 @@ import LineChart from '../../components/LineChart';
 import Header from '../../components/Header';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { labelMonth, processRiskData } from '../../utils/functions';
-import { getDailyRisk, getMonthlyRisk, getOneRisk, postRisk } from '../../utils/api/risk.api';
+import { getMonthlyRisk, getOneRisk, getYearlyRisk, postRisk } from '../../utils/api/risk.api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DateTime } from 'luxon'
 
@@ -85,9 +85,9 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   const daysInCurrentMonth = DateTime.local(currentYear, currentMonth).daysInMonth;
 
   const fetchOneYearRisk = async() => {
-    const result = await getMonthlyRisk(today.year)
+    const result = await getYearlyRisk(today.year)
     if (!result.error) {
-      setMonthlyRisk(processRiskData(result, (val) => labelMonth(val), 12))
+      setMonthlyRisk(processRiskData(result.data, (val) => labelMonth(val), 12))
     } 
     else {
       // Alert.alert('Something went wrong getting ONE YEAR. Please try again')
@@ -95,9 +95,9 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   }
 
   const fetchOneMonthRisk = async() => {
-    const result = await getDailyRisk()
+    const result = await getMonthlyRisk()
     if (!result.error) {
-      setDailyRisk(processRiskData(result, null, daysInCurrentMonth))
+      setDailyRisk(processRiskData(result.data, null, daysInCurrentMonth))
     } 
     else {
       // Alert.alert('Something went wrong getting ONE MONTH. Please try again')
@@ -142,7 +142,7 @@ export default function Risk({headerTitle, headerSubtitle, focused, navigation})
   }
 
   const fetchTodayRisk = async () => {
-      calculateRisk({"date": today.toFormat("yyyy-MM-dd")}, setTodayRisk)
+      calculateRisk(today.toFormat("yyyyMMdd"), setTodayRisk)
       await AsyncStorage.setItem("todayRiskUpdate", (new Date()).toString())
   }
 

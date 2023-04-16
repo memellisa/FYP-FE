@@ -2,10 +2,10 @@ import axios from 'axios';
 import { auth } from "../../config"
 import { flaskURL } from "../constants";
 
-const postRisk = async (payload) => {
+const postRisk = async (date) => {
     try {
         const user = auth.currentUser.uid
-        const response = await axios.post(`${flaskURL}/risk/${user}`, payload, {
+        const response = await axios.post(`${flaskURL}/risk/${user}/${date}`, {
             headers: {
             'Content-Type': 'application/json'
             }
@@ -24,7 +24,7 @@ const getAllRisk = async () => {
             'Content-Type': 'application/json'
             }
         })
-        return response.data
+        return { data: response.data, error: null }
     } catch (error) {
         return { data: null, error }
     } 
@@ -45,35 +45,35 @@ const getOneRisk = async (date) => {
     } 
 };
 
-const getMonthlyRisk = async (year) => {
+const getYearlyRisk = async (year) => {
     
     try {
         const user = auth.currentUser.uid
-        const response = await axios.get(`${flaskURL}/risk/monthly/${user}/${year}`,{
+        const response = await axios.get(`${flaskURL}/risk/yearly/${user}/${year}`,{
             headers: {
             'Content-Type': 'application/json'
             }
         })
-        return response.data
+        return { data: response.data , error: null }
     } catch (error) {
         return { data: null, error }
     } 
 };
 
 
-const getDailyRisk = async () => {
+const getMonthlyRisk = async () => {
     
     try {
         const user = auth.currentUser.uid
-        const response = await axios.get(`${flaskURL}/risk/daily/${user}`,{
+        const response = await axios.get(`${flaskURL}/risk/monthly/${user}`,{
             headers: {
             'Content-Type': 'application/json'
             }
         })
-        return response.data
+        return { data: response.data , error: null }
     } catch (error) {
         return { data: null, error }
     } 
 };
 
-export { postRisk, getMonthlyRisk, getAllRisk, getOneRisk, getDailyRisk }
+export { postRisk, getMonthlyRisk, getAllRisk, getOneRisk, getYearlyRisk }

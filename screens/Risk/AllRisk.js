@@ -12,7 +12,7 @@ export default function AllRisk({ route, navigation }) {
         const result = await getAllRisk()
         
         if (!result.error) {
-          setAllRisk(result)
+          setAllRisk(result.data)
         } 
         else {
         //   Alert.alert('Something went wrong getting USER. Please try again')
