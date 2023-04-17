@@ -65,6 +65,19 @@ const getWeeklySteps = async () => {
     } 
 };
 
+const getWeeklyAverageCalories = async (date) => {
+    try {
+        const response = await axios.get(`${flaskURL}/fitbit/weeklyAvgCal/${auth.currentUser.uid}/${date}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return { data: response.data.sevenDayAvg, error: null }
+    } catch (error) {
+        return { data: null, error }
+    } 
+}
 
 
-export { postAccessToken, getAuthURL, getActivities, getWeeklySteps, storeFitbitAccRefToken }
+
+export { postAccessToken, getAuthURL, getActivities, getWeeklySteps, storeFitbitAccRefToken, getWeeklyAverageCalories }

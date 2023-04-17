@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { Alert, StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { getAllRisk } from '../../utils/api/risk.api';
@@ -32,10 +32,10 @@ export default function AllRisk({ route, navigation }) {
             >
                 {allRisk.map((obj, i) => 
                     <View style={i == allRisk.length - 1 ? {...styles.rowView, marginBottom: 50} : styles.rowView} key={i}>
-                        <View style={styles.optionView}>
+                        <Pressable style={styles.optionView} onPress={() => console.log(navigation.push("Risk Detail", obj))}>
                             <Text style={styles.fieldText}>{obj.time}</Text>
                             <Text style={styles.valueText}>{(obj.result  * 100 ).toFixed(5) + '%'}</Text>
-                        </View>
+                        </Pressable>
                     </View>
                 )}
             </ScrollView>
