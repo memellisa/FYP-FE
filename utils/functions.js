@@ -1,12 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { Alert } from "react-native"
 import { getUser } from "./api/user.api"
 import { isEqual } from 'lodash'
+import labels from '../utils/labels';
+
 
 const getUserData = async (setUserData, userData=null, update=false) => {
     const fetchUser = async() => {
         const result = await getUser()
-        
+
         if (!result.error) {
           if (result.data.info.firstName){
             try {
@@ -100,4 +101,58 @@ const processRiskData =  (data, label, index) => {
   }
   return res
 }
-export { getUserData, calculateAge, countBMI, labelMonth, processRiskData }
+
+const renderBool = (val) => {
+  return val ? 'Yes' : 'No'
+}
+
+const renderFrequencySmoking = (val) => {
+  switch(val){
+      case 0:
+          return 'Never'
+      case 1:
+          return 'Previous'
+      case 2:
+          return 'Current'
+      default:
+          return '-'
+  } 
+}
+
+const renderFrequency = (val) => {
+  switch(val){
+      case 0:
+          return 'Never'
+      case 1:
+          return 'Previous'
+      case 2:
+          return 'Occasionally'
+      case 3:
+          return 'Frequent'
+      default:
+          return '-'
+  } 
+}
+
+const renderSex = (val) => {
+  return val === "F" ? "Female" : val === "M" ? "Male" : '-'
+} 
+
+const jsonToArray = (dataToShow) => {
+  const arr = []; 
+  for(let i in dataToShow) {
+      if (i === "alcoholConsumption") 
+          arr.push([labels[i], renderFrequency(dataToShow[i])])
+      else if (i === "smokingStatus") 
+      arr.push([labels[i], renderFrequencySmoking(dataToShow[i])])
+      else if (i === "sex" || i === "gender")
+          arr.push([labels[i], renderSex(dataToShow[i])])
+      else 
+          arr.push([labels[i], typeof dataToShow[i] == "boolean" ? renderBool(dataToShow[i]) :
+                              typeof dataToShow[i] == "number" && dataToShow[i] ? dataToShow[i] :
+                              dataToShow[i] ? dataToShow[i] : '-' ])
+  }
+  return arr
+}
+
+export { getUserData, calculateAge, countBMI, labelMonth, processRiskData, jsonToArray }

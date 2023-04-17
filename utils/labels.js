@@ -9,6 +9,7 @@ const labels = {
     bloodPressure: "Blood Pressure Medication",
     age: "Age",
     sex: "Sex",
+    gender: "Sex",
     height: "Height (cm)",
     weight: "Weight (kg)",
     bloodType: "Blood Type",

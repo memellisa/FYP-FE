@@ -6,13 +6,14 @@ import DetailsCard from '../../components/DetailsCard';
 import { auth } from "../../config"
 import { signOut } from 'firebase/auth';
 import axios from 'axios';
+import NavigateButton from '../../components/NavigateButton';
 
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from 'expo-file-system';
 import { flaskURL } from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {  useIsFocused } from '@react-navigation/native';
-import { calculateAge, countBMI, getUserData } from '../../utils/functions';
+import { calculateAge, countBMI, getUserData, jsonToArray } from '../../utils/functions';
 
 
 export default function Profile({ navigation, route }) {
@@ -72,6 +73,27 @@ export default function Profile({ navigation, route }) {
         } 
     }
 
+    const healthData = {
+        "insulin": userData?.health.insulin,
+        "cholesterol": userData?.health.cholesterol,
+        "diet": userData?.health.diet,
+        "smokingStatus": userData?.health.smokingStatus,
+        "alcoholConsumption": userData?.health.alcoholConsumption,
+        "bloodPressure": userData?.health.bloodPressure,
+        "sex": userData?.health.sex,
+        "bloodType": userData?.health.bloodType,
+        "height": userData?.health.height,
+        "weight": userData?.health.weight,
+        "bmi": countBMI(userData?.health.height, userData?.health.weight)
+    }
+    
+    const personalData = {
+        "firstName": userData?.info.firstName,
+        "lastName": userData?.info.lastName,
+        "dob": userData?.info.dob,
+        "age": calculateAge(userData?.info.dob)
+    }
+
     return (
         <SafeAreaProvider>
             <ScrollView style={styles.screenContainer} >
@@ -88,33 +110,13 @@ export default function Profile({ navigation, route }) {
 
                 <DetailsCard 
                     title={"Personal Details"} 
-                    data={userData?.info} 
-                    route={route} 
-                    navigation={navigation} 
-                    dataToShow={{
-                        "firstName": userData?.info.firstName,
-                        "lastName": userData?.info.lastName,
-                        "dob": userData?.info.dob,
-                        "age": calculateAge(userData?.info.dob)}}/>
+                    button={<NavigateButton name='Edit' nav={"Edit Personal Details"} navigation={navigation} data={userData?.info} />}
+                    dataToShow={jsonToArray(personalData)}/>
                 
                 <DetailsCard 
                     title={"Health Details"} 
-                    data={userData?.health} 
-                    route={route} 
-                    navigation={navigation}
-                    dataToShow={{
-                        "insulin": userData?.health.insulin,
-                        "cholesterol": userData?.health.cholesterol,
-                        "diet": userData?.health.diet,
-                        "smokingStatus": userData?.health.smokingStatus,
-                        "alcoholConsumption": userData?.health.alcoholConsumption,
-                        "bloodPressure": userData?.health.bloodPressure,
-                        "sex": userData?.health.sex,
-                        "bloodType": userData?.health.bloodType,
-                        "height": userData?.health.height,
-                        "weight": userData?.health.weight,
-                        "bmi": countBMI(userData?.health.height, userData?.health.weight)
-                    }}/>
+                    button={<NavigateButton name='Edit' nav={"Edit Health Details"} navigation={navigation} data={userData?.health} />}
+                    dataToShow={jsonToArray(healthData)}/>
 
                 <Button radius={8} color="#fff" containerStyle={styles.button} onPress={() => navigation.push("Manage Wearable")}>
                         <Text style={styles.buttonText}>Manage Wearable</Text>

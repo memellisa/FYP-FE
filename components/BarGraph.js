@@ -3,26 +3,15 @@ import { StyleSheet, View, Dimensions } from "react-native";
 import { VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
 
 
-const BarGraph = ({data}) =>  {
+const BarGraph = ({data, max, x, y}) =>  {
   const windowWidth = Dimensions.get('window').width;
-
-  const findMax = () => {
-    var maxSteps = 2000
-    for (let i = 0; i < data.length; i++){
-      if (data[i].steps > maxSteps) 
-        maxSteps = data[i].steps + 500
-    }
-    return maxSteps
-  }
-
-  const max = findMax()
-  const chartWidth = windowWidth - (findMax() < 10000 ? 15 : 20)
+  const chartWidth = windowWidth - (max < 10000 ? 15 : 20)
 
   const onBarPressed = () => {
     return [
     {
       target: "labels",
-      mutation: (props) => ({ text:  props.datum.steps })
+      mutation: (props) => ({ text:  props.datum._y }) 
     }, 
     {
       target: "data",
@@ -59,8 +48,8 @@ const BarGraph = ({data}) =>  {
           } 
           domain={{y: [0, max]}}
           data={data} 
-          x="day" 
-          y="steps" 
+          x={x} 
+          y={y} 
           labels={() => ""}
           events={[
             {

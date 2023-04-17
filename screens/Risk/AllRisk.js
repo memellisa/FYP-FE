@@ -32,7 +32,7 @@ export default function AllRisk({ route, navigation }) {
             >
                 {allRisk.map((obj, i) => 
                     <View style={i == allRisk.length - 1 ? {...styles.rowView, marginBottom: 50} : styles.rowView} key={i}>
-                        <Pressable style={styles.optionView} onPress={() => console.log(navigation.push("Risk Detail", obj))}>
+                        <Pressable style={styles.optionView} onPress={() => navigation.push("Risk Detail", obj)}>
                             <Text style={styles.fieldText}>{obj.time}</Text>
                             <Text style={styles.valueText}>{(obj.result  * 100 ).toFixed(5) + '%'}</Text>
                         </Pressable>
