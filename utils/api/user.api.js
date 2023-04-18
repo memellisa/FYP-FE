@@ -58,4 +58,4 @@ const putUserHealth = async (data) => {
     } 
 };
 
-export { putUser, getUser, putUserInfo, putUserHealth, getUserByUID }
+export { getUser, putUserInfo, putUserHealth, getUserByUID }

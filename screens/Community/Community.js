@@ -42,11 +42,11 @@ export default function Community({navigation, headerTitle, headerSubtitle}) {
                 return <CommunityCard 
                           key={Math.floor(Math.random() * 10000)}
                           imgURI={group[1].img_url}
-                          title={group[0]}
+                          title={group[1].name}
                           text={group[1].description}
                           width={'90%'}
                           navigation={navigation}
-                          onPress={() => navigation.push("Group", { forumName: group[0] })}/>
+                          onPress={() => navigation.push("Group", { forumName: group[0], titleHeader: group[1].name })}/>
               })}
               </View> 
           })}

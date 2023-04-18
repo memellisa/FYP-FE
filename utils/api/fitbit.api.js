@@ -3,11 +3,12 @@ import axios from 'axios';
 import { flaskURL } from "../constants";
 import { auth } from "../../config";
 
-const postAccessToken = async (payload) => {
+const postAccessToken = async (params) => {
     try {
-        const response = await axios.post(`${flaskURL}/fitbit/auth/token`, payload, {
-            headers: {
-            'Content-Type': 'application/json'
+        const response = await axios.get(`${flaskURL}/fitbit/auth/token`, {
+            params: {
+              authCode: params.authCode,
+              uid: params.uid,
             }
         });
         return { data: response.data, error: null }
@@ -18,7 +19,7 @@ const postAccessToken = async (payload) => {
 
 const storeFitbitAccRefToken = async (payload) => {
     try {
-        const response = await axios.post(`${flaskURL}/fitbit/storeToken/${auth.currentUser.uid}`, payload, {
+        const response = await axios.put(`${flaskURL}/fitbit/storeToken/${auth.currentUser.uid}`, payload, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -65,6 +66,19 @@ const getWeeklySteps = async () => {
     } 
 };
 
+const getWeeklyAverageCalories = async (date) => {
+    try {
+        const response = await axios.get(`${flaskURL}/fitbit/weeklyAvgCal/${auth.currentUser.uid}/${date}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return { data: response.data.sevenDayAvg, error: null }
+    } catch (error) {
+        return { data: null, error }
+    } 
+}
 
 
-export { postAccessToken, getAuthURL, getActivities, getWeeklySteps, storeFitbitAccRefToken }
+
+export { postAccessToken, getAuthURL, getActivities, getWeeklySteps, storeFitbitAccRefToken, getWeeklyAverageCalories }

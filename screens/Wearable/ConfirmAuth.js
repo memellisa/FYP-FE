@@ -15,7 +15,7 @@ export default function ConfirmAuth({ route, navigation }) {
     useEffect( () => {
         if (authCode !== ''){
             (async () => {
-                const result = await postAccessToken(JSON.stringify({ 'authCode': authCode, 'uid': auth.currentUser.uid }))
+                const result = await postAccessToken({ 'authCode': authCode, 'uid': auth.currentUser.uid })
                 let jsonResult = JSON.parse(result.data)
                 if (!result.error){
                     try {

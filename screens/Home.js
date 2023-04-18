@@ -120,7 +120,14 @@ const Home = ({ headerSubtitle, navigation, route, focused}) => {
       fetchFitbitData()
     }, [focused, isFocused])
 
-
+    const findMaxStep = (data) => {
+      var maxStep = 2000 
+      for (let i = 0; i < data.length; i++){
+        if (data[i].steps > maxStep) 
+          maxStep = data[i].steps + 500
+      }
+      return maxStep
+    }
 
     const leftComponent = <View style={{width:'250%'}}>
       <Text style={{...styles.heading, fontSize: 25}}>Hi, {userData?.info.firstName}</Text>
@@ -151,7 +158,7 @@ const Home = ({ headerSubtitle, navigation, route, focused}) => {
           
           <Text style={{...styles.heading,fontSize: 20, marginLeft: 20, marginTop: 10}}>Weekly Log Steps</Text>
           <View>
-            <BarGraph data={weeklySteps ? weeklySteps : emptyWeeklySteps}/>
+            <BarGraph data={weeklySteps ? weeklySteps : emptyWeeklySteps} x="day" y="steps" max={findMaxStep(weeklySteps ? weeklySteps : emptyWeeklySteps)}/>
           </View>
           <StatusBar style="auto" />
         </ScrollView>

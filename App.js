@@ -20,6 +20,7 @@ import Group from './screens/Community/Group';
 import Article from './screens/Community/Article';
 import AllRisk from './screens/Risk/AllRisk';
 import ChangePassword from './screens/User/ChangePassword';
+import RiskDetail from './screens/Risk/RiskDetail';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 
@@ -67,6 +68,7 @@ export default RootNavigator = () => {
             <Stack.Screen name="Article" component={Article} options={{ headerShown: true }} />
 
             <Stack.Screen name="All Risk" component={AllRisk} options={{ headerBackTitle: '' }} />
+            <Stack.Screen name="Risk Detail" component={RiskDetail} options={{ headerBackTitle: '' }} />
 
             <Stack.Screen name="Self Input Form" component={SelfInputForm} options={{ 
               gestureEnabled: false,

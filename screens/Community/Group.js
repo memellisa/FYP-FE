@@ -6,15 +6,14 @@ import { getPostsInForums } from '../../utils/api/community.api';
 import { fDate } from '../../utils/formatTime';
 
 export default function Group ({route, navigation}) {
-    const [articleList, setArticleList] = useState({})
-    const forumName = route.params.forumName
-
+    const [articleList, setArticleList] = useState([])
+    const title = route.params.titleHeader
 
     const fetchArticleinForum = async () => {
         const result = await getPostsInForums(route.params.forumName)
 
         if (!result.error) {
-            setArticleList(result.data.posts)
+            setArticleList(result.data)
         } 
           else {
             // Alert.alert('Something went wrong getting USER. Please try again')
@@ -24,7 +23,7 @@ export default function Group ({route, navigation}) {
     useEffect(() => {
         navigation.setOptions({ 
             headerBackTitle: '', 
-            title: forumName
+            title: title
 
         });
     }, [navigation])
@@ -37,18 +36,18 @@ export default function Group ({route, navigation}) {
         <SafeAreaProvider>
             <ScrollView style={styles.container} contentContainerStyle={{paddingBottom: 35}}>
                 <View style={{alignItems: 'center',}}>
-                    {Object.entries(articleList).map((article) => (
-                        <ArticleCard
-                            key={article[1].title} 
-                            imgURI={article[1].img_url}
-                            author={article[1].author}
-                            date={fDate(article[1].date)}
-                            title={article[1].title}
-                            content={article[1].content_summary + "..."}
+                    {articleList.map((article) => {
+                        let articleObj = Object.entries(article)[0]
+                        return <ArticleCard
+                            key={articleObj[0]} 
+                            imgURI={articleObj[1].img}
+                            author={articleObj[1].author}
+                            date={fDate(articleObj[1].date)}
+                            title={articleObj[1].title}
+                            // content={articleObj[1].content_summary + "..."}
                             width={'90%'}
-                            onPress={() => navigation.push("Article", { article_id: article[1].id })}
-                    />
-                    ))}
+                            onPress={() => navigation.push("Article", { article_id: articleObj[0] })} />
+                    })}
                 </View>
             </ScrollView>
         </SafeAreaProvider>
