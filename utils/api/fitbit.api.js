@@ -3,11 +3,12 @@ import axios from 'axios';
 import { flaskURL } from "../constants";
 import { auth } from "../../config";
 
-const postAccessToken = async (payload) => {
+const postAccessToken = async (params) => {
     try {
-        const response = await axios.post(`${flaskURL}/fitbit/auth/token`, payload, {
-            headers: {
-            'Content-Type': 'application/json'
+        const response = await axios.get(`${flaskURL}/fitbit/auth/token`, {
+            params: {
+              authCode: params.authCode,
+              uid: params.uid,
             }
         });
         return { data: response.data, error: null }
@@ -18,7 +19,7 @@ const postAccessToken = async (payload) => {
 
 const storeFitbitAccRefToken = async (payload) => {
     try {
-        const response = await axios.post(`${flaskURL}/fitbit/storeToken/${auth.currentUser.uid}`, payload, {
+        const response = await axios.put(`${flaskURL}/fitbit/storeToken/${auth.currentUser.uid}`, payload, {
             headers: {
                 'Content-Type': 'application/json'
             }
